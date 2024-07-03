@@ -1,6 +1,6 @@
 #ifndef HASHTABLE_H
 # define HASHTABLE_H
-# include "libft.h"
+# include "../libft/libft.h"
 # include <stdlib.h>
 # include <stdio.h>
 # define CAPACITY 2000

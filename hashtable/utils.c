@@ -25,8 +25,11 @@ int	add_item(t_table *table, char *key, char *value)
 	size_t	index;
 	t_item	*new;
 	
+	if (!key || !value)
+		return (1);
 	index = hash_function(key);
-	new = (t_item *)malloc(sizeof(t_item));
+	printf("Hash index = %ld\n", index);
+	new = (t_item *)ft_calloc(1, sizeof(t_item));
 	if (!new)
 		return (ERR_MEM);
 	new->key = ft_strdup(key);
@@ -44,7 +47,7 @@ int	add_item(t_table *table, char *key, char *value)
 	}
 	new->next = NULL;
 	if (table->items[index])
-		handle_collision(table->items, new);
+		handle_collision(&table->items[index], new);
 	else
 		table->items[index] = new;
 	return (0);

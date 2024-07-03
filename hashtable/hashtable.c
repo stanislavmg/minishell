@@ -16,12 +16,12 @@ t_table *create_table(int size)
 {
 	t_table	*res;
 
-	res = (t_table *)malloc(sizeof(t_table));
+	res = (t_table *)ft_calloc(1, sizeof(t_table));
 	if (!res)
 		return (NULL);
 	res->size = size;
 	res->item_num = 0;
-	res->items = (t_item **)malloc(sizeof(t_table *) * size);
+	res->items = (t_item **)ft_calloc(size, sizeof(t_table *));
 	if (!res->items)
 	{
 		free(res);
@@ -43,12 +43,12 @@ int delete_table(t_table *table)
 			count += delete_bucket(&table->items[i]);
 		i++;
 	}
-	if (count == table->item_num)
-	{
+	//if (count == table->item_num)
+	//{
 		free(table->items);
 		free(table);
-		return (0);
-	}
+		//return (0);
+	//}
 	return (1);
 }
 
@@ -73,6 +73,8 @@ int	handle_collision(t_item **lst, t_item *new)
 		prev = t;
 		t = t->next;
 	}
-	prev->next = new;
+	t = *lst;
+	*lst = new;
+	new->next = t;
 	return (0);
 }
