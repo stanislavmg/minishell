@@ -22,15 +22,23 @@ t_lexer	*new_lexer(char *str)
 	return (lex);
 }
 
-t_word_list	*new_token(const char *word, e_token type)
+t_word_list	*new_token(const char *word, e_token type, int num_ch)
 {
 	t_word_list *new_word;
+	char		*tmp_str;
 
 	new_word = (t_word_list *)ft_calloc(1, sizeof(t_word_list));
 	if (!new_word)
 		return (NULL);
+	tmp_str = (char *)malloc(num_ch + 1);
+	if (!tmp_str)
+	{
+		free(new_word);
+		return (NULL);
+	}
+	ft_strlcpy(tmp_str, word, num_ch);
 	new_word->type = type;
-	new_word->word = ft_strdup(word);
+	new_word->word = tmp_str;
 	return (new_word);
 }
 
@@ -60,7 +68,6 @@ int	double_quotes_handle(t_lexer *lex)
 int	single_quotes_handle(t_lexer *lex)
 {
 	int		i;
-	char	*tmp_str;
 
 	i = 0;
 	lex->pos++;
@@ -68,16 +75,18 @@ int	single_quotes_handle(t_lexer *lex)
 		i++;
 	if (lex->pos[i] != '\'')
 		return (1);
-	tmp_str = (char *)malloc(i + 1);
-	ft_strlcpy(tmp_str, lex->pos, i + 1);
-	push_token(&lex->tokens, new_token(tmp_str, STR_ONE_Q));
+	push_token(&lex->tokens, new_token(lex->pos, STR_ONE_Q, i));
 	lex->pos += i + 1;
-	free(tmp_str);
 	return (0);
 }
 
 int	slash_handle(t_lexer *lex)
 {
+	lex->pos++;
+	if (!*lex->pos)
+		return (0);
+	push_token(&lex->tokens, new_token(lex->pos, CHARACTER, 1));
+
 	return (0);
 }
 
@@ -90,48 +99,41 @@ int	variable_handle(t_lexer *lex)
 	lex->pos++;
 	while (lex->pos[i] && !is_metachar(lex->pos[i]) && !isspace(lex->pos[i]))
 		i++;
-	tmp_str = (char *)malloc(i + 2);
-	ft_strlcpy(tmp_str, lex->pos, i + 1);
-	push_token(&lex->tokens, new_token(tmp_str, VARIABLE));
+	push_token(&lex->tokens, new_token(lex->pos, VARIABLE, i));
 	lex->pos += i;
-	free(tmp_str);
 	return (0);
 }
 
 int	string_handle(t_lexer *lex)
 {
 	int		i;
-	char	*tmp_str;
 
 	i = 0;
 	while (lex->pos[i] && !isspace(lex->pos[i]))
 	{
 		if (is_metachar(lex->pos[i]))
 		{
-			tmp_str = (char *)malloc(i + 2);
-			ft_strlcpy(tmp_str, lex->pos, i + 1);
-			push_token(&lex->tokens, new_token(tmp_str, STRING));
+			push_token(&lex->tokens, new_token(lex->pos, STRING, i));
 			lex->pos += i;
-			free(tmp_str);
 			init_tokens(lex);
 			i = 0;
 		}
 		i++;
 	}
-	tmp_str = (char *)malloc(i + 2);
-	ft_strlcpy(tmp_str, lex->pos, i + 1);
-	push_token(&lex->tokens, new_token(tmp_str, STRING));
+	push_token(&lex->tokens, new_token(lex->pos, STRING, i));
 	lex->pos += i;
-	free(tmp_str);
 	return (0);
 }
 
 int	default_handle(t_lexer *lex, const char *value, e_token type)
 {
+	int	len;
+
 	if (!lex || !value || !type)
 		return (1);
-	push_token(&lex->tokens, new_token(value, type));
-	lex->pos += ft_strlen(value);
+	len = ft_strlen(value);	
+	push_token(&lex->tokens, new_token(value, type, len));
+	lex->pos += len;
 	return (0);
 }
 
