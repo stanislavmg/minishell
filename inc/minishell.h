@@ -1,28 +1,22 @@
 #ifndef MINISHEL_H
 #define MINISHEL_H
 #include "hashtable.h"
+#include "parser.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
-// typedef enum e_type
-// {
-//     PIPE,
-//     AND,
-//     OR,
-//     SEMICOLON,
-//     FILE
-// } s_type;
-
 typedef struct s_cmd
 {
-    char *path;
-    char **args;
-    int type_out; // O_CREATE | O_TRUNC | O_APPEND etc
+    char **argv;
+    t_table *env;
+    int pdes[2];
+    int type_out; // O_CREATE | O_TRUNC | O_APPEND etc > 
     int file_out;
     int file_in; // F_STDOUT || F_STDIN
 } t_cmd;
 
+// this shit will be free when the t_cmd list is ready
 typedef struct s_pars
 {
     char *str;

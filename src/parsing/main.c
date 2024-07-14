@@ -1,6 +1,6 @@
-#include "parser.h"
+#include "../../inc/parser.h"
 
-const char *get_type (e_token type)
+const char *get_type(e_token type)
 {
 	if (STRING == type)
 		return ("STRING");
@@ -14,22 +14,46 @@ const char *get_type (e_token type)
 		return ("AND");
 	else if (VARIABLE == type)
 		return ("VARIABLE");
-	else if (STR_ONE_Q == type)
-		return ("STR_ONE_Q");
-	else if (CHARACTER == type)
-		return ("STR_ONE_Q");
+	else if (INPUT_ADD == type)
+		return ("INPUT_ADD");
+	else if (INPUT_TRUNC == type)
+		return ("INPUT_TRUNC");
+	else if (OUTPUT_ADD == type)
+		return ("OUTPUT_ADD");
+	else if (OUTPUT_TRUNC == type)
+		return ("OUTPUT_TRUNC");
 	return (NULL);
 }
 
-int	main(int ac, char **av)
+int	main(int ac, char **av, char **env)
 {
-	t_lexer *lex;
+	t_lexer 	*lex;
 	t_word_list *list;
-	int i = 1;
+	t_table 	*table;
+	char 		**t;
+	int i;
 
+	table = create_table(CAPACITY);
+	if (!table)
+		return (1);
+	i = 1;
+	while (env[i])
+	{
+		t = ft_split(env[i], '=');
+		add_item(table, t[0], t[1]);
+		//printf("Key %s\nValue %s\nhas been added\n\n", t[0], t[1]);
+		if (t[0])
+			free(t[0]);
+		if (t[1])
+			free(t[1]);
+		free(t);
+		i++;
+	}
 	lex = new_lexer(av[1]);
-	init_tokens(lex);
+	lex->env = table;
+	init_word_list(lex);
 	list = lex->tokens;
+	i = 0;
 	while (list)
 	{
 		printf("#%d token: %s\ntype: %s\n\n", i, list->word, get_type(list->type));

@@ -28,7 +28,6 @@ int	add_item(t_table *table, char *key, char *value)
 	if (!key || !value)
 		return (1);
 	index = hash_function(key);
-	printf("Hash index = %ld\n", index);
 	new = (t_item *)ft_calloc(1, sizeof(t_item));
 	if (!new)
 		return (ERR_MEM);
@@ -90,7 +89,6 @@ t_item *search_item(t_table *table, char *key)
 	if (!table || !key)
 		return (NULL);
 	t = table->items[index];
-	printf("key = %s\nt->key = %s\n", key, t->key);
 	while (t && ft_strncmp(key, t->key, ft_strlen(key)))
 		t = t->next;
 	return (t);

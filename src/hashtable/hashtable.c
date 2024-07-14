@@ -45,7 +45,6 @@ int delete_table(t_table *table)
 	}
 	if (count == table->item_num)
 	{
-		printf("Start delete table\n");
 		free(table->items);
 		free(table);
 		return (0);
