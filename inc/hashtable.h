@@ -2,9 +2,10 @@
 # define HASHTABLE_H
 
 # include "libft.h"
+# include <stdio.h>
 
 # define CAPACITY 2000
-# define ERR_MEM 112
+# define ERR_MEM 101
 
 typedef struct s_item
 {

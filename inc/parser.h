@@ -1,14 +1,17 @@
 #ifndef PARSER_H
 # define PARSER_H
 
+# define  ERR_MEM   101
+# define  ERR_TOKEN 102
+# define  ERR_QUOTE 103
+
 # include "hashtable.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <ctype.h>
 # include <string.h>
-
-
-int cd(char **ar, t_table *env);
+#include <readline/readline.h>
+#include <readline/history.h>
 
 typedef enum t_token
 {
@@ -40,6 +43,8 @@ typedef struct s_lexer
   t_word_list *tokens;
   t_table     *env;
   char        *pos;
+  int         in_qoutes;
+  int         err;
 } t_lexer;
 
 // abstract syntax tree
@@ -56,17 +61,17 @@ t_lexer	    *new_lexer(char *str);
 t_word_list	*new_token(char *word, e_token type);
 int	        push_token(t_word_list **list, t_word_list *new);
 int	        init_word_list(t_lexer *lex);
+void	      free_lexer(t_lexer *lex);
 
 // tokenization
 char	*scan_token(t_lexer *lex);
-int	  metachar_handle(t_lexer *lex);
+char	*metachar_handle(t_lexer *lex);
 int	  default_handle(t_lexer *lex, const char *value, e_token type);
 char	*string_handle(t_lexer *lex);
 char	*variable_handle(t_lexer *lex);
 char	*slash_handle(t_lexer *lex);
 char	*single_quotes_handle(t_lexer *lex);
 char	*double_quotes_handle(t_lexer *lex);
-
 
 // string utils
 size_t	ft_strncpy(char *d, const char *s, size_t n);
