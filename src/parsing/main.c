@@ -29,9 +29,10 @@ int	main(int ac, char **av, char **env)
 {
 	t_lexer 	*lex;
 	t_word_list *list;
+	char *s = ft_strdup("minishell$> ");
 	t_table 	*table;
 	char 		**t;
-	int i;
+	int 		i;
 
 	table = create_table(CAPACITY);
 	if (!table)
@@ -49,16 +50,27 @@ int	main(int ac, char **av, char **env)
 		free(t);
 		i++;
 	}
-	lex = new_lexer(av[1]);
-	lex->env = table;
-	init_word_list(lex);
-	list = lex->tokens;
-	i = 0;
-	while (list)
+//	printf ("%s\n", rl);
+	//printf ("\nstr in programm = %s\n\n", av[1]);
+	char *res;
+	while (1)
 	{
-		printf("#%d token: %s\ntype: %s\n\n", i, list->word, get_type(list->type));
-		i++;
-		list = list->next;
+		res = readline(s);
+		if (!strcmp(res, "exit"))
+			break ;
+		lex = new_lexer(res);
+		lex->env = table;
+		if (init_word_list(lex))
+			continue;
+		list = lex->tokens;
+		i = 0;
+		while (list)
+		{
+			printf("#%d token: %s\ntype: %s\n\n", i, list->word, get_type(list->type));
+			i++;
+			list = list->next;
+		}
+		free_lexer(lex);
 	}
 	return (0);
 }

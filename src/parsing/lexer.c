@@ -1,54 +1,62 @@
 #include "../../inc/parser.h"
 
-char	*poststring_handle()
+char	*poststring_handle(t_lexer *lex, char *lhs, int i)
 {
-	return (NULL);
-}
+	char *res;
+	char *t;
 
-int	assignment_handle(t_lexer *lex)
-{
-
-
-
-	return (0);
+	res = NULL;
+	if (lhs)
+		res = merge_str(lhs, get_word(lex->pos, i));
+	else
+		res = get_word(lex->pos, i);
+	lex->pos += i;
+	if (lex->in_qoutes && (*lex->pos == '\"' || *lex->pos == '\''))
+	{
+		lex->in_qoutes = 0;
+		lex->pos++;
+	}
+	t = scan_token(lex);
+	res = merge_str(res, t);
+	return (res);
 }
 
 char	*double_quotes_handle(t_lexer *lex)
 {
 	int		i;
 	char	*new_word;
-	char	*t;
 
 	i = 0;
 	new_word = NULL;
 	lex->pos++;
+	lex->in_qoutes = 1;
 	while (lex->pos[i] && lex->pos[i] != '\"')
 	{
-		if (is_catchar(lex->pos[i]))
+		if ('$' == lex->pos[i] || '\\' == lex->pos[i])
 		{
-			if (new_word)
-				new_word = merge_str(new_word, get_word(lex->pos, i));
-			else
-				new_word = get_word(lex->pos, i);
-			lex->pos += i;
-			t = scan_token(lex);
-			new_word = merge_str(new_word, t);
+			new_word = poststring_handle(lex, new_word, i);
 			i = -1;
 		}
 		i++;
 	}
 	if (lex->pos[i] != '\"')
 	{
-		printf("Double quotes wasn\'t close\n"); // TODO error_handle
+		lex->err = ERR_QUOTE;
 		return (NULL);
 	}
-	if (new_word)
+	if (is_catchar(lex->pos[i + 1]))
 	{
-		t = get_word(lex->pos, i);
-		new_word = merge_str(new_word, t);
+		new_word = poststring_handle(lex, new_word, i);
+		return (new_word);
 	}
 	else
-		new_word = get_word(lex->pos, i + 1);
+	{
+		if (new_word)
+			new_word = merge_str(new_word, get_word(lex->pos, i));
+		else
+			new_word = get_word(lex->pos, i);
+	}
+	lex->in_qoutes = 0;
 	lex->pos += i + 1;
 	return (new_word);
 }
@@ -57,39 +65,48 @@ char	*single_quotes_handle(t_lexer *lex)
 {
 	int		i;
 	char	*new_word;
-	char	*t;
 
 	i = 0;
 	new_word = NULL;
+	lex->in_qoutes = 1;
 	lex->pos++;
 	while (lex->pos[i] && lex->pos[i] != '\'')
 		i++;
 	if (lex->pos[i] != '\'')
 	{
-		printf("Single quotes wasn\'t close\n"); // TODO error_handle
+		lex->err = ERR_QUOTE;
 		return (NULL);
 	}
 	new_word = get_word(lex->pos, i);
 	lex->pos += i + 1;
+	lex->in_qoutes = 0;
 	if (is_catchar(*lex->pos) || !isspace(*lex->pos))
-	{
-		t = scan_token(lex);
-		new_word = merge_str(new_word, t);
-	}
+		new_word = poststring_handle(lex, new_word, 0);
 	return (new_word);
 }
 
-char	*slash_handle(t_lexer *lex)
+char	*slash_handle(t_lexer *lex) // ` " $
 {
 	char *new_word;
 	char *t;
 
 	lex->pos++;
+	if (lex->in_qoutes)
+	{
+		if (*lex->pos == '`' || *lex->pos == '\"' || *lex->pos == '$' || *lex->pos == '\\')
+		{
+			new_word = get_word(lex->pos, 1);
+			lex->pos++;
+			return (new_word);
+		}
+		else
+			return (ft_strdup("\\"));
+	}
 	if (!*lex->pos)
-		return (0);
+		return (get_word("", 0));
 	new_word = get_word(lex->pos, 1);
 	lex->pos++;
-	if (!isspace(*lex->pos) && *lex->pos)
+	if (*lex->pos && !isspace(*lex->pos) && !is_metachar(*lex->pos))
 	{
 		t = scan_token(lex);
 		new_word = merge_str(new_word, t);
@@ -100,7 +117,6 @@ char	*slash_handle(t_lexer *lex)
 char	*variable_handle(t_lexer *lex)
 {
 	int		i;
-	char	*t;
 	char	*new_word;
 	t_item	*var;
 
@@ -120,48 +136,31 @@ char	*variable_handle(t_lexer *lex)
 	if (!var)
 		return (get_word("", 0));
 	new_word = get_word(var->value, ft_strlen(var->value));
-	if (!is_catchar(*lex->pos) && *lex->pos != '\"')
-	{
-		t = scan_token(lex);
-		new_word = merge_str(new_word, t);
-	}
+	if (lex->in_qoutes)
+		return (new_word);
+	if (is_catchar(*lex->pos))
+		new_word = poststring_handle(lex, new_word, 0);
 	return (new_word);
 }
 
 char	*string_handle(t_lexer *lex)
 {
 	char	*new_word;
-	char	*t;
 	int		i;
 
 	i = 0;
 	new_word = NULL;
-	while (lex->pos[i] && !isspace(lex->pos[i]))
+	while (lex->pos[i] && !is_metachar(lex->pos[i]) && !isspace(lex->pos[i]))
 	{
-		if (is_metachar(lex->pos[i]))
-		{
-			new_word = get_word(lex->pos, i);
-			lex->pos += i;
-			return (new_word);
-		}
 		if (is_catchar(lex->pos[i]))
 		{
-			if (new_word)
-				new_word = merge_str(new_word, get_word(lex->pos, i));
-			else
-				new_word = get_word(lex->pos, i);
-			lex->pos += i;
-			t = scan_token(lex);
-			new_word = merge_str(new_word, t);
+			new_word = poststring_handle(lex, new_word, i);
 			i = -1;
 		}
 		i++;
 	}
 	if (new_word)
-	{
-		t = get_word(lex->pos, i);
-		new_word = merge_str(new_word, t);
-	}
+		new_word = merge_str(new_word, get_word(lex->pos, i));
 	else
 		new_word = get_word(lex->pos, i + 1);
 	lex->pos += i;
@@ -170,7 +169,7 @@ char	*string_handle(t_lexer *lex)
 
 int	default_handle(t_lexer *lex, const char *value, e_token type)
 {
-	int	len;
+	int		len;
 	char	*new_word;
 
 	if (!lex || !value || !type)
@@ -182,7 +181,7 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 	return (0);
 }
 
-int	metachar_handle(t_lexer *lex)
+char	*metachar_handle(t_lexer *lex)
 {
 	if (!strncmp(lex->pos, "||", 2))
 		default_handle(lex, "||", OR);
@@ -201,11 +200,8 @@ int	metachar_handle(t_lexer *lex)
 	else if (!strncmp(lex->pos, ">", 1))
 		default_handle(lex, ">", OUTPUT_TRUNC);
 	else
-	{
-		printf("Unexpected type of token\n");
-		return (1);
-	}
-	return (0);
+		lex->err = ERR_TOKEN;
+	return (NULL);
 }
 
 char	*scan_token(t_lexer *lex)
@@ -213,6 +209,8 @@ char	*scan_token(t_lexer *lex)
 	char	*res;
 
 	res = NULL;
+	if (lex->err)
+		return (NULL);
 	if (!lex || !*lex->pos)
 		return (NULL);
 	while (isspace(*lex->pos))

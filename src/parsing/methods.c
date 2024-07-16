@@ -43,6 +43,33 @@ int	push_token(t_word_list **list, t_word_list *new)
 	return (0);
 }
 
+void	error_handle(t_lexer *lex)
+{
+	if (ERR_MEM == lex->err)
+		printf("minishell: No memory\n");
+	else if (ERR_QUOTE == lex->err)
+		printf("minishell: Quotes wasn\'t close\n");
+	else if (ERR_TOKEN == lex->err)
+		printf("minishell: syntax error near unexpected token `%c'\n", *lex->pos);
+	else
+		printf("minishell: Undefined error. Abort!\n");
+}
+
+void	free_lexer(t_lexer *lex)
+{
+	t_word_list *t;
+
+	t = lex->tokens;
+	while (t)
+	{
+		lex->tokens = t->next;
+		free(t->word);
+		free(t);
+		t = lex->tokens;
+	}
+	free(lex);
+}
+
 int	init_word_list(t_lexer *lex)
 {
 	char	*tmp_str;
@@ -51,7 +78,13 @@ int	init_word_list(t_lexer *lex)
 	while(*lex->pos)
 	{
 		tmp_str = scan_token(lex);
-		if (tmp_str)
+		if (lex->err)
+		{
+			error_handle(lex);
+			free_lexer(lex);
+			return (1);
+		}
+		else if (tmp_str && *tmp_str)
 			push_token(&lex->tokens, new_token(tmp_str, STRING));
 	}
 	return (0);

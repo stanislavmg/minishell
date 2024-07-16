@@ -7,7 +7,7 @@ size_t	ft_strncpy(char *d, const char *s, size_t n)
 	i = 0;
     if (!d || !s || n == 0)
         return 0;
-    while (i < n && s[i]) 
+    while (i < n && s[i])
 	{
         d[i] = s[i];
         i++;
