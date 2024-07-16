@@ -1,0 +1,12 @@
+"hello" 'world' $USER \t
+$USER"hello"
+$USER''""$USER
+string''""' '$USER
+'string'''"   "''string
+"string"''""\c
+\c$USER
+$USER\c
+Hello "$USER in $PWD"
+\u\s\e\r\
+"str \\ \$USER \""
+hello world && wc &
