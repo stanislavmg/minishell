@@ -1,9 +1,14 @@
 #include "../../inc/parser.h"
+#include "../../inc/minishell.h"
 
-const char *get_type(e_token type)
+const char *get_type(int type)
 {
-	if (STRING == type)
+	if (UNDEFINED == type)
+		return ("UNDEFINED");
+	else if (STRING == type)
 		return ("STRING");
+	else if (COMMAND == type)
+		return ("COMMAND");
 	else if(OR == type)
 		return ("OR");
 	else if (SEMICOLON == type)
@@ -14,8 +19,8 @@ const char *get_type(e_token type)
 		return ("AND");
 	else if (VARIABLE == type)
 		return ("VARIABLE");
-	else if (INPUT_ADD == type)
-		return ("INPUT_ADD");
+	else if (HERE_DOC == type)
+		return ("HERE_DOC");
 	else if (INPUT_TRUNC == type)
 		return ("INPUT_TRUNC");
 	else if (OUTPUT_ADD == type)
@@ -50,9 +55,8 @@ int	main(int ac, char **av, char **env)
 		free(t);
 		i++;
 	}
-//	printf ("%s\n", rl);
-	//printf ("\nstr in programm = %s\n\n", av[1]);
 	char *res;
+	t_cmd *tree;
 	while (1)
 	{
 		res = readline(s);
@@ -70,6 +74,9 @@ int	main(int ac, char **av, char **env)
 			i++;
 			list = list->next;
 		}
+		lex->token_pos = lex->tokens;
+		tree = expand_tokens(lex);
+		print_tree(tree);
 		free_lexer(lex);
 	}
 	return (0);

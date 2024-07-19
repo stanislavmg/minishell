@@ -4,6 +4,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # define CAPACITY 2000
+
 # define ERR_MEM 112
 
 typedef struct s_item

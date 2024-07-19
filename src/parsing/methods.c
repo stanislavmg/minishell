@@ -9,7 +9,7 @@ t_lexer	*new_lexer(char *str)
 	lex = (t_lexer *)ft_calloc(1, sizeof(t_lexer));
 	if (!lex)
 		return (NULL);
-	lex->pos = str;
+	lex->str_pos = str;
 	return (lex);
 }
 
@@ -39,6 +39,7 @@ int	push_token(t_word_list **list, t_word_list *new)
 		while (t->next)
 			t = t->next;
 		t->next = new;
+		new->prev = t;
 	}
 	return (0);
 }
@@ -50,7 +51,7 @@ void	error_handle(t_lexer *lex)
 	else if (ERR_QUOTE == lex->err)
 		printf("minishell: Quotes wasn\'t close\n");
 	else if (ERR_TOKEN == lex->err)
-		printf("minishell: syntax error near unexpected token `%c'\n", *lex->pos);
+		printf("minishell: syntax error near unexpected token `%c'\n", *lex->str_pos);
 	else
 		printf("minishell: Undefined error. Abort!\n");
 }
@@ -75,7 +76,7 @@ int	init_word_list(t_lexer *lex)
 	char	*tmp_str;
 
 	tmp_str = NULL;
-	while(*lex->pos)
+	while(*lex->str_pos)
 	{
 		tmp_str = scan_token(lex);
 		if (lex->err)
