@@ -1,17 +1,5 @@
 #include "../../inc/parser.h"
 
-static int	is_cmd_delimeter(e_token type)
-{ 
-	return (AND == type || PIPE == type ||
-			OR == type || SEMICOLON == type);
-}
-
-static int	is_redirect(e_token type)
-{
-	return (HERE_DOC == type || INPUT_TRUNC == type ||
-			OUTPUT_ADD == type || OUTPUT_TRUNC == type);
-}
-
 int	check_syntax(t_lexer *lex)
 {
 	t_word_list *tokens;
@@ -75,56 +63,60 @@ int	insert_variable(t_lexer *lex, t_word_list *token)
 	return (0);
 }
 
-t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
+void	parse_variable(t_lexer *lex)
 {
-	t_pipecmd	*res;
-
-	res = (t_pipecmd *)ft_calloc(1, sizeof(t_pipecmd));
-	if (!res)
-		return (NULL);
-	res->left = left_node;
-	res->right = right_node;
-	res->type = type;
-	return ((t_cmd *)res);
+	// if (new_cmd && ft_strchr(cur_token->word, '='))
+	// {
+	// 	insert_variable(lex, cur_token);
+	// 	lex->token_pos = lex->token_pos->next;
+	// }
 }
 
-t_cmd	*create_cmd(void)
+int	count_args(t_word_list *tokens)
 {
-	t_exec_cmd	*new_cmd;
+	int	argc;
+	
+	argc = 0;
+	while (tokens && !is_cmd_delimeter(tokens->type))
+	{
+		if (is_redirect(tokens->type))
+			tokens = tokens->next;
+		else if (tokens->type == STRING)
+			argc++;
+		tokens = tokens->next;
+	}
+	return (argc);
+}
 
-	new_cmd = (t_exec_cmd *)ft_calloc(1, sizeof(t_exec_cmd));
+t_cmd	*parse_tokens(t_lexer *lex)
+{
+	t_cmd *new_cmd;
+
+	new_cmd = (t_cmd *)init_cmd(lex);
 	if (!new_cmd)
 		return (NULL);
-	new_cmd->file_out = 1;
-	new_cmd->type = COMMAND;
-	return ((t_cmd *)new_cmd);
+	while (lex->token_pos && !is_cmd_delimeter(lex->token_pos->type))
+		lex->token_pos = lex->token_pos->next;
+	return (new_cmd);
 }
 
-int	add_field_fd(t_word_list *token, t_exec_cmd *cmd)
+t_exec_cmd	*init_cmd(t_lexer *lex)
 {
-	if (INPUT_TRUNC == token->type)
+	int			argc;
+	t_exec_cmd	*new_cmd;
+
+	if (!lex->token_pos)
+		return (NULL);
+	new_cmd = (t_exec_cmd *)create_cmd();
+	if (!new_cmd)
 	{
-		if (access(token->word, F_OK | R_OK))
-			perror(token->word);
-		cmd->file_in = open(token->next->word, O_RDONLY);
+		lex->err = ERR_MEM;
+		return (NULL);
 	}
-	else if (OUTPUT_TRUNC == token->type)
-	{
-		if (access(token->word, W_OK))
-			perror(token->word);
-		cmd->file_out = open(token->word, O_TRUNC | O_CREAT | O_RDWR, 0644);
-	}
-	else if (OUTPUT_ADD == token->type)
-	{
-		if (access(token->word, W_OK))
-			perror(token->word);
-		cmd->file_out = open(token->word, O_APPEND | O_CREAT | O_RDWR, 0644);
-	}
-	//else if (HERE_DOC == token->type)
-		//start_heredoc(); // TODO
-	else
-		printf("Incorrect type of token\n");
-	return (0);
+	argc = count_args(lex->token_pos);
+	new_cmd->argv = add_field_argv(lex->token_pos, argc);
+	add_field_fd(lex->token_pos, new_cmd);
+	return (new_cmd);
 }
 
 char	**add_field_argv(t_word_list *tokens, int argc)
@@ -147,112 +139,59 @@ char	**add_field_argv(t_word_list *tokens, int argc)
 	return (argv);
 }
 
-t_cmd	*parseline(t_lexer *lex)
+t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
 {
-	t_exec_cmd	*new_cmd;
-	t_word_list *cur_token;
-	int argc;
+	t_pipecmd	*root;
 
-	argc = 0;
-	cur_token = lex->token_pos;
+	root = (t_pipecmd *)ft_calloc(1, sizeof(t_pipecmd));
+	if (!root)
+		return (NULL);
+	root->left = left_node;
+	root->right = right_node;
+	root->type = type;
+	return ((t_cmd *)root);
+}
+
+
+t_cmd *build_tree(t_lexer *lex)
+{
+	t_cmd		*new_cmd;
+	t_pipecmd	*root;
+
+	root = NULL;
 	if (!lex->token_pos)
 		return (NULL);
-	new_cmd = (t_exec_cmd *)create_cmd();
-	if (!new_cmd)
+	new_cmd = parse_tokens(lex);
+	while (lex->token_pos)
 	{
-		lex->err = ERR_MEM;
-		return (NULL);
-	}
-	while (cur_token && !is_cmd_delimeter(cur_token->type))
+	if (lex->token_pos->type == AND || lex->token_pos->type == OR)
 	{
-		// if (new_cmd && ft_strchr(cur_token->word, '='))
-		// {
-		// 	insert_variable(lex, cur_token);
-		// 	lex->token_pos = lex->token_pos->next;
-		// }
-		if (is_redirect(cur_token->type))
-		{
-			add_field_fd(lex->token_pos, new_cmd);
-			cur_token = cur_token->next;
-			lex->token_pos = cur_token;
-		}
-		else if (cur_token->type == STRING)
-			argc++;
-		cur_token = cur_token->next;
+		lex->token_pos = lex->token_pos->next;
+		root = (t_pipecmd *)add_tnode(new_cmd, build_tree(lex), lex->token_pos->type);
+		return ((t_cmd *)root);
 	}
-	new_cmd->argv = add_field_argv(lex->token_pos, argc);
-	lex->token_pos = cur_token;
-	return ((t_cmd *)new_cmd);
+	else
+	{
+		lex->token_pos = lex->token_pos->next;
+	}
+	}
+	root = (t_pipecmd *)add_tnode(root, parse_tokens(lex), lex->token_pos->type);
+	// while (lex->token_pos)
+	// {
+	// 	lex->token_pos = lex->token_pos->next;
+	// 	root = (t_pipecmd *)add_tnode((t_cmd *)root, build_tree(lex), lex->token_pos->type);
+	// }
+	return ((t_cmd *)root);
 }
 
 t_cmd *build_AST(t_lexer *lex)
 {
-	t_cmd 			*new_node;
-	t_pipecmd		*root;
-	e_token			type;
+	t_cmd		*root;
 
-	new_node = NULL;
+	root = NULL;
 	if (check_syntax(lex))
 		return (NULL);
-	new_node = parseline(lex);
-	root = new_node;
-	if (lex->token_pos && is_cmd_delimeter(lex->token_pos->type))
-	{
-		type = lex->token_pos->type;
-		lex->token_pos = lex->token_pos->next;
-		root = add_tnode(new_node, parseline(lex), type);
-	}
-	while(lex->token_pos && is_cmd_delimeter(lex->token_pos->type))
-	{
-		type = lex->token_pos->type;
-		lex->token_pos = lex->token_pos->next;
-		if (lex->token_pos->type == AND || lex->token_pos->type == OR)
-		{
-			root = add_tnode(root, parseline(lex), type);
-		}
-		else
-			root = add_tnode(root, parseline(lex), type);
-	}
+	root = build_tree(lex);
+	print_tree((t_pipecmd *)root);
 	return (root);
-}
-
-// void print_tree(t_pipecmd *root) {
-//     if (root != NULL) {
-// 		if (root->type == COMMAND)
-// 		{
-//        		printf("%s\n", ((t_exec_cmd *)root)->argv[0]);
-// 			printf("type of node: %s\n", get_type(root->type));
-// 			return ;
-// 		}
-// 		printf("type of node: %s\n", get_type(root->type));
-// 		if (is_cmd_delimeter(root->type) && root->left)
-// 		{
-// 			printf("left node = ");
-//         	print_tree((t_pipecmd *)root->left);
-// 		}
-// 		if (is_cmd_delimeter(root->type) && root->right)
-// 		{
-// 			printf("right node = ");
-//         	print_tree((t_pipecmd *)root->right);
-// 		}
-//     }
-// }
-
-void print_tree(t_pipecmd *root) {
-    if (root != NULL) {
-        if (root->type == COMMAND) {
-            printf("%s\n", ((t_exec_cmd *)root)->argv[0]);
-            printf("type of node: %s\n", get_type(root->type));
-            return;
-        }
-        printf("type of node: %s\n", get_type(root->type));
-        if (root->left != NULL) {
-            printf("left node = ");
-            print_tree(root->left);
-        }
-        if (root->right != NULL) {
-            printf("right node = ");
-            print_tree(root->right);
-        }
-    }
 }

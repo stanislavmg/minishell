@@ -1,9 +1,16 @@
-NAME = lexer
-LIB = libft.a
-INCLUDE = ../../inc
-SRC = lexer.c methods.c string.c parser.c main.c $(addprefix ../hashtable/, hashtable.c methods.c)
-OBJ = $(SRC:%.c=%.o)
+NAME	=	lexer
+
+LIB		=	libft.a
+
+INCLUDE =	../../inc
+
+SRC		=	lexer.c methods.c string.c parser.c main.c utils.c init_cmd.c\
+			$(addprefix ../hashtable/, hashtable.c methods.c)
+
+OBJ		=	$(SRC:%.c=%.o)
+
 CFLAGS = -Wall -g3 -I$(INCLUDE)
+
 CC=gcc
 
 all: $(NAME)

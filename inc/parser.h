@@ -98,15 +98,21 @@ char	*double_quotes_handle(t_lexer *lex);
 
 // expand tokens and build tree
 int	  check_syntax(t_lexer *lex);
+t_exec_cmd	*init_cmd(t_lexer *lex);
 char  **split_var(char *str);
 int	  insert_variable(t_lexer *lex, t_word_list *token);
 t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
 t_cmd	*create_cmd(void);
 int	  add_field_fd(t_word_list *token, t_exec_cmd *cmd);
 char	**add_field_argv(t_word_list *tokens, int argc);
-t_cmd	*parseline(t_lexer *lex);
+t_cmd	*parse_tokens(t_lexer *lex);
 t_cmd *build_AST(t_lexer *lex);
 void  print_tree(t_pipecmd *root);
+
+// parse utils
+int	is_redirect(e_token type);
+int	is_cmd_delimeter(e_token type);
+
 
 // string utils
 size_t	ft_strncpy(char *d, const char *s, size_t n);

@@ -28,7 +28,7 @@ t_word_list	*new_token(char *word, e_token type)
 int	push_token(t_word_list **list, t_word_list *new)
 {
 	t_word_list	*t;
-
+	
 	if (!list)
 		return (1);
 	t = *list;

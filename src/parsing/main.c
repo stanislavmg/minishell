@@ -56,7 +56,6 @@ int	main(int ac, char **av, char **env)
 		i++;
 	}
 	char *res;
-	t_cmd *tree;
 	while (1)
 	{
 		res = readline(s);
@@ -75,8 +74,7 @@ int	main(int ac, char **av, char **env)
 			list = list->next;
 		}
 		lex->token_pos = lex->tokens;
-		tree = expand_tokens(lex);
-		print_tree(tree);
+		build_AST(lex);
 		free_lexer(lex);
 	}
 	return (0);
