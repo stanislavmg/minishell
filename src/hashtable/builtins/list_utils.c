@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 04:49:46 by amikhush          #+#    #+#             */
-/*   Updated: 2024/07/22 11:12:11 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/07/23 10:58:36 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ t_env	*list_new(char *key, char *value)
 	lst = malloc(sizeof(t_env));
 	if (!lst)
 		return (NULL);
-	lst -> key = ft_strdup(key);
-	if (!value)
-		value = "(null)";
-	lst -> value = ft_strdup(value);
+	lst -> key = key;
+	lst -> value = value;
 	lst -> next = NULL;
 	return (lst);
 }
@@ -60,15 +58,17 @@ void	list_delete_one(t_env *lst, char *key)
 		return ;
 	while (lst)
 	{
-		if (lst->key == key)
+		if (ft_strcmp(lst -> key, key) == 0)
 		{
 			temp = lst;
-			prev = lst->next;
+			prev = lst -> next;
+			free(lst -> key);
+			free(lst -> value);
 			free(lst);
 			return ;
 		}
 		prev = lst;
-		lst = lst->next;
+		lst = lst -> next;
 	}
 	free(lst);
 }
@@ -82,19 +82,21 @@ void	list_delete(t_env **lst)
 	while (*lst)
 	{
 		t = (*lst) -> next;
+		free((*lst) -> key);
+		free((*lst) -> value);
 		free(*lst);
 		*lst = t;
 	}
 	*lst = NULL;
 }
 
-t_env	*list_search(t_env **lst, char *key)
+t_env	*list_search(t_env *lst, char *key)
 {
-	while (*lst)
+	while (lst)
 	{
-		if (ft_strcmp((*lst)->key, key) == 0)
-			return (*lst);
-		*lst = (*lst) -> next;
+		if (ft_strcmp(lst -> key, key) == 0)
+			return (lst);
+		lst = lst -> next;
 	}
 	return (NULL);
 }
