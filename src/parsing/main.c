@@ -1,5 +1,5 @@
-#include "../../inc/parser.h"
-#include "../../inc/minishell.h"
+#include "parser.h"
+#include "minishell.h"
 
 const char *get_type(int type)
 {

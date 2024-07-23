@@ -1,4 +1,4 @@
-#include "../../inc/parser.h"
+#include "parser.h"
 
 size_t	ft_strncpy(char *d, const char *s, size_t n)
 {

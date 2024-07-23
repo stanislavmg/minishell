@@ -1,4 +1,4 @@
-#include "../../inc/parser.h"
+#include "parser.h"
 
 char	*str_poststring_handle(t_lexer *lex, char *lhs, int i)
 {

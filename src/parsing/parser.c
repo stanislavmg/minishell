@@ -92,6 +92,10 @@ t_cmd	*parse_tokens(t_lexer *lex)
 {
 	t_cmd *new_cmd;
 
+	if (!lex->token_pos)
+		return (NULL);
+	if (is_cmd_delimeter(lex->token_pos->type))
+		lex->token_pos = lex->token_pos->next;
 	new_cmd = (t_cmd *)init_cmd(lex);
 	if (!new_cmd)
 		return (NULL);
@@ -115,7 +119,8 @@ t_exec_cmd	*init_cmd(t_lexer *lex)
 	}
 	argc = count_args(lex->token_pos);
 	new_cmd->argv = add_field_argv(lex->token_pos, argc);
-	add_field_fd(lex->token_pos, new_cmd);
+	add_field_files(lex->token_pos, new_cmd);
+	new_cmd->path = 
 	return (new_cmd);
 }
 
@@ -141,9 +146,9 @@ char	**add_field_argv(t_word_list *tokens, int argc)
 
 t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
 {
-	t_pipecmd	*root;
+	t_ast	*root;
 
-	root = (t_pipecmd *)ft_calloc(1, sizeof(t_pipecmd));
+	root = (t_ast *)ft_calloc(1, sizeof(t_ast));
 	if (!root)
 		return (NULL);
 	root->left = left_node;
@@ -152,36 +157,35 @@ t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
 	return ((t_cmd *)root);
 }
 
-
-t_cmd *build_tree(t_lexer *lex)
+t_cmd	*build_tree(t_lexer *lex)
 {
-	t_cmd		*new_cmd;
-	t_pipecmd	*root;
-
-	root = NULL;
+	t_cmd	*root;
+	e_token	type;
+	
 	if (!lex->token_pos)
 		return (NULL);
-	new_cmd = parse_tokens(lex);
+	root = parse_tokens(lex);
 	while (lex->token_pos)
 	{
-	if (lex->token_pos->type == AND || lex->token_pos->type == OR)
+		type = lex->token_pos->type;
+		if (type == AND || type == OR)
+			root = add_tnode(root, build_subtree(lex, parse_tokens(lex)), type);
+		else
+			root = build_subtree(lex, root);
+	}
+	return (root);
+}
+
+t_cmd *build_subtree(t_lexer *lex, t_cmd *root)
+{
+	e_token type;
+	
+	while (lex->token_pos && lex->token_pos->type != AND && lex->token_pos->type != OR)
 	{
-		lex->token_pos = lex->token_pos->next;
-		root = (t_pipecmd *)add_tnode(new_cmd, build_tree(lex), lex->token_pos->type);
-		return ((t_cmd *)root);
+		type = lex->token_pos->type;
+		root = add_tnode(root, parse_tokens(lex), type);
 	}
-	else
-	{
-		lex->token_pos = lex->token_pos->next;
-	}
-	}
-	root = (t_pipecmd *)add_tnode(root, parse_tokens(lex), lex->token_pos->type);
-	// while (lex->token_pos)
-	// {
-	// 	lex->token_pos = lex->token_pos->next;
-	// 	root = (t_pipecmd *)add_tnode((t_cmd *)root, build_tree(lex), lex->token_pos->type);
-	// }
-	return ((t_cmd *)root);
+	return (root);
 }
 
 t_cmd *build_AST(t_lexer *lex)
@@ -192,6 +196,6 @@ t_cmd *build_AST(t_lexer *lex)
 	if (check_syntax(lex))
 		return (NULL);
 	root = build_tree(lex);
-	print_tree((t_pipecmd *)root);
+	print_tree((t_ast *)root);
 	return (root);
 }

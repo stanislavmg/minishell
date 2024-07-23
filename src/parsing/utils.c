@@ -1,4 +1,4 @@
-#include "../../inc/parser.h"
+#include "parser.h"
 
 int	is_cmd_delimeter(e_token type)
 { 
@@ -12,7 +12,7 @@ int	is_redirect(e_token type)
 			OUTPUT_ADD == type || OUTPUT_TRUNC == type);
 }
 
-void print_tree(t_pipecmd *root) {
+void print_tree(t_ast *root) {
     if (root != NULL) {
         if (root->type == COMMAND) {
             printf("%s\n", ((t_exec_cmd *)root)->argv[0]);
@@ -22,11 +22,11 @@ void print_tree(t_pipecmd *root) {
         printf("type of node: %s\n", get_type(root->type));
         if (root->left != NULL) {
             printf("left node = ");
-            print_tree((t_pipecmd *)root->left);
+            print_tree((t_ast *)root->left);
         }
         if (root->right != NULL) {
             printf("right node = ");
-            print_tree((t_pipecmd *)root->right);
+            print_tree((t_ast *)root->right);
         }
     }
 }
