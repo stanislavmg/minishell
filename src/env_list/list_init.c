@@ -1,51 +1,57 @@
 # include "env.h"
-
-
-
-char **split_var(char *str)
+char *get_var_name(const char *token_word)
 {
-	char	**res;
-	char	*start_value;
-	int		len_value;
-	int		len_name;
+	char	*var_name;
+	char	*end_var_name;
+	size_t	len_var_name;
 
-	res = (char **)malloc(sizeof(char *) * 2);
-	if (!res)
+	var_name = NULL;
+	end_var_name = ft_strchr(token_word, '=');
+	len_var_name = end_var_name - token_word;
+	var_name = (char *)malloc(sizeof(char) * len_var_name + 1);
+	if (!var_name)
 		return (NULL);
-	start_value = ft_strchr(str, '=');
-	len_value = ft_strlen(start_value + 1);
-	len_name = start_value - str;
-	res[0] = (char *)malloc(sizeof(char) * len_name + 1);
-	if (!res[0])
-	{
-		free(res);
+	ft_strncpy(var_name, token_word, len_var_name);
+	return (var_name);
+}
+
+char *get_var_value(const char *token_word)
+{
+	char	*var_value;
+	char	*start_var_value;
+	size_t	len_var_value;
+
+	var_value = NULL;
+	start_var_value = ft_strchr(token_word, '=') + 1;
+	len_var_value = ft_strlen(start_var_value);
+	var_value = (char *)malloc(sizeof(char) * len_var_value + 1);
+	if (!var_value)
 		return (NULL);
-	}
-	res[1] = (char *)malloc(sizeof(char) * len_value + 1);
-	if (!res[1])
-	{
-		free(res[0]);
-		free(res);
-		return (NULL);
-	}
-	ft_strncpy(res[0], str, len_name);
-	ft_strncpy(res[1], start_value + 1, len_value);
-	return (res);
+	ft_strncpy(var_value, start_var_value, len_var_value);
+	return (var_value);
 }
 
 t_env	*create_envlist(char **env)
 { 
 	int	i;
-	char	**var;
+	char	*var_name;
+	char	*var_value;
 	t_env	*list_env;
 
 	i = 0;
 	list_env = NULL;
 	while (env[i])
 	{
-		var = split_var(env[i]);
-		list_add(&list_env, list_new(var[0], var[1]));
-		free(var);
+		var_name = get_var_name(env[i]);
+		if (!var_name)
+			return (list_env);
+		var_value = get_var_value(env[i]);
+		if (!var_value)
+		{
+			free(var_name);
+			return (list_env);
+		}
+		list_add(&list_env, list_new(var_name, var_value));
 		i++;
 	}
 	return (list_env);
