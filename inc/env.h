@@ -13,7 +13,6 @@
 #ifndef ENV_H
 # define ENV_H
 
-# include <stdlib.h>
 # include "libft.h"
 
 typedef struct s_env
@@ -29,6 +28,5 @@ void	list_add(t_env **lst, t_env *new);
 t_env	*list_search(t_env *lst, char *key);
 void	list_delete_one(t_env *lst, char *key);
 void	list_delete(t_env **lst);
-char	**ft_first_split(char const *s, char c);
 
 #endif

@@ -93,7 +93,10 @@ char	*slash_handle(t_lexer *lex) // ` " $
 	lex->str_pos++;
 	if (lex->in_qoutes)
 	{
-		if (*lex->str_pos == '`' || *lex->str_pos == '\"' || *lex->str_pos == '$' || *lex->str_pos == '\\')
+		if (*lex->str_pos == '`' ||
+			*lex->str_pos == '\"' ||
+			*lex->str_pos == '$' ||
+			*lex->str_pos == '\\')
 		{
 			new_word = get_word(lex->str_pos, 1);
 			lex->str_pos++;
@@ -118,7 +121,7 @@ char	*variable_handle(t_lexer *lex)
 {
 	int		i;
 	char	*new_word;
-	t_item	*var;
+	t_env	*var;
 
 	new_word = NULL;
 	var = NULL;
@@ -130,7 +133,7 @@ char	*variable_handle(t_lexer *lex)
 		!is_catchar(lex->str_pos[i]))
 		i++;
 	new_word = get_word(lex->str_pos, i);
-	var = search_item(lex->env, new_word);
+	var = list_search(lex->env, new_word);
 	lex->str_pos += i;
 	free(new_word);
 	if (!var)

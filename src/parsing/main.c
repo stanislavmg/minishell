@@ -27,6 +27,10 @@ const char *get_type(int type)
 		return ("OUTPUT_ADD");
 	else if (OUTPUT_TRUNC == type)
 		return ("OUTPUT_TRUNC");
+	else if (OPEN_BRACKET == type)
+		return ("OPEN_BRACKET");
+	else if (CLOSED_BRACKET == type)
+		return ("CLOSED_BRACKET");
 	return (NULL);
 }
 
@@ -35,26 +39,11 @@ int	main(int ac, char **av, char **env)
 	t_lexer 	*lex;
 	t_word_list *list;
 	char *s = ft_strdup("minishell$> ");
-	t_table 	*table;
 	char 		**t;
 	int 		i;
 
-	table = create_table(CAPACITY);
-	if (!table)
-		return (1);
 	i = 1;
-	while (env[i])
-	{
-		t = ft_split(env[i], '=');
-		add_item(table, t[0], t[1]);
-		//printf("Key %s\nValue %s\nhas been added\n\n", t[0], t[1]);
-		if (t[0])
-			free(t[0]);
-		if (t[1])
-			free(t[1]);
-		free(t);
-		i++;
-	}
+	
 	char *res;
 	while (1)
 	{

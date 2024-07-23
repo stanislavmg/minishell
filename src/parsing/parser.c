@@ -17,59 +17,31 @@ int	check_syntax(t_lexer *lex)
 	return (0);
 }
 
-char **split_var(char *str)
-{
-	char	**res;
-	char	*start_value;
-	int		len_value;
-	int		len_name;
-
-	res = (char **)malloc(sizeof(char *) * 3);
-	if (!res)
-		return (NULL);
-	start_value = ft_strchr(str, '=');
-	len_value = ft_strlen(start_value + 1);
-	len_name = start_value - str;
-	res[0] = (char *)malloc(sizeof(char) * len_name + 1);
-	if (!res[0])
-	{
-		free(res);
-		return (NULL);
-	}
-	res[1] = (char *)malloc(sizeof(char) * len_value + 1);
-	if (!res[1])
-	{
-		free(res[0]);
-		free(res);
-		return (NULL);
-	}
-	ft_strncpy(res[0], str, len_name);
-	ft_strncpy(res[1], start_value + 1, len_value);
-	res[2] = NULL;
-	return (res);
-}
-
-int	insert_variable(t_lexer *lex, t_word_list *token)
+int	insert_variable(t_word_list *token, t_env *list_env)
 {
 	char **new_var;
+	t_env	*search_var;
 
 	new_var = split_var(token->word);
 	if (!new_var)
-	{
-		lex->err = ERR_MEM;
 		return (1);
+	search_var = list_search(list_env, new_var[0]);
+	if (!search_var)
+		list_add(&list_env, list_new(new_var[0], new_var[1]));
+	else
+	{
+		free(search_var->value);
+		search_var->value = new_var[0];
+		new_var[0] = NULL;
+		free(new_var[1]);
+		free(new_var);
 	}
-	//add_var(); // TO DO function which insert var in one-link list
 	return (0);
 }
 
 void	parse_variable(t_lexer *lex)
 {
-	// if (new_cmd && ft_strchr(cur_token->word, '='))
-	// {
-	// 	insert_variable(lex, cur_token);
-	// 	lex->token_pos = lex->token_pos->next;
-	// }
+
 }
 
 int	count_args(t_word_list *tokens)
@@ -96,6 +68,11 @@ t_cmd	*parse_tokens(t_lexer *lex)
 		return (NULL);
 	if (is_cmd_delimeter(lex->token_pos->type))
 		lex->token_pos = lex->token_pos->next;
+	while (ft_strchr(lex->token_pos->word, '='))
+	{
+		insert_variable(lex->token_pos, lse->env);
+		lex->token_pos = lex->token_pos->next;
+	}
 	new_cmd = (t_cmd *)init_cmd(lex);
 	if (!new_cmd)
 		return (NULL);
