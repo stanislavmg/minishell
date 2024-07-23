@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "env.h"
 
 t_env	*list_new(char *key, char *value)
 {
