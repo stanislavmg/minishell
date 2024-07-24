@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 04:49:46 by amikhush          #+#    #+#             */
-/*   Updated: 2024/07/23 10:58:36 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/07/24 08:15:21 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,28 +49,37 @@ void	list_add(t_env **lst, t_env *new)
 	ps -> next = new;
 }
 
-void	list_delete_one(t_env *lst, char *key)
+static void	free_node(t_env *node)
+{
+	free(node -> key);
+	free(node -> value);
+	free(node);
+}
+
+void	list_delete_one(t_env **lst, char *key)
 {
 	t_env	*temp;
 	t_env	*prev;
 
-	if (!lst || !key)
+	if (!lst || !*lst || !key)
 		return ;
-	while (lst)
+	temp = *lst;
+	prev = NULL;
+	if (ft_strcmp(temp -> key, key) == 0)
 	{
-		if (ft_strcmp(lst -> key, key) == 0)
-		{
-			temp = lst;
-			prev = lst -> next;
-			free(lst -> key);
-			free(lst -> value);
-			free(lst);
-			return ;
-		}
-		prev = lst;
-		lst = lst -> next;
+		*lst = temp -> next;
+		free_node(temp);
+		return ;
 	}
-	free(lst);
+	while (temp != NULL && ft_strcmp(temp -> key, key) != 0)
+	{
+		prev = temp;
+		temp = temp -> next;
+	}
+	if (temp == NULL)
+		return ;
+	prev -> next = temp -> next;
+	free_node(temp);
 }
 
 void	list_delete(t_env **lst)
