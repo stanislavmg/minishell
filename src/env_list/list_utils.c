@@ -58,7 +58,7 @@ void	list_delete_one(t_env *lst, char *key)
 		return ;
 	while (lst)
 	{
-		if (ft_strcmp(lst -> key, key) == 0)
+		if (strcmp(lst -> key, key) == 0)
 		{
 			temp = lst;
 			prev = lst -> next;
@@ -70,7 +70,6 @@ void	list_delete_one(t_env *lst, char *key)
 		prev = lst;
 		lst = lst -> next;
 	}
-	free(lst);
 }
 
 void	list_delete(t_env **lst)
@@ -94,7 +93,7 @@ t_env	*list_search(t_env *lst, char *key)
 {
 	while (lst)
 	{
-		if (ft_strcmp(lst -> key, key) == 0)
+		if (strcmp(lst -> key, key) == 0)
 			return (lst);
 		lst = lst -> next;
 	}

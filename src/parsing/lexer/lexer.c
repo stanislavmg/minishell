@@ -2,9 +2,9 @@
 
 char	*scan_token(t_lexer *lex)
 {
-	char	*res;
+	char	*new_word;
 
-	res = NULL;
+	new_word = NULL;
 	if (lex->err)
 		return (NULL);
 	if (!lex || !*lex->str_pos)
@@ -15,19 +15,32 @@ char	*scan_token(t_lexer *lex)
 		return (NULL);
 	if (is_metachar(*lex->str_pos))
 		metachar_handle(lex);
+	else if (is_redirectchar(*lex->str_pos))
+		redirect_handle(lex);
 	else if (!strncmp(lex->str_pos, "\"", 1))
-		res = double_quotes_handle(lex);
+		new_word = double_quotes_handle(lex);
 	else if (!strncmp(lex->str_pos, "\'", 1))
-		res = single_quotes_handle(lex);
+		new_word = single_quotes_handle(lex);
 	else if (!strncmp(lex->str_pos, "\\", 1))
-		res = slash_handle(lex);
+		new_word = slash_handle(lex);
 	else if (!strncmp(lex->str_pos, "$", 1))
-		res = variable_handle(lex);
-	else if (!is_metachar(*lex->str_pos))
-		res = string_handle(lex);
+		new_word = variable_handle(lex);
 	else
-		return (NULL);
-	return (res);
+		new_word = string_handle(lex);
+	return (new_word);
+}
+
+char	*redirect_handle(t_lexer *lex)
+{
+	if (!strncmp(lex->str_pos, "<<", 2))
+		default_handle(lex, "<<", HERE_DOC);
+	else if (!strncmp(lex->str_pos, "<", 1))
+		default_handle(lex, "<", INPUT_TRUNC);
+	else if (!strncmp(lex->str_pos, ">>", 2))
+		default_handle(lex, ">>", OUTPUT_ADD);
+	else if (!strncmp(lex->str_pos, ">", 1))
+		default_handle(lex, ">", OUTPUT_TRUNC);
+	return (NULL);
 }
 
 char	*metachar_handle(t_lexer *lex)
@@ -40,14 +53,6 @@ char	*metachar_handle(t_lexer *lex)
 		default_handle(lex, "&&", AND);
 	else if (!strncmp(lex->str_pos, ";", 1))
 		default_handle(lex, ";", SEMICOLON);
-	else if (!strncmp(lex->str_pos, "<<", 2))
-		default_handle(lex, "<<", HERE_DOC);
-	else if (!strncmp(lex->str_pos, "<", 1))
-		default_handle(lex, "<", INPUT_TRUNC);
-	else if (!strncmp(lex->str_pos, ">>", 2))
-		default_handle(lex, ">>", OUTPUT_ADD);
-	else if (!strncmp(lex->str_pos, ">", 1))
-		default_handle(lex, ">", OUTPUT_TRUNC);
 	else if (!strncmp(lex->str_pos, "(", 1))
 		default_handle(lex, "(", OPEN_BRACKET);
 	else if (!strncmp(lex->str_pos, ")", 1))
@@ -62,7 +67,7 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 	int		len;
 	char	*new_word;
 
-	if (!lex || !value || !type)
+	if (!lex || !value)
 		return (1);
 	len = ft_strlen(value);	
 	new_word = get_word(value, len);
@@ -78,7 +83,11 @@ char	*string_handle(t_lexer *lex)
 
 	i = 0;
 	new_word = NULL;
-	while (lex->str_pos[i] && !is_metachar(lex->str_pos[i]) && !isspace(lex->str_pos[i]))
+	if (!lex || !lex->str_pos)
+		return (NULL);
+	while (lex->str_pos[i] &&
+		!is_metachar(lex->str_pos[i]) &&
+		!isspace(lex->str_pos[i]))
 	{
 		if (is_catchar(lex->str_pos[i]))
 		{
@@ -90,7 +99,7 @@ char	*string_handle(t_lexer *lex)
 	if (new_word)
 		new_word = merge_str(new_word, get_word(lex->str_pos, i));
 	else
-		new_word = get_word(lex->str_pos, i + 1);
+		new_word = get_word(lex->str_pos, i);
 	lex->str_pos += i;
 	return (new_word);
 }
@@ -218,9 +227,9 @@ char	*variable_handle(t_lexer *lex)
 	char	*new_word;
 	t_env	*var;
 
-	new_word = NULL;
-	var = NULL;
 	i = 0;
+	var = NULL;
+	new_word = NULL;
 	lex->str_pos++;
 	while (lex->str_pos[i] &&
 		!is_metachar(lex->str_pos[i]) &&
@@ -241,5 +250,48 @@ char	*variable_handle(t_lexer *lex)
 	return (new_word);
 }
 
+int var_assignment(t_lexer *lex)
+{
+	char	*var_name;
+	char	*var_value;
 
+	var_name = get_var_name(lex->str_pos);
+	if (!var_name)
+		return (1);
+	lex->str_pos += ft_strlen(var_name);
+	if ('(' == *lex->str_pos)
+	{
+		lex->str_pos++;
+		while (isspace(*lex->str_pos))
+			lex->str_pos++;
+		var_value = scan_token(lex);
+		if(')' == *lex->str_pos)
+			lex->str_pos++;
+	}
+	else if (isspace(*lex->str_pos))
+		var_value = ft_strdup("");
+	else
+		var_value = scan_token(lex);
+	lex->str_pos += ft_strlen(var_value);
+	return (0);
+}
 
+int	insert_variable(t_env *list_env, t_env *new_var)
+{
+	t_env	*search_var;
+
+	if (!new_var)
+		return (1);
+	search_var = list_search(list_env, new_var->key);
+	if (!search_var)
+		list_add(&list_env, new_var);
+	else
+	{
+		free(search_var->value);
+		search_var->value = new_var->value;
+		new_var->value = NULL;
+		free(new_var->key);
+		free(new_var);
+	}
+	return (0);
+}

@@ -1,6 +1,6 @@
 #include "parser.h"
 
-t_lexer	*new_lexer(char *str)
+t_lexer	*new_lexer(char *str, t_env *env_list)
 {
 	t_lexer *lex;
 
@@ -10,6 +10,8 @@ t_lexer	*new_lexer(char *str)
 	if (!lex)
 		return (NULL);
 	lex->str_pos = str;
+	lex->input_str = str;
+	lex->env = env_list;
 	return (lex);
 }
 
@@ -73,20 +75,20 @@ void	free_lexer(t_lexer *lex)
 
 int	init_word_list(t_lexer *lex)
 {
-	char	*tmp_str;
+	char	*new_word;
 
-	tmp_str = NULL;
+	new_word = NULL;
 	while(*lex->str_pos)
 	{
-		tmp_str = scan_token(lex);
+		new_word = scan_token(lex);
 		if (lex->err)
 		{
 			error_handle(lex);
 			free_lexer(lex);
 			return (1);
 		}
-		else if (tmp_str && *tmp_str)
-			push_token(&lex->tokens, new_token(tmp_str, STRING));
+		else if (new_word && *new_word) //FIXME leak when return ""
+			push_token(&lex->tokens, new_token(new_word, STRING));
 	}
 	return (0);
 }

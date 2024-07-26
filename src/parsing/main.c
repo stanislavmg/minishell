@@ -1,57 +1,23 @@
 #include "parser.h"
 #include "minishell.h"
 
-const char *get_type(int type)
-{
-	if (UNDEFINED == type)
-		return ("UNDEFINED");
-	else if (STRING == type)
-		return ("STRING");
-	else if (COMMAND == type)
-		return ("COMMAND");
-	else if(OR == type)
-		return ("OR");
-	else if (SEMICOLON == type)
-		return ("SEMICOLON");
-	else if (PIPE == type)
-		return ("PIPE");
-	else if (AND == type)
-		return ("AND");
-	else if (VARIABLE == type)
-		return ("VARIABLE");
-	else if (HERE_DOC == type)
-		return ("HERE_DOC");
-	else if (INPUT_TRUNC == type)
-		return ("INPUT_TRUNC");
-	else if (OUTPUT_ADD == type)
-		return ("OUTPUT_ADD");
-	else if (OUTPUT_TRUNC == type)
-		return ("OUTPUT_TRUNC");
-	else if (OPEN_BRACKET == type)
-		return ("OPEN_BRACKET");
-	else if (CLOSED_BRACKET == type)
-		return ("CLOSED_BRACKET");
-	return (NULL);
-}
-
 int	main(int ac, char **av, char **env)
 {
 	t_lexer 	*lex;
+	t_env		*env_lst;
 	t_word_list *list;
-	char *s = ft_strdup("minishell$> ");
-	char 		**t;
-	int 		i;
+	t_parser	*pars_info;
+	char 		*res;
+	int 		i = 1;
+	char 		*s = "minishell$> ";
 
-	i = 1;
-	
-	char *res;
+	env_lst = create_envlist(env);
 	while (1)
 	{
 		res = readline(s);
 		if (!strcmp(res, "exit"))
 			break ;
-		lex = new_lexer(res);
-		lex->env = table;
+		lex = new_lexer(res, env);
 		if (init_word_list(lex))
 			continue;
 		list = lex->tokens;
@@ -62,7 +28,7 @@ int	main(int ac, char **av, char **env)
 			i++;
 			list = list->next;
 		}
-		lex->token_pos = lex->tokens;
+		pars_info = init_parser(lex);
 		build_AST(lex);
 		free_lexer(lex);
 	}

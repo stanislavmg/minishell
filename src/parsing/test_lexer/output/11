@@ -1,0 +1,4 @@
+test case 11: "str \\ \$USER \""
+#0 token: str \ $USER "
+type: STRING
+

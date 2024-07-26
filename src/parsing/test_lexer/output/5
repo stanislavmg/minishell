@@ -1,0 +1,4 @@
+test case 5: 'string'''"   "''string
+#0 token: string   string
+type: STRING
+

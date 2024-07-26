@@ -49,7 +49,12 @@ char *get_word(const char *s, size_t n)
 int	is_metachar(char ch)
 {
 	return ('|' == ch || '&' == ch || ';' == ch ||
-			'<' == ch || '>' == ch); // += ( and )
+			'<' == ch || '>' == ch || '(' == ch || ')' == ch);
+}
+
+int	is_redirectchar(char ch)
+{
+	return ('<' == ch || '>' == ch);
 }
 
 int	is_catchar(char ch)

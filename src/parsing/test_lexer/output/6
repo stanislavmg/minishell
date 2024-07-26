@@ -1,0 +1,4 @@
+test case 6: "string"''""\c
+#0 token: stringc
+type: STRING
+

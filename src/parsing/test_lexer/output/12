@@ -1,0 +1,4 @@
+test case 12: hello$USE" world"
+#0 token: hello world
+type: STRING
+

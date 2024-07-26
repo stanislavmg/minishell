@@ -1,17 +1,5 @@
 #include "pipex.h"
 
-void	free_arr(char **arr)
-{
-	int	i;
-
-	i = -1;
-	if (!arr)
-		return ;
-	while (arr[++i])
-		free(arr[i]);
-	free(arr);
-}
-
 int	ft_close(int *fd)
 {
 	if (*fd == -1)

@@ -1,17 +1,18 @@
-NAME	=	lexer
+NAME    = parser
+LIB     = libft.a
+INCLUDE = ../../inc
 
-LIB		=	libft.a
+SRC     = parser.c main.c init_cmd.c \
+		  $(addprefix lexer/, lexer.c methods.c string.c utils.c)\
+          $(addprefix ../env_list/, list_init.c list_utils.c)
 
-INCLUDE =	../../inc
+LEX_SRC = $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c utils.c) \
+          $(addprefix ../env_list/, list_init.c list_utils.c)
 
-SRC		=	lexer.c methods.c string.c parser.c main.c utils.c init_cmd.c\
-			$(addprefix ../hashtable/, hashtable.c methods.c)
+LEX_OBJ = $(LEX_SRC:%.c=%.o)
+OBJ     = $(SRC:%.c=%.o)
 
-OBJ		=	$(SRC:%.c=%.o)
-
-CFLAGS = -Wall -g3 -I$(INCLUDE)
-
-CC=gcc
+CFLAGS  = -Wall -g3 -fsanitize=address -I$(INCLUDE)
 
 all: $(NAME)
 
@@ -20,14 +21,19 @@ $(NAME): $(OBJ)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
 lib:
-	make -C ../../libft && mv ../../libft/libft.a ./
+	 make -C ../../libft all bonus clean && mv ../../libft/$(LIB) ./
+
+lexer: $(LEX_OBJ)
+	$(CC) $(CFLAGS) -o lex $(LEX_OBJ) $(LIB)
+
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(OBJ) $(LEX_OBJ)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) lex
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re lib lexer

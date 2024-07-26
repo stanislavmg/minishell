@@ -1,47 +1,4 @@
 #include "parser.h"
-
-t_cmd	*create_cmd(void)
-{
-	t_exec_cmd	*new_cmd;
-
-	new_cmd = (t_exec_cmd *)ft_calloc(1, sizeof(t_exec_cmd));
-	if (!new_cmd)
-		return (NULL);
-	new_cmd->type = COMMAND;
-	return ((t_cmd *)new_cmd);
-}
-
-int	add_field_files(t_word_list *token, t_exec_cmd *cmd)
-{
-	while (token && !is_cmd_delimeter(token->type) && !is_redirect(token->type))
-		token = token->next;
-	if (!token || !is_redirect(token->type))
-		return (0);
-	if (INPUT_TRUNC == token->type)
-	{
-		cmd->in_fmode = O_RDONLY;
-		cmd->in_fname = token->next->word;
-	}
-	else if (OUTPUT_TRUNC == token->type)
-	{
-		cmd->out_fmode = O_TRUNC | O_CREAT | O_RDWR;
-		cmd->out_fname = token->next->word;
-	}
-	else if (OUTPUT_ADD == token->type)
-	{
-		cmd->out_fmode = O_APPEND | O_CREAT | O_RDWR;
-		cmd->out_fname = token->next->word;
-	}
-	else if (HERE_DOC == token->type)
-	{
-		cmd->in_fmode = HERE_DOC;
-		cmd->in_fname = token->next->word;
-	}
-	else
-	token->next->word = NULL;
-	return (0);
-}
-
 char	**get_path(char *path_env)
 {
 	char	**path;
@@ -93,4 +50,57 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	}
 	free(cmd_path);
 	return (NULL);
+}
+
+t_cmd	*new_exec_cmd(void)
+{
+	t_exec_cmd	*new_cmd;
+
+	new_cmd = (t_exec_cmd *)ft_calloc(1, sizeof(t_exec_cmd));
+	if (!new_cmd)
+		return (NULL);
+	new_cmd->type = COMMAND;
+	return ((t_cmd *)new_cmd);
+}
+
+int	add_field_fnames(e_token redirect_type, char *fname, t_exec_cmd *cmd)
+{
+	if (!fname || !cmd)
+		return (1);
+	if (INPUT_TRUNC == redirect_type || HERE_DOC == redirect_type)
+		cmd->in_fname = fname;
+	else if (OUTPUT_TRUNC == redirect_type || OUTPUT_ADD == redirect_type)
+		cmd->out_fname = fname;
+	return (0);
+}
+
+int	add_field_open_mode(e_token redirect_type, t_exec_cmd *cmd)
+{
+	if (INPUT_TRUNC == redirect_type)
+		cmd->in_fmode = O_RDONLY;
+	else if (OUTPUT_TRUNC == redirect_type)
+		cmd->out_fmode = O_TRUNC | O_CREAT | O_RDWR;
+	else if (OUTPUT_ADD == redirect_type)
+		cmd->out_fmode  = O_APPEND | O_CREAT | O_RDWR;
+	else if (HERE_DOC == redirect_type)
+		cmd->in_fmode = HERE_DOC;
+	else
+		return (1);
+	return (0);
+}
+
+t_exec_cmd	*init_exec_cmd(t_parser *parser)
+{
+	int			argc;
+	t_exec_cmd	*new_cmd;
+
+	if (!parser->token)
+		return (NULL);
+	new_cmd = (t_exec_cmd *)create_cmd();
+	if (!new_cmd)
+		return (NULL);
+	argc = count_args(parser->token);
+	new_cmd->argv = add_field_argv(parser->token, argc);
+	add_field_files(parser->token, new_cmd);
+	return (new_cmd);
 }

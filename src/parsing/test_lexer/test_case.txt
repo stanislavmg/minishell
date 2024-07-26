@@ -9,4 +9,5 @@ $USER\c
 Hello "$USER in $PWD"
 \u\s\e\r\
 "str \\ \$USER \""
-hello world && wc &
+hello$USE" world"
+test=USER=109; $test

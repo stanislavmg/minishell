@@ -1,53 +1,21 @@
-#include "../../inc/parser.h"
+#include "parser.h"
 
-int	check_syntax(t_lexer *lex)
+void	free_arr(char **arr)
 {
-	t_word_list *tokens;
+	int	i;
 
-	tokens = lex->tokens;
-	while (tokens)
-	{
-		if (is_cmd_delimeter(tokens->type) && is_cmd_delimeter(tokens->next->type))
-		{
-			lex->err = ERR_SYNTAX;
-			return (1);
-		}
-		tokens = tokens->next;
-	}
-	return (0);
-}
-
-int	insert_variable(t_word_list *token, t_env *list_env)
-{
-	char **new_var;
-	t_env	*search_var;
-
-	new_var = split_var(token->word);
-	if (!new_var)
-		return (1);
-	search_var = list_search(list_env, new_var[0]);
-	if (!search_var)
-		list_add(&list_env, list_new(new_var[0], new_var[1]));
-	else
-	{
-		free(search_var->value);
-		search_var->value = new_var[0];
-		new_var[0] = NULL;
-		free(new_var[1]);
-		free(new_var);
-	}
-	return (0);
-}
-
-void	parse_variable(t_lexer *lex)
-{
-
+	i = -1;
+	if (!arr)
+		return ;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
 }
 
 int	count_args(t_word_list *tokens)
 {
 	int	argc;
-	
+
 	argc = 0;
 	while (tokens && !is_cmd_delimeter(tokens->type))
 	{
@@ -60,65 +28,121 @@ int	count_args(t_word_list *tokens)
 	return (argc);
 }
 
-t_cmd	*parse_tokens(t_lexer *lex)
+t_var	*new_tvar(const t_word_list *token)
 {
-	t_cmd *new_cmd;
+	t_var	*new_var;
 
-	if (!lex->token_pos)
+	new_var = (t_var *)malloc(sizeof(t_var));
+	if (!new_var)
 		return (NULL);
-	if (is_cmd_delimeter(lex->token_pos->type))
-		lex->token_pos = lex->token_pos->next;
-	while (ft_strchr(lex->token_pos->word, '='))
-	{
-		insert_variable(lex->token_pos, lse->env);
-		lex->token_pos = lex->token_pos->next;
-	}
-	new_cmd = (t_cmd *)init_cmd(lex);
-	if (!new_cmd)
-		return (NULL);
-	while (lex->token_pos && !is_cmd_delimeter(lex->token_pos->type))
-		lex->token_pos = lex->token_pos->next;
-	return (new_cmd);
+	new_var->key = get_var_name(token->word);
+	new_var->value = get_var_value(token->word);
+	return (new_var);
 }
 
-t_exec_cmd	*init_cmd(t_lexer *lex)
+t_cmd	*assignment_handle(t_parser *parser, t_cmd *root)
 {
-	int			argc;
+	t_cmd		*new_tree;
+	t_word_list *cur_token;
+
+	if (!parser || !parser->token)
+		return (NULL);
+	new_tree = NULL;
+	cur_token = parser->token;
+	new_tree = new_tvar(cur_token);
+	cur_token = cur_token->next;
+	if (root)
+		new_tree = add_tnode(root, new_tree, ASSIGNMENT);
+	while (ft_strchr(cur_token->word, '='))
+	{
+		new_tree = add_tnode(new_tree, new_tvar(cur_token), ASSIGNMENT);
+		cur_token = cur_token->next;
+	}
+	parser->token = cur_token;
+	return (new_tree);
+}
+
+t_cmd	*parse_token(t_parser *parser)
+{
 	t_exec_cmd	*new_cmd;
+	t_ast		*root;
+	t_list		*args;
+	t_word_list *cur_token;
 
-	if (!lex->token_pos)
+	if (!parser || !parser->token)
 		return (NULL);
-	new_cmd = (t_exec_cmd *)create_cmd();
+	root = NULL;
+	cur_token = parser->token;
+	new_cmd = init_cmd(parser);
 	if (!new_cmd)
 	{
-		lex->err = ERR_MEM;
+		parser->err = ERR_MEM;
 		return (NULL);
 	}
-	argc = count_args(lex->token_pos);
-	new_cmd->argv = add_field_argv(lex->token_pos, argc);
-	add_field_files(lex->token_pos, new_cmd);
-	new_cmd->path = 
+	while (cur_token && !is_cmd_delimeter(cur_token->type))
+	{
+		if (ft_strchr(cur_token->word, '=') && !parser->cmd_start)
+			root = assignment_handle(parser, root);
+		else if (is_redirect(cur_token->type))
+		{
+			if (cur_token->type == HERE_DOC)
+				here_doc_start(); // TODO
+			add_field_fnames(cur_token->type, cur_token->next->word, new_cmd);
+			add_field_open_mode(cur_token->type, new_cmd);
+			cur_token = cur_token->next;
+			cur_token->word = NULL;
+		}
+		else if (cur_token->type == STRING && !parser->cmd_start)
+		{
+			parser->cmd_start = 1;
+			ft_lstadd_back(&args, ft_lstnew(cur_token->word));
+			cur_token->word = NULL;
+		}
+		cur_token = cur_token->next;
+	}
+	if (!parser->cmd_start)
+	{
+		parser->cmd_start = 0;
+		add_field_argv(args, new_cmd);
+		ft_lstclear(&args, free);
+	}
+	else
+		free_cmd(new_cmd);
 	return (new_cmd);
 }
 
-char	**add_field_argv(t_word_list *tokens, int argc)
+int	free_cmd(t_exec_cmd *cmd)
+{
+	free_arr(cmd->argv);
+	free(cmd->argv);
+	free(cmd->in_fname);
+	free(cmd->out_fname);
+	free(cmd);
+	return (0);
+}
+
+int add_field_argv(t_list *args, t_exec_cmd *cmd)
 {
 	char	**argv;
+	int		argc;
 	int		i;
 
-	i = 0;
-	argv = (char **)malloc(sizeof(char *) * (argc + 1));
+	if (!args || !cmd)
+		return (1);
+	i = -1;
+	argc = ft_lstsize(args) + 1;
+	argv = (char **)malloc(sizeof(char *) * argc);
 	if (!argv)
 		return (NULL);
-	while (tokens && !is_cmd_delimeter(tokens->type))
+	while (++i < argc)
 	{
-		argv[i] = tokens->word;
-		tokens->word = NULL;
-		tokens = tokens->next;
-		i++;
+		argv[i] = (char *)args->data;
+		args->data = NULL;
+		args = args->next;
 	}
 	argv[i] = NULL;
-	return (argv);
+	cmd->argv = argv;
+	return (0);
 }
 
 t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
@@ -134,45 +158,62 @@ t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
 	return ((t_cmd *)root);
 }
 
-t_cmd	*build_tree(t_lexer *lex)
+t_cmd	*build_tree(t_parser *parser)
 {
 	t_cmd	*root;
 	e_token	type;
 	
-	if (!lex->token_pos)
+	if (!parser->token)
 		return (NULL);
-	root = parse_tokens(lex);
-	while (lex->token_pos)
+	if (parser->token->type == OPEN_BRACKET)
+		parser->brackets_count++;
+	root = parse_token(parser);
+	while (parser->token && parser->token->type != CLOSED_BRACKET)
 	{
-		type = lex->token_pos->type;
-		if (type == AND || type == OR)
-			root = add_tnode(root, build_subtree(lex, parse_tokens(lex)), type);
+		type = parser->token->type;
+		if (type == AND || type == OR || type == SEMICOLON)
+		{
+			parser->token = parser->token->next;
+			root = add_tnode(root, build_subtree(parser), type);
+		}
 		else
-			root = build_subtree(lex, root);
+			root = add_tnode(root, parse_token(parser), type);
 	}
 	return (root);
 }
 
-t_cmd *build_subtree(t_lexer *lex, t_cmd *root)
+t_cmd	*build_subtree(t_parser *parser)
 {
 	e_token type;
+	t_cmd	*root;
 	
-	while (lex->token_pos && lex->token_pos->type != AND && lex->token_pos->type != OR)
+	root = NULL;
+	if (parser->token->type == CLOSED_BRACKET)
+		return (root);
+	if (parser->token->type == OPEN_BRACKET)
 	{
-		type = lex->token_pos->type;
-		root = add_tnode(root, parse_tokens(lex), type);
+		parser->token = parser->token->next;
+		root = add_tnode()
+	}
+	root = parse_token(parser);
+	while (parser->token &&
+			parser->token->type != AND &&
+			parser->token->type != OR &&
+			parser->token->type != SEMICOLON)
+	{
+		type = parser->token->type;
+		root = add_tnode(root, parse_tokens(parser), type);
 	}
 	return (root);
 }
 
-t_cmd *build_AST(t_lexer *lex)
+t_cmd *build_AST(t_parser *parser)
 {
 	t_cmd		*root;
 
-	root = NULL;
-	if (check_syntax(lex))
+	root = build_tree(parser);
+	if (!root)
 		return (NULL);
-	root = build_tree(lex);
 	print_tree((t_ast *)root);
 	return (root);
 }

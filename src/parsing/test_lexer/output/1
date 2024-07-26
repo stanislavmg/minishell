@@ -1,0 +1,13 @@
+test case 1: "hello" 'world' $USER \t
+#0 token: hello
+type: STRING
+
+#1 token: world
+type: STRING
+
+#2 token: nalivkin
+type: STRING
+
+#3 token: t
+type: STRING
+

@@ -1,4 +1,5 @@
 # include "env.h"
+
 char *get_var_name(const char *token_word)
 {
 	char	*var_name;
@@ -11,7 +12,7 @@ char *get_var_name(const char *token_word)
 	var_name = (char *)malloc(sizeof(char) * len_var_name + 1);
 	if (!var_name)
 		return (NULL);
-	ft_strncpy(var_name, token_word, len_var_name);
+	ft_strlcpy(var_name, token_word, len_var_name + 1);
 	return (var_name);
 }
 
@@ -27,7 +28,7 @@ char *get_var_value(const char *token_word)
 	var_value = (char *)malloc(sizeof(char) * len_var_value + 1);
 	if (!var_value)
 		return (NULL);
-	ft_strncpy(var_value, start_var_value, len_var_value);
+	ft_strlcpy(var_value, start_var_value, len_var_value + 1);
 	return (var_value);
 }
 

@@ -1,11 +1,26 @@
 #!/bin/bash
-
-INPUT=test_case.txt
+INPUT=test_case.txt 
 OUTPUT=output
 NUM=1
 
+if [ "$1" == "-re" ]; then
+	rm lex &> /dev/null
+	make -C ../ lexer clean
+	if [ -f ../lex ]; then
+		mv ../lex ./
+	else
+		echo "Make error"
+		exit
+	fi
+fi
+
+if [ ! -f "lex" ]; then
+	echo "lexer not found. Use -re flag for make lexer"
+	exit
+fi
+
 while IFS= read -r line; do
     echo "test case ${NUM}: $line" > ${OUTPUT}/${NUM}
-	./lexer "${line}" >> ${OUTPUT}/${NUM}
+	./lex "${line}" >> ${OUTPUT}/${NUM}
 	(( NUM++ ))
 done < "$INPUT"
