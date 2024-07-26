@@ -1,7 +1,0 @@
-test case 9: Hello "$USER in $PWD"
-#0 token: Hello
-type: STRING
-
-#1 token: nalivkin in /Users/nalivkin/Desktop/minishell/src/parsing/test_lexer
-type: STRING
-
