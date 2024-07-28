@@ -1,16 +1,16 @@
 #include "parser.h"
 
-t_lexer	*new_lexer(char *str, t_env *env_list)
+t_lexer	*new_lexer(char *input, t_env *env_list)
 {
 	t_lexer *lex;
 
-	if (!str)
+	if (!input)
 		return (NULL);
 	lex = (t_lexer *)ft_calloc(1, sizeof(t_lexer));
 	if (!lex)
 		return (NULL);
-	lex->str_pos = str;
-	lex->input_str = str;
+	lex->str_pos = input;
+	lex->input_str = input;
 	lex->env = env_list;
 	return (lex);
 }

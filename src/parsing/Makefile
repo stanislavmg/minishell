@@ -2,7 +2,7 @@ NAME    = parser
 LIB     = libft.a
 INCLUDE = ../../inc
 
-SRC     = parser.c main.c init_cmd.c \
+SRC     = parser.c main.c init_cmd.c syntax_check.c print_tree.c destruction.c\
 		  $(addprefix lexer/, lexer.c methods.c string.c utils.c)\
           $(addprefix ../env_list/, list_init.c list_utils.c)
 

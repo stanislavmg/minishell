@@ -14,13 +14,14 @@
 # define ENV_H
 
 # include "libft.h"
+# include <string.h>
 
 typedef struct s_env
 {
 	char			*key;
 	char			*value;
 	struct s_env	*next;
-} t_env;
+} 	t_env;
 
 int		set_env(t_env *env, char *key, char *value);
 t_env	*list_new(char *key, char *value);
@@ -28,5 +29,8 @@ void	list_add(t_env **lst, t_env *new);
 t_env	*list_search(t_env *lst, char *key);
 void	list_delete_one(t_env *lst, char *key);
 void	list_delete(t_env **lst);
+char 	*get_var_name(const char *token_word);
+char 	*get_var_value(const char *token_word);
+t_env	*create_envlist(char **env);
 
 #endif

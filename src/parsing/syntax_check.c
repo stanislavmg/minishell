@@ -1,5 +1,4 @@
 #include "parser.h"
-#define	ERR_SYNTAX "minishell: syntax error near unexpected token `"
 
 t_parser *new_parser(t_lexer *lex)
 {
@@ -12,34 +11,34 @@ t_parser *new_parser(t_lexer *lex)
 	return (pars_info);
 }
 
-int assignment_var(t_lexer *lex)
+int exec_pipe(t_ast *root)
 {
-	t_word_list *token;
-
-	token = lex->token_pos;
-	while (token && !is_cmd_delimeter(token->type))
-	{
-		token = token->next;
-	}
+	if (root->left->type == PIPE)
+		exec_pipe
 }
 
-int	check_syntax(t_lexer *lex)
+int	travers_tree(t_ast *root)
 {
-	t_word_list	*tokens;
-	t_syntax	*token_info;
-
-	tokens = lex->tokens;
-	while (tokens)
+	if (!root)
+		return (0);
+	if (root->type == PIPE)
+		exec_pipe(root); // TODO
+	else if (root->type == ASSIGNMENT)
+		add_var(root); // TODO
+	else if (root->type == OR)
 	{
-		assignment_var();
-		if (is_cmd_delimeter(tokens->type))
-		{
-			printf(ERR_SYNTAX, "%s", tokens->word);
-			lex->err = ERR_SYNTAX;
-			return (1);
-		}
-		tokens = tokens->next;
+		if (!travers_tree(root->left) && get_last_status()) // TODO
+			travers_tree(root->right);
 	}
-	free(token_info);
-	return (0);
+	else if (root->type == AND)
+	{
+		if (!travers_tree(root->left) && !get_last_status()) // TODO
+			travers_tree(root->right);
+	}
+	else
+	{
+		travers_tree(root->left);
+		travers_tree(root->right);
+	}
+
 }

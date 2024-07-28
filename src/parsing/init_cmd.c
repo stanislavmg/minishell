@@ -1,4 +1,5 @@
 #include "parser.h"
+
 char	**get_path(char *path_env)
 {
 	char	**path;
@@ -63,7 +64,7 @@ t_cmd	*new_exec_cmd(void)
 	return ((t_cmd *)new_cmd);
 }
 
-int	add_field_fnames(e_token redirect_type, char *fname, t_exec_cmd *cmd)
+int	add_field_fname(e_token redirect_type, char *fname, t_exec_cmd *cmd)
 {
 	if (!fname || !cmd)
 		return (1);
@@ -87,20 +88,4 @@ int	add_field_open_mode(e_token redirect_type, t_exec_cmd *cmd)
 	else
 		return (1);
 	return (0);
-}
-
-t_exec_cmd	*init_exec_cmd(t_parser *parser)
-{
-	int			argc;
-	t_exec_cmd	*new_cmd;
-
-	if (!parser->token)
-		return (NULL);
-	new_cmd = (t_exec_cmd *)create_cmd();
-	if (!new_cmd)
-		return (NULL);
-	argc = count_args(parser->token);
-	new_cmd->argv = add_field_argv(parser->token, argc);
-	add_field_files(parser->token, new_cmd);
-	return (new_cmd);
 }

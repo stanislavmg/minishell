@@ -6,7 +6,7 @@ int	main(int ac, char **av, char **env)
 	t_lexer 	*lex;
 	t_env		*env_lst;
 	t_word_list *list;
-	t_parser	*pars_info;
+	t_parser	*parser;
 	char 		*res;
 	int 		i = 1;
 	char 		*s = "minishell$> ";
@@ -17,7 +17,7 @@ int	main(int ac, char **av, char **env)
 		res = readline(s);
 		if (!strcmp(res, "exit"))
 			break ;
-		lex = new_lexer(res, env);
+		lex = new_lexer(res, env_lst);
 		if (init_word_list(lex))
 			continue;
 		list = lex->tokens;
@@ -28,8 +28,11 @@ int	main(int ac, char **av, char **env)
 			i++;
 			list = list->next;
 		}
-		pars_info = init_parser(lex);
-		build_AST(lex);
+		parser = new_parser(lex);
+		build_AST(parser);
+		free(res);
+		//free_parser(); // TODO
+		//free_tree(); // TODO
 		free_lexer(lex);
 	}
 	return (0);

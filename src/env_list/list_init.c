@@ -8,6 +8,8 @@ char *get_var_name(const char *token_word)
 
 	var_name = NULL;
 	end_var_name = ft_strchr(token_word, '=');
+	if (!end_var_name)
+		return (NULL);
 	len_var_name = end_var_name - token_word;
 	var_name = (char *)malloc(sizeof(char) * len_var_name + 1);
 	if (!var_name)
