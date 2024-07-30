@@ -6,13 +6,20 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/07/24 08:24:30 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:16:15 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BUILTINS_H
 # define BUILTINS_H
 # include "minishell.h"
+
+# define INVALID_COMMAND 2
+# define CANT_EXECUTE 126
+# define COMMAND_NOT_FOUND 127
+# define WRONG_EXIT 128
+# define CONTROL_C 130
+# define WRONG_CODE 255
 
 typedef struct s_env
 {
