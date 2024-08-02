@@ -12,26 +12,26 @@ void print_env(t_env *t)
 int	main(int ac, char **av, char **env)
 {
 	t_lexer 	*lex;
-	t_word_list *list;
+	t_token 	*list;
 	t_env		*env_list;
 	int 		i;
 
-
+	lex = NULL;
 	env_list = create_envlist(env);
 	lex = new_lexer(av[1], env_list);
-	init_word_list(lex);
-	if (!lex || !lex->token_pos)
+	init_list(lex);
+	if (!lex || !lex->tokens)
 	{
 		printf("No tokens\n");
 		return (1);
 	}
-	list = lex->tokens;
 	i = 0;
-	while (list)
+	while (lex->tokens)
 	{
-		printf("#%d token: %s\ntype: %s\n\n", i, list->word, get_type(list->type));
+		list = lex->tokens->data;
+		lex->tokens = lex->tokens->next;
+		printf("#%d cur_token_pos: %s\ntype: %s\n\n", i, list->word, get_type(list->type));
 		i++;
-		list = list->next;
 	}
 	return (0);
 }

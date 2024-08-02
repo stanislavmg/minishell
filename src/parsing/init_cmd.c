@@ -53,7 +53,7 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	return (NULL);
 }
 
-t_cmd	*new_exec_cmd(void)
+t_exec_cmd	*new_exec_cmd(void)
 {
 	t_exec_cmd	*new_cmd;
 
@@ -61,17 +61,17 @@ t_cmd	*new_exec_cmd(void)
 	if (!new_cmd)
 		return (NULL);
 	new_cmd->type = COMMAND;
-	return ((t_cmd *)new_cmd);
+	return (new_cmd);
 }
 
-int	add_field_fname(e_token redirect_type, char *fname, t_exec_cmd *cmd)
+int	add_field_fname(t_token *token, t_exec_cmd *cmd)
 {
-	if (!fname || !cmd)
+	if (!token || !cmd)
 		return (1);
-	if (INPUT_TRUNC == redirect_type || HERE_DOC == redirect_type)
-		cmd->in_fname = fname;
-	else if (OUTPUT_TRUNC == redirect_type || OUTPUT_ADD == redirect_type)
-		cmd->out_fname = fname;
+	if (INPUT_TRUNC == token->type || HERE_DOC == token->type)
+		cmd->in_fname = token->word;
+	else if (OUTPUT_TRUNC == token->type || OUTPUT_ADD == token->type)
+		cmd->out_fname = token->word;
 	return (0);
 }
 

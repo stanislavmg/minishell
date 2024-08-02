@@ -15,35 +15,16 @@ t_lexer	*new_lexer(char *input, t_env *env_list)
 	return (lex);
 }
 
-t_word_list	*new_token(char *word, e_token type)
+t_token	*new_token(char *word, e_token type)
 {
-	t_word_list *new_word;
+	t_token *new_token;
 
-	new_word = (t_word_list *)ft_calloc(1, sizeof(t_word_list));
-	if (!new_word)
+	new_token = (t_token *)ft_calloc(1, sizeof(t_list));
+	if (!new_token)
 		return (NULL);
-	new_word->type = type;
-	new_word->word = word;
-	return (new_word);
-}
-
-int	push_token(t_word_list **list, t_word_list *new)
-{
-	t_word_list	*t;
-	
-	if (!list)
-		return (1);
-	t = *list;
-	if (!*list)
-		*list = new;
-	else
-	{
-		while (t->next)
-			t = t->next;
-		t->next = new;
-		new->prev = t;
-	}
-	return (0);
+	new_token->type = type;
+	new_token->word = word;
+	return (new_token);
 }
 
 void	error_handle(t_lexer *lex)
@@ -53,27 +34,25 @@ void	error_handle(t_lexer *lex)
 	else if (ERR_QUOTE == lex->err)
 		printf("minishell: Quotes wasn\'t close\n");
 	else if (ERR_TOKEN == lex->err)
-		printf("minishell: syntax error near unexpected token `%c'\n", *lex->str_pos);
+		printf("minishell: syntax error near unexpected cur_token_pos `%c'\n", *lex->str_pos);
 	else
 		printf("minishell: Undefined error. Abort!\n");
 }
 
+void free_token(void *cur_token_pos)
+{
+	free(((t_token *)cur_token_pos)->word);
+	free(cur_token_pos);
+}
+
 void	free_lexer(t_lexer *lex)
 {
-	t_word_list *t;
-
-	t = lex->tokens;
-	while (t)
-	{
-		lex->tokens = t->next;
-		free(t->word);
-		free(t);
-		t = lex->tokens;
-	}
+	ft_lstclear(&lex->tokens, free_token);
+	free(lex->input_str);
 	free(lex);
 }
 
-int	init_word_list(t_lexer *lex)
+int	init_list(t_lexer *lex)
 {
 	char	*new_word;
 
@@ -84,11 +63,22 @@ int	init_word_list(t_lexer *lex)
 		if (lex->err)
 		{
 			error_handle(lex);
-			free_lexer(lex);
+			//free_lexer(lex);
 			return (1);
 		}
 		else if (new_word && *new_word) //FIXME leak when return ""
-			push_token(&lex->tokens, new_token(new_word, STRING));
+			push_token(&lex->tokens, new_word, STRING);
 	}
+	//push_token(&lex->tokens, NULL, END);
 	return (0);
+}
+
+void	push_token(t_list **token_list, char *new_word, e_token type)
+{
+	t_token	*cur_token_pos;
+	t_list	*new_lst_node;
+
+	cur_token_pos = new_token(new_word, type);
+	new_lst_node = ft_lstnew(cur_token_pos);
+	ft_lstadd_back(token_list, new_lst_node);
 }

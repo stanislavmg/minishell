@@ -4,7 +4,8 @@ INCLUDE = ../../inc
 
 SRC     = parser.c main.c init_cmd.c syntax_check.c print_tree.c destruction.c\
 		  $(addprefix lexer/, lexer.c methods.c string.c utils.c)\
-          $(addprefix ../env_list/, list_init.c list_utils.c)
+          $(addprefix ../env_list/, list_init.c list_utils.c)\
+          $(addprefix ../exec/, exec.c exec_utils.c)
 
 LEX_SRC = $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c utils.c) \
           $(addprefix ../env_list/, list_init.c list_utils.c)

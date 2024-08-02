@@ -15,8 +15,6 @@ char	*scan_token(t_lexer *lex)
 		return (NULL);
 	if (is_metachar(*lex->str_pos))
 		metachar_handle(lex);
-	else if (is_redirectchar(*lex->str_pos))
-		redirect_handle(lex);
 	else if (!strncmp(lex->str_pos, "\"", 1))
 		new_word = double_quotes_handle(lex);
 	else if (!strncmp(lex->str_pos, "\'", 1))
@@ -45,7 +43,9 @@ char	*redirect_handle(t_lexer *lex)
 
 char	*metachar_handle(t_lexer *lex)
 {
-	if (!strncmp(lex->str_pos, "||", 2))
+	if (is_redirectchar(*lex->str_pos))
+		redirect_handle(lex);
+	else if (!strncmp(lex->str_pos, "||", 2))
 		default_handle(lex, "||", OR);
 	else if (!strncmp(lex->str_pos, "|", 1))
 		default_handle(lex, "|", PIPE);
@@ -69,10 +69,13 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 
 	if (!lex || !value)
 		return (1);
-	len = ft_strlen(value);	
-	new_word = get_word(value, len);
-	push_token(&lex->tokens, new_token(new_word, type));
+	len = ft_strlen(value);
 	lex->str_pos += len;
+	if (is_redirect(type))
+		new_word = scan_token(lex);
+	else
+		new_word = get_word(value, len);
+	push_token(&lex->tokens, new_word, type);
 	return (0);
 }
 

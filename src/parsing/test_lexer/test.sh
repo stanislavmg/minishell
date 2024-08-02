@@ -3,6 +3,7 @@ INPUT=test_case.txt
 OUTPUT=output
 NUM=1
 
+
 if [ "$1" == "-re" ]; then
 	rm lex &> /dev/null
 	make -C ../ lexer clean
@@ -14,9 +15,15 @@ if [ "$1" == "-re" ]; then
 	fi
 fi
 
+if [ "$1" == "-clear" ]; then
+	rm output/*
+	rm lex
+	exit 0
+fi
+
 if [ ! -f "lex" ]; then
 	echo "lexer not found. Use -re flag for make lexer"
-	exit
+	exit 1
 fi
 
 while IFS= read -r line; do
