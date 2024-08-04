@@ -1,0 +1,10 @@
+echo hello | wc
+echo hello | (wc || cat)
+(echo hello && echo world) | (cat | cat -e)
+(echo "Hello World")
+(ls -l | grep ".c") && (echo "Found C files" || echo "No C files found")
+(echo "Start" | (cat -n)) | grep "1"
+(echo "First Command"; echo "Second Command" | grep "Command") | sort
+(echo "This will run" && echo "So will this") || echo "This won't run"
+(echo "First" && false && echo "Second") || (echo "An error occurred" && echo "Error handled")
+(echo "Pipe this" | (tr '[:lower:]' '[:upper:]' | rev)) | tee /dev/null

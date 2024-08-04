@@ -1,0 +1,9 @@
+(ls -l; echo "Hello, World!") > output1.txt
+(cat < input.txt)
+(grep "minishell" < input.txt > output2.txt)
+(echo "Test"; ls -l) > output3.txt
+(cat < input.txt; echo "Additional line") > output4.txt
+(ls -l | grep "minishell") > output5.txt
+(echo "Start"; ls -l | grep "minishell"; echo "End") > output6.txt
+(echo "Header" > output8.txt; cat < input.txt >> output7.txt)
+(ls nonexistentfile; echo "Check errors") > output8.txt
