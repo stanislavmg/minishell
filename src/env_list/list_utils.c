@@ -12,103 +12,36 @@
 
 #include "env.h"
 
-t_env	*list_new(char *key, char *value)
+t_env	*new_env(char *key, char *value, int attr)
 {
-	t_env	*lst;
+	t_env	*env;
 
-	lst = malloc(sizeof(t_env));
-	if (!lst)
+	env = malloc(sizeof(t_env));
+	if (!env)
 		return (NULL);
-	lst -> key = key;
-	lst -> value = value;
-	lst -> next = NULL;
-	return (lst);
+	env->key = key;
+	env->value = value;
+	env->attr = attr;
+	return (env);
 }
 
-t_env	*list_last(t_env *lst)
+void	free_env(void *env)
 {
-	if (!lst)
-		return (NULL);
-	while (lst -> next)
-		lst = lst -> next;
-	return (lst);
+	free(((t_env *)env)->key);
+	free(((t_env *)env)->value);
+	free(env);
 }
 
-void	list_add(t_env **lst, t_env *new)
+t_env	*search_env(t_list *list_env, char *key)
 {
-	t_env	*ps;
+	t_env *target;
 
-	if (!new)
-		return ;
-	if (!*lst)
+	while (list_env)
 	{
-		*lst = new;
-		return ;
-	}
-	ps = list_last(*lst);
-	ps -> next = new;
-}
-
-void	list_delete_one(t_env *lst, char *key)
-{
-	t_env	*temp;
-	t_env	*prev;
-
-	if (!lst || !key)
-		return ;
-	while (lst)
-	{
-		if (strcmp(lst -> key, key) == 0)
-		{
-			temp = lst;
-			prev = lst -> next;
-			free(lst -> key);
-			free(lst -> value);
-			free(lst);
-			return ;
-		}
-		prev = lst;
-		lst = lst -> next;
-	}
-}
-
-void	list_delete(t_env **lst)
-{
-	t_env	*t;
-
-	if (!lst || !*lst)
-		return ;
-	while (*lst)
-	{
-		t = (*lst) -> next;
-		free((*lst) -> key);
-		free((*lst) -> value);
-		free(*lst);
-		*lst = t;
-	}
-	*lst = NULL;
-}
-
-t_env	*list_search(t_env *lst, char *key)
-{
-	while (lst)
-	{
-		if (strcmp(lst -> key, key) == 0)
-			return (lst);
-		lst = lst -> next;
+		target = (t_env *)list_env->data;
+		if (strcmp(target->key, key) == 0)
+			return (target);
+		list_env = list_env->next;
 	}
 	return (NULL);
-}
-
-int	ft_list_size(t_env *lst)
-{
-	int	len;
-
-	len = 0;
-	while (lst)
-	{
-		lst = lst -> next;
-		len++;
-	}
-	return (len);
 }

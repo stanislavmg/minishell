@@ -1,11 +1,12 @@
 # include "env.h"
 
-t_env	*create_envlist(char **env)
-{ 
-	int	i;
+t_list	*new_env_list(char **env)
+{
+	int		i;
 	char	*var_name;
 	char	*var_value;
-	t_env	*list_env;
+	t_list	*list_env;
+	t_env	*new_var;
 
 	i = 0;
 	list_env = NULL;
@@ -20,27 +21,34 @@ t_env	*create_envlist(char **env)
 			free(var_name);
 			return (list_env);
 		}
-		list_add(&list_env, list_new(var_name, var_value));
+		new_var = new_env(var_name, var_value, EXPORT | ENV);
+		ft_lstadd_back(&list_env, ft_lstnew(new_var));
 		i++;
 	}
 	return (list_env);
 }
 
-int		set_env(t_env *env, char *key, char *value)
+int		set_env(t_list *list_env, t_var *var, int attr)
 {
-	t_env *search_var;
+	t_env *target;
 
-	if (!env || !key)
+	if (!list_env || !var)
 		return (1);
-	search_var = list_search(env, key);
-	if (!search_var)
+	target = search_env(list_env, var->key);
+	if (!target)
 	{
-		list_add(&env, list_new(key, value));
-		return (0);
+		target = new_env(var->key, var->value, attr);
+		ft_lstadd_back(&list_env, ft_lstnew(target));
+		var->key = NULL;
+		var->value = NULL;
 	}
-	if (search_var->value == value)
+	else if (target->value == var->value)
 		return (0);
-	free(search_var->value);
-	search_var->value = value;
+	else
+	{
+		free(target->value);
+		target->value = var->value;
+		var->value = NULL;
+	}
 	return (0);
 }
