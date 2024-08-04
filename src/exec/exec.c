@@ -1,198 +1,190 @@
 # include "exec.h"
 
-void	add_var(t_var *var, t_exec_data *exec_info)
+int	start_pipeline(t_ast *root, t_list *list_env)
 {
-	set_env(exec_info->list_env, var->key, var->value);
-	var->key = NULL;
-	var->value = NULL;
-}
+	int		exit_code;
+	pid_t	ps1;
+	pid_t	ps2;
+	int		pdes[2];
 
-// void	scan_node(t_ast *cmd)
-// {
-// 	if (cmd->type == PIPE)
-// 		pipe_handle();
-// 	else if (cmd->type == OR)
-// 	else if (cmd->type == AND)
-// 	else if (cmd->type == VARIABLE)
-// 	else if (cmd->type == COMMAND)
-// 	else if (cmd->type == SEMICOLON || cmd->type == ASSIGNMENT)
-// }
-
-// int	redirect_last_cmd(t_ast *cmd, int out)
-// {
-// 	pid_t ps;
-
-// 	if (cmd->type == COMMAND)
-// 	{
-// 		ps = fork();
-// 		if (!ps)
-// 			exec_child_ps(0, out, cmd);
-// 	}
-// 	else if (cmd->type == PIPE)
-// 	{
-// 		pipe_handle();
-// 	}
-
-// 	return (0);
-// }
-
-// int	pipe_handle(int in, int out, t_ast *root)
-// {
-// 	int	pdes[2];
-
-// 	if (!root)
-// 		return (0);
-// 	pipe(pdes);
-// 	redirect_last_cmd(root->left, pdes[1]);
-// 	pipe(pdes);
-	
-// 	ft_close(pdes[0]);
-// 	ft_close(pdes[1]);
-// 	if (in == 0)
-// 	return (0);
-// }
-
-// int	exec_child_ps(int in, int out, t_exec_cmd *cmd)
-// {
-// 	if (in == stdin && cmd->in_fname)
-// 		in = ft_open(cmd->in_fname, cmd->in_fmode);
-// 	if (out == stdout && cmd->out_fname)
-// 		out = ft_open(cmd->out_fname, cmd->out_fmode);
-// 	if (dup2(in, stdin) == -1)
-// 		exit_failure(cmd->argv[0]);
-// 	if (dup2(out, stdout) == -1)
-// 		exit_failure(cmd->argv[0]);
-// 	if (cmd->path)
-// 		execve(cmd->path, cmd->argv, NULL);
-// 	ft_close(in);
-// 	ft_close(out);
-// 	return (1);
-// }
-
-int exec_pipe(t_exec_cmd *cmd, t_exec_data *exec_info)
-{
-	pid_t	ps;
-
-
-	return (1);
-}
-
-int start_pipeline(t_ast *root, t_exec_data *exec_info)
-{
-	int	pdes[2];
-	int	exit_code;
-	pid_t ps1;
-	pid_t ps2;
-
-	if (root->left->type == COMMAND)
+	if (!root)
+		return (0);
+	if (pipe(pdes) == -1)
 	{
-		pipe(pdes);
-		((t_exec_cmd *)root->left)->pdes = &pdes;
-		((t_exec_cmd *)root->right)->pipe_mode = PIPE_OUT;
-		ps1 = fork();
-		if (ps1 == 0)
-			ft_execve(root->left, 0, pdes[1]);
-	}
-	if (root->right->type == COMMAND)
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
+    ps1 = fork();
+    if (ps1 == 0)
 	{
-		((t_exec_cmd *)root->right)->pdes = &pdes;
-		((t_exec_cmd *)root->right)->pipe_mode = PIPE_IN;
+        dup2(pdes[1], STDOUT_FILENO);
+        close(pdes[0]);
+        close(pdes[1]);
+        exit(travers_tree((t_ast *)root->left, list_env));
+    }
+	else if (ps1 > 0)
+	{
 		ps2 = fork();
-		if (ps2 == 0)
-			ft_execve(root->right, pdes[0], 1);
-	}
-	ft_close(pdes[0]);
-	ft_close(pdes[1]);
-	wait(&exit_code);
-	set_last_status(exec_info->list_env, exit_code);
-	wait(&exit_code);
-	set_last_status(exec_info->list_env, exit_code);
+		if (ps2 == 0) {
+        	ft_close(pdes[1]);
+        	dup2(pdes[0], STDIN_FILENO);
+        	ft_close(pdes[0]);
+			waitpid(ps1, &exit_code, 0);
+			set_last_status(list_env, exit_code);
+        	exit(travers_tree((t_ast *)root->right, list_env));
+		}
+		close(pdes[0]);
+        close(pdes[1]);
+		waitpid(ps2, &exit_code, 0);
+		set_last_status(list_env, exit_code);
+    }
+	else
+	{
+        perror("fork");
+        return -1;
+    }
+	return (exit_code);
+}
+
+int open_io(t_redir *io_file)
+{
+	int	fd;
+
+	fd = ft_open(io_file->fname, io_file->mode);
+	if (fd == -1)
+		return (1);
+
+	ft_close(fd);
 	return (0);
 }
 
-int	travers_tree(t_ast *root, t_exec_data *exec_info)
+int	open_redirect(t_ast *root, t_list *list_env)
+{
+	int		exit_code;
+	t_redir	*rfile;
+	pid_t	pid;
+	int		fd;
+
+	if (!root)
+		return (1);
+	exit_code = 0;
+	rfile = (t_redir *)root->right;
+	fd = ft_open(rfile->fname, rfile->mode);
+	if (fd == -1)
+		exit_failure(rfile->fname);
+    pid = fork();
+	if (!pid)
+	{
+		if (rfile->mode == O_RDONLY)
+        	dup2(fd, STDIN_FILENO);
+		else
+        	dup2(fd, STDOUT_FILENO);
+		exit(travers_tree((t_ast *)root->left, list_env));
+	}
+	else
+	{
+		waitpid(pid, &exit_code, 0);
+		set_last_status(list_env, exit_code);
+	}
+	return (exit_code);
+}
+
+int	travers_tree(t_ast *root, t_list *list_env)
 {
 	if (!root)
 		return (0);
 	if (root->type == COMMAND)
-		start_job(exec_info, root);
+		start_job(list_env, (t_exec_cmd *)root);
 	else if (root->type == VARIABLE)
-		add_var(root, exec_info);
-	else if (root->type == PIPE)
-		start_pipeline(root, exec_info); 
+		set_env(list_env, (t_var *)root, HIDDEN);
 	else if (root->type == OR)
 	{
-		travers_tree(root->left, exec_info);
-		if (get_last_status(exec_info->list_env))
-			travers_tree(root->right, exec_info);
+		travers_tree((t_ast *)root->left, list_env);
+		if (get_last_status(list_env))
+			travers_tree((t_ast *)root->right, list_env);
 	}
 	else if (root->type == AND)
 	{
-		travers_tree(root->left, exec_info);
-		if (get_last_status(exec_info->list_env) == EXIT_SUCCESS) 
-			travers_tree(root->right, exec_info);
+		travers_tree((t_ast *)root->left, list_env);
+		if (get_last_status(list_env) == EXIT_SUCCESS) 
+			travers_tree((t_ast *)root->right, list_env);
 	}
-	else
+	else if (root->type == PIPE)
+		start_pipeline(root, list_env);
+	else if (root->type == REDIRECT)
+		open_redirect(root, list_env);
+	else if (root->type == SEMICOLON)
 	{
-		travers_tree(root->left, exec_info);
-		travers_tree(root->right, exec_info);
+		travers_tree((t_ast *)root->left, list_env);
+		travers_tree((t_ast *)root->right, list_env);
 	}
 	return (0);
 }
 
-void	start_job(t_exec_data *exec_info, t_exec_cmd *cmd)
+char	**new_env_arr(t_list *list_env)
+{
+	int		i;
+	t_env	*var;
+	int		size;
+	char	**envp;
+	char	*t;
+
+	envp = NULL;
+	i = 0;
+	size = ft_lstsize(list_env);
+	envp = (char **)malloc(sizeof(char *) * (size + 1));
+	while (i < size)
+	{
+		var = list_env->data;
+		t = ft_strjoin(var->key, "=");
+		envp[i] = ft_strjoin(t, var->value);
+		free(t);
+		list_env = list_env->next;
+		i++;
+	}
+	envp[i] = NULL;
+	return (envp);
+}
+
+void	start_job(t_list *list_env, t_exec_cmd *cmd)
 {
 	pid_t	pid;
+	int 	exit_code;
+	char	**envp;
 
+	envp = new_env_arr(list_env);
 	pid = fork();
 	if (!pid)
-		ft_execve(cmd, STDIN_FILENO, STDOUT_FILENO);
+		ft_execve(cmd, envp);
 	if (pid == -1)
+	{
+		printf("fork error\n");
 		return ;
-	waitpid(pid, &cmd->exit_code, 0);
-	set_last_status(exec_info->list_env, cmd->exit_code);
+	}
+	waitpid(pid, &exit_code, 0);
+	free_arr(envp);
+	set_last_status(list_env, exit_code);
 }
 
-void open_cmd_files(t_exec_cmd *cmd)
+int	ft_execve(t_exec_cmd *cmd, char **env)
 {
+	char	**paths;
+	int		i = 0;
 
-}
-
-int	ft_execve(t_exec_cmd *cmd, int in, int out)
-{
-	// if (cmd->in_fname)
-	// {
-	// 	ft_close(in);
-	// 	in = ft_open(cmd->in_fname, cmd->in_fmode);
-	// }
-	// if (cmd->out_fname)
-	// {
-	// 	ft_close(out);
-	// 	out = ft_open(cmd->out_fname, cmd->out_fmode);
-	// }
-	if (cmd->pipe_mode == PIPE_OUT)
-	{
-		dup2(out, STDOUT_FILENO);
-		ft_close(cmd->pdes[0]);
-	}
-	else if (cmd->pipe_mode == PIPE_IN)
-	{
-		dup2(in, STDIN_FILENO);
-		ft_close(cmd->pdes[1]);
-	}
-	else if (cmd->pdes)
-	{
-		ft_close(cmd->pdes[0]);
-		ft_close(cmd->pdes[1]);
-	}
-	// if (dup2(in, STDIN_FILENO) == -1)
-	// 	exit_failure(cmd->argv[0]);
-	// if (dup2(out, STDOUT_FILENO) == -1)
-	// 	exit_failure(cmd->argv[0]);
+	paths = NULL;
+	while (*env && strncmp(*env, "PATH=", 5))
+		env++;
+	paths = get_path(*env + 5);
+	cmd->path = parsing_path(paths, cmd->argv[0]);
+	free_arr(paths);
 	if (cmd->path)
-		execve(cmd->path, cmd->argv, NULL);
-	ft_close(in);
-	ft_close(out);
+		execve(cmd->path, cmd->argv, env);
+	else
+	{
+		printf("minishell: %s: command not found\n", cmd->argv[0]);
+		exit(EXIT_FAILURE);
+	}
+	perror(cmd->argv[0]);
 	exit(EXIT_FAILURE);
 }
 
@@ -210,24 +202,20 @@ int	ft_close(int fd)
 int	ft_open(char *fname, int mode)
 {
 	int	fd;
-	int	access_mode;
 
-	/* If mode have a readonly flag then this is input file */
-	if (mode & O_RDONLY)
-		access_mode = F_OK | R_OK;
+	/* If mode is readonly then this is input file */
+	if (mode == O_RDONLY)
+	{
+		if (access(fname, F_OK) || access(fname, R_OK))
+			fd = -1;
+	}
 	/* Else output file */
 	else
-		access_mode = F_OK | W_OK; //FIXME output access fail
-	if (access(fname, access_mode))
 	{
-		perror(fname);
-		return (-1);
+		if (!access(fname, F_OK) && access(fname, W_OK))
+			fd = -1;
 	}
-	fd = open(fname, mode);
-	if (fd == -1)
-	{
-		perror(fname);
-		fd = 0;
-	}
+	if (fd != -1)
+		fd = open(fname, mode, 0644);
 	return (fd);
 }

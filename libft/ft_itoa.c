@@ -12,23 +12,24 @@
 
 #include "libft.h"
 
-static void	putnbr(int str_pos, int n, char *str)
+static void	putnbr(int pos, int n, char *str)
 {
 	unsigned int	num;
 
+	num = 0;
 	if (n < 0)
 		num = n * -1;
 	else
 		num = n;
 	if (n / 10 == 0)
 	{
-		str[str_pos] = '0' + num % 10;
+		str[pos] = '0' + num % 10;
 		if (n < 0)
-			str[str_pos - 1] = '-';
+			str[pos - 1] = '-';
 		return ;
 	}
-	putnbr(str_pos - 1, n / 10, str);
-	str[str_pos] = '0' + num % 10;
+	putnbr(pos - 1, n / 10, str);
+	str[pos] = '0' + num % 10;
 }
 
 char	*ft_itoa(int n)
@@ -39,6 +40,7 @@ char	*ft_itoa(int n)
 
 	len = 1;
 	num = n;
+	res = NULL;
 	if (n < 0)
 		len++;
 	else if (n == 0)
@@ -48,7 +50,7 @@ char	*ft_itoa(int n)
 		num /= 10;
 		len++;
 	}
-	res = malloc(len);
+	res = (char *)malloc(len);
 	if (!res)
 		return (NULL);
 	res[len - 1] = 0;

@@ -1,6 +1,6 @@
 #include "parser.h"
 
-t_lexer	*new_lexer(char *input, t_env *env_list)
+t_lexer	*new_lexer(char *input, t_list *env_list)
 {
 	t_lexer *lex;
 
@@ -47,8 +47,8 @@ void free_token(void *cur_token_pos)
 
 void	free_lexer(t_lexer *lex)
 {
-	ft_lstclear(&lex->tokens, free_token);
 	free(lex->input_str);
+	ft_lstclear(&lex->tokens, free_token);
 	free(lex);
 }
 

@@ -1,12 +1,12 @@
 #include "parser.h"
 
-void printSpaces(int count) {
+static void printSpaces(int count) {
     for (int i = 0; i < count; i++) {
         putchar(' ');
     }
 }
 
-void printTreeHelper(t_ast* root, int space, int level) {
+static void printTreeHelper(t_ast* root, int space, int level) {
     if (root == NULL) {
         return;
     }
@@ -15,7 +15,7 @@ void printTreeHelper(t_ast* root, int space, int level) {
     space += 5;
 
     // Process right child first
-	if (root->type != COMMAND && root->type != VARIABLE)
+	if (root->type != COMMAND && root->type != VARIABLE && root->type != IO_FILE)
     	printTreeHelper((t_ast *)root->right, space, level + 1);
 
     // Print current node after space count
@@ -26,10 +26,11 @@ void printTreeHelper(t_ast* root, int space, int level) {
 		printf(" = %s", ((t_exec_cmd *)root)->argv[0]);
 	else if (root->type == VARIABLE)
 		printf(" = key=%s value=%s", ((t_var *)root)->key, ((t_var *)root)->value);
-	printf("\n");
-
+    else if (root->type == IO_FILE)
+        printf(" = fname=%s", ((t_redir *)root)->fname);
+	printf("\n");    
     // Process left child
-	if (root->type != COMMAND && root->type != VARIABLE)
+	if (root->type != COMMAND && root->type != VARIABLE && root->type != IO_FILE)
     	printTreeHelper((t_ast *)root->left, space, level + 1);
 }
 

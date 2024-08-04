@@ -1,36 +1,38 @@
-NAME    = parser
+NAME    = minishell
 LIB     = libft.a
 INCLUDE = ../../inc
+MAIN 	?= main.c
 
-SRC     = parser.c main.c init_cmd.c syntax_check.c print_tree.c destruction.c\
-		  $(addprefix lexer/, lexer.c methods.c string.c utils.c)\
+SRC     = parser.c init_cmd.c debug.c print_tree.c destructors.c parser_utils.c\
+		  $(addprefix lexer/, lexer.c methods.c string.c lexer_utils.c)\
           $(addprefix ../env_list/, list_init.c list_utils.c)\
           $(addprefix ../exec/, exec.c exec_utils.c)
 
-LEX_SRC = $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c utils.c) \
+LEX_SRC = $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c lexer_utils.c) \
           $(addprefix ../env_list/, list_init.c list_utils.c)
 
 LEX_OBJ = $(LEX_SRC:%.c=%.o)
+
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -Wall -g3 -fsanitize=address -I$(INCLUDE)
+CFLAGS  = -Wall -g3 -I$(INCLUDE) #-fsanitize=address 
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB) -lreadline
+$(NAME): $(OBJ) $(MAIN:.c=.o) ${LIB}
+	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-lib:
-	 make -C ../../libft all bonus clean && mv ../../libft/$(LIB) ./
+${LIB}:
+	 make -C .. ../libft all bonus clean && mv .. ../libft/$(LIB) .
 
 lexer: $(LEX_OBJ)
 	$(CC) $(CFLAGS) -o lex $(LEX_OBJ) $(LIB)
 
 clean:
-	$(RM) $(OBJ) $(LEX_OBJ)
+	$(RM) $(OBJ) $(LEX_OBJ) $(MAIN:.c=.o)
 
 fclean: clean
 	$(RM) $(NAME) lex

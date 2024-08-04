@@ -1,45 +1,46 @@
 #include "exec.h"
 #include "minishell.h"
 
+void	free_minishell(t_lexer *lex, t_parser *parser, t_ast *root)
+{
+	free_lexer(lex);
+	free_parser(parser);
+	free_ast(root);
+	exit(EXIT_SUCCESS);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_lexer 	*lex;
-	t_ast		*root;
-	t_env		*env_lst;
-	t_list 		*list;
+	t_cmd		*root;
+	t_list		*env_lst;
 	t_parser	*parser;
-	t_exec_data	*data;
-	char 		*res;
-	int 		i;
-	char 		*s = "minishell$> ";
-	t_env		*n = list_new(get_var_name("?=0"), get_var_value("?=0"));
+	char 		*input_str;
+	t_env		*n = new_env(get_var_name("?=0"), get_var_value("?=0"), HIDDEN);
 
-	env_lst = create_envlist(env);
-	list_add(&env_lst, n);
-	data = new_exec_data(env, env_lst);
+	(void)ac;
+	(void)av;
+	env_lst = new_env_list(env);
+	ft_lstadd_back(&env_lst, ft_lstnew(n));
 	while (1)
 	{
-		res = readline(s);
-		if (!strcmp(res, "exit"))
-			break ;
-		lex = new_lexer(res, env_lst);
-		if (init_list(lex))
-			continue;
-		list = lex->tokens;
-		i = 0;
-		while (list)
+		input_str = readline(PROMT);
+		if (!strcmp(input_str, "exit"))
 		{
-			printf("#%d cur_token_pos: %s\ntype: %s\n\n", i, ((t_token*)list->data)->word, get_type(((t_token*)list->data)->type));
-			i++;
-			list = list->next;
+			free(input_str);
+			ft_lstclear(&env_lst, free_env);
+			return (0);
 		}
+		lex = new_lexer(input_str, env_lst);
+		init_list(lex);
+		print_tokens(lex->tokens);
 		parser = new_parser(lex);
 		root = build_AST(parser);
 		print_tree((t_ast *)root);
-		travers_tree(root, data);
+		travers_tree((t_ast *)root, env_lst);
 		free_lexer(lex);
 		free_parser(parser); 
-		free_tree(root);
+		free_ast((t_ast *)root);
 	}
 	return (0);
 }

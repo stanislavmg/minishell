@@ -2,27 +2,20 @@
 # define EXEC_H
 
 # include "parser.h"
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <errno.h>
 
-typedef struct s_exec_data
-{
-	t_ast		*cmd_tree;
-	char        **envp;
-	t_env       *list_env;
-	t_exec_cmd  *cur_cmd;
-	int         in;
-	int         out;
-	int         flag;
-} t_exec_data;
-
-int			get_last_status(const t_env *env);
-void		set_last_status(t_env *env, int new_value);
-void		start_job(t_exec_data *exec_info, t_exec_cmd *cmd);
+int			get_last_status(t_list *env);
+void		set_last_status(t_list *list_env, int new_value);
+int			start_pipeline(t_ast *root, t_list *list_env);
 int			ft_open(char *fname, int mode);
 int			ft_close(int fd);
-int			ft_execve(t_exec_cmd *cmd, int in, int out);
-int			travers_tree(t_ast *root, t_exec_data *exec_info);
-t_exec_data	*new_exec_data(char **env_arr, t_env *env_lst);
+int			ft_execve(t_exec_cmd *cmd, char **env);
 void		exit_failure(char *msg);
-void		add_var(t_var *var, t_exec_data *exec_info);
+int			travers_tree(t_ast *root, t_list *list_env);
+void		start_job(t_list *list_env, t_exec_cmd *cmd);
+void		open_cmd_files(t_exec_cmd *cmd);
+char		**new_env_arr(t_list *list_env);
 
 #endif

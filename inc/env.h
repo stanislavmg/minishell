@@ -13,24 +13,21 @@
 #ifndef ENV_H
 # define ENV_H
 
+/* variables attributes */
+# define EXPORT 0x01
+# define ENV	0x02
+# define HIDDEN	0x03
+
 # include "libft.h"
+# include "minishell.h"
 # include <string.h>
 
-typedef struct s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next;
-} 	t_env;
-
-int		set_env(t_env *env, char *key, char *value);
-t_env	*list_new(char *key, char *value);
-void	list_add(t_env **lst, t_env *new);
-t_env	*list_search(t_env *lst, char *key);
-void	list_delete_one(t_env *lst, char *key);
-void	list_delete(t_env **lst);
+int		set_env(t_list *list_env, t_var *new_env, int attr);
+t_env	*new_env(char *key, char *value, int attr);
+void	free_env(void *env);
+t_env	*search_env(t_list *list_env, char *key);
 char 	*get_var_name(const char *token_word);
 char 	*get_var_value(const char *token_word);
-t_env	*create_envlist(char **env);
+t_list	*new_env_list(char **env);
 
 #endif

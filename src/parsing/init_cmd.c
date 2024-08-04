@@ -53,7 +53,7 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	return (NULL);
 }
 
-t_exec_cmd	*new_exec_cmd(void)
+t_exec_cmd	*new_exec_cmd(t_list *args)
 {
 	t_exec_cmd	*new_cmd;
 
@@ -61,31 +61,7 @@ t_exec_cmd	*new_exec_cmd(void)
 	if (!new_cmd)
 		return (NULL);
 	new_cmd->type = COMMAND;
+	new_cmd->argv = add_field_argv(args);
 	return (new_cmd);
 }
 
-int	add_field_fname(t_token *token, t_exec_cmd *cmd)
-{
-	if (!token || !cmd)
-		return (1);
-	if (INPUT_TRUNC == token->type || HERE_DOC == token->type)
-		cmd->in_fname = token->word;
-	else if (OUTPUT_TRUNC == token->type || OUTPUT_ADD == token->type)
-		cmd->out_fname = token->word;
-	return (0);
-}
-
-int	add_field_open_mode(e_token redirect_type, t_exec_cmd *cmd)
-{
-	if (INPUT_TRUNC == redirect_type)
-		cmd->in_fmode = O_RDONLY;
-	else if (OUTPUT_TRUNC == redirect_type)
-		cmd->out_fmode = O_TRUNC | O_CREAT | O_RDWR;
-	else if (OUTPUT_ADD == redirect_type)
-		cmd->out_fmode  = O_APPEND | O_CREAT | O_RDWR;
-	else if (HERE_DOC == redirect_type)
-		cmd->in_fmode = HERE_DOC;
-	else
-		return (1);
-	return (0);
-}
