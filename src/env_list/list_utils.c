@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "env.h"
 
 t_env	*list_new(char *key, char *value)
 {
@@ -49,11 +49,54 @@ void	list_add(t_env **lst, t_env *new)
 	ps -> next = new;
 }
 
+<<<<<<< HEAD:src/hashtable/builtins/list_utils.c
+=======
+void	list_delete_one(t_env *lst, char *key)
+{
+	t_env	*temp;
+	t_env	*prev;
+
+	if (!lst || !key)
+		return ;
+	while (lst)
+	{
+		if (strcmp(lst -> key, key) == 0)
+		{
+			temp = lst;
+			prev = lst -> next;
+			free(lst -> key);
+			free(lst -> value);
+			free(lst);
+			return ;
+		}
+		prev = lst;
+		lst = lst -> next;
+	}
+}
+
+void	list_delete(t_env **lst)
+{
+	t_env	*t;
+
+	if (!lst || !*lst)
+		return ;
+	while (*lst)
+	{
+		t = (*lst) -> next;
+		free((*lst) -> key);
+		free((*lst) -> value);
+		free(*lst);
+		*lst = t;
+	}
+	*lst = NULL;
+}
+
+>>>>>>> f2fc4d4ae813380bd3098cc1826f6d537d2bed16:src/env_list/list_utils.c
 t_env	*list_search(t_env *lst, char *key)
 {
 	while (lst)
 	{
-		if (ft_strcmp(lst -> key, key) == 0)
+		if (strcmp(lst -> key, key) == 0)
 			return (lst);
 		lst = lst -> next;
 	}

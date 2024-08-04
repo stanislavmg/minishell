@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+<<<<<<< HEAD:inc/builtins.h
 #ifndef BUILTINS_H
 # define BUILTINS_H
 # include "minishell.h"
@@ -23,14 +24,22 @@
 # define CONTROL_C 130
 # define CONTROL_D 131
 # define WRONG_CODE 255
+=======
+#ifndef ENV_H
+# define ENV_H
+
+# include "libft.h"
+# include <string.h>
+>>>>>>> f2fc4d4ae813380bd3098cc1826f6d537d2bed16:inc/env.h
 
 typedef struct s_env
 {
 	char			*key;
 	char			*value;
 	struct s_env	*next;
-} t_env;
+} 	t_env;
 
+<<<<<<< HEAD:inc/builtins.h
 int		handle_command(char **args, t_env *env, int *fd);
 int		handle_cd(char **args, t_env *env, int *fd);
 int		handle_env(char **args, t_env *env, int *fd);
@@ -41,15 +50,23 @@ int		handle_unset(char **args, t_env *env, int *fd);
 int		handle_exit(char **args, t_env *env, int *fd);
 int		execute_command(char **args, t_env *env, int *fd);
 char	*get_env(char *key, t_env *env);
+=======
+>>>>>>> f2fc4d4ae813380bd3098cc1826f6d537d2bed16:inc/env.h
 int		set_env(t_env *env, char *key, char *value);
 t_env	*list_new(char *key, char *value);
 void	list_add(t_env **lst, t_env *new);
 t_env	*list_search(t_env *lst, char *key);
 void	list_delete_one(t_env **lst, char *key);
 void	list_delete(t_env **lst);
+<<<<<<< HEAD:inc/builtins.h
 int		ft_list_size(t_env *lst);
 char	**ft_first_split(char const *s, char c);
 int		ft_strcmp(const char *s1, const char *s2);
 void	free_array(char **arr);
+=======
+char 	*get_var_name(const char *token_word);
+char 	*get_var_value(const char *token_word);
+t_env	*create_envlist(char **env);
+>>>>>>> f2fc4d4ae813380bd3098cc1826f6d537d2bed16:inc/env.h
 
 #endif

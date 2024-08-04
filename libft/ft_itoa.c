@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static void	putnbr(int pos, int n, char *str)
+static void	putnbr(int str_pos, int n, char *str)
 {
 	unsigned int	num;
 
@@ -22,13 +22,13 @@ static void	putnbr(int pos, int n, char *str)
 		num = n;
 	if (n / 10 == 0)
 	{
-		str[pos] = '0' + num % 10;
+		str[str_pos] = '0' + num % 10;
 		if (n < 0)
-			str[pos - 1] = '-';
+			str[str_pos - 1] = '-';
 		return ;
 	}
-	putnbr(pos - 1, n / 10, str);
-	str[pos] = '0' + num % 10;
+	putnbr(str_pos - 1, n / 10, str);
+	str[str_pos] = '0' + num % 10;
 }
 
 char	*ft_itoa(int n)
