@@ -169,7 +169,6 @@ void	start_job(t_list *list_env, t_exec_cmd *cmd)
 int	ft_execve(t_exec_cmd *cmd, char **env)
 {
 	char	**paths;
-	int		i = 0;
 
 	paths = NULL;
 	while (*env && strncmp(*env, "PATH=", 5))
@@ -203,6 +202,7 @@ int	ft_open(char *fname, int mode)
 {
 	int	fd;
 
+	fd = 0;
 	/* If mode is readonly then this is input file */
 	if (mode == O_RDONLY)
 	{

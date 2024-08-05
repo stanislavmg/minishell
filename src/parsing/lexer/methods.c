@@ -47,7 +47,7 @@ void free_token(void *cur_token_pos)
 
 void	free_lexer(t_lexer *lex)
 {
-	free(lex->input_str);
+	//free(lex->input_str);
 	ft_lstclear(&lex->tokens, free_token);
 	free(lex);
 }

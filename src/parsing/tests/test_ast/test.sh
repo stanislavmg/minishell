@@ -5,14 +5,10 @@ MSH=./minishell
 INPUT=test_case.txt 
 REDIR=test_output.txt
 OUTPUT=output
-BASH_OUT=bash_out
-MSH_OUT=msh_out
 LOG=log
 NUM=1
 
 mkdir -p "$OUTPUT"
-mkdir -p "$MSH_OUT"
-mkdir -p "$BASH_OUT"
 mkdir -p "$LOG"
 
 if [ "$1" == "-re" ]; then
@@ -56,13 +52,22 @@ while IFS= read -r line; do
     (( NUM++ ))
 done < "$INPUT"
 
-# while IFS= read -r line; do
-#     ./minishell "$line" > "${MSH_OUT}/${NUM}_msh"
-#     (( NUM++ ))
-# done < "$REDIR"
-
 while IFS= read -r line; do
     bash -c "$line"
+    mv out out_bash
+    ./minishell "$line"
+    mv out out_msh
+    if ! diff out_bash out_msh >/dev/null; then
+        echo "Test case ${NUM}: $line" > "${LOG}/${NUM}_log"
+        echo -n "Bash output: " >> "${LOG}/${NUM}_log"
+		echo >> "${LOG}/${NUM}_log"
+        cat "out_bash" >> "${LOG}/${NUM}_log"
+		echo >> "${LOG}/${NUM}_log"
+        echo -n "Minishell output: " >> "${LOG}/${NUM}_log"
+		echo >> "${LOG}/${NUM}_log"
+        cat "out_msh" >> "${LOG}/${NUM}_log"
+    fi
+    rm -f out_bash out_msh
     (( NUM++ ))
 done < "$REDIR"
 

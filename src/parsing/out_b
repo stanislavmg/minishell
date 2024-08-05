@@ -1,0 +1,17 @@
+total 288
+-rw-r--r--  1 nalivkin  staff    999 Aug  5 10:29 Makefile
+-rw-r--r--  1 nalivkin  staff   1166 Aug  5 10:29 debug.c
+-rw-r--r--  1 nalivkin  staff    836 Aug  5 10:29 destructors.c
+-rw-r--r--  1 nalivkin  staff   1167 Aug  5 10:29 init_cmd.c
+drwxr-xr-x@ 7 nalivkin  staff    224 Aug  5 11:13 lexer
+-rw-r--r--  1 nalivkin  staff  37000 Jul 29 16:52 libft.a
+-rw-r--r--  1 nalivkin  staff    944 Aug  5 10:29 main.c
+-rwxr-xr-x@ 1 nalivkin  staff  63224 Aug  5 11:13 minishell
+-rw-r--r--@ 1 nalivkin  staff    854 Aug  5 11:14 out
+-rw-r--r--@ 1 nalivkin  staff      0 Aug  5 11:14 out_b
+-rw-r--r--  1 nalivkin  staff   4747 Aug  5 10:29 parser.c
+-rw-r--r--  1 nalivkin  staff    783 Aug  5 10:29 parser_utils.c
+-rw-r--r--  1 nalivkin  staff   1138 Aug  5 10:29 print_tree.c
+drwxr-xr-x@ 3 nalivkin  staff     96 Aug  5 10:29 test_lexer
+drwxr-xr-x  4 nalivkin  staff    128 Aug  5 10:29 tests
+Hello, World
