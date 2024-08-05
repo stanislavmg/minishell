@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:16:28 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:30:25 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,17 @@ static int	cd_oldpwd(t_env *env)
 	char	*pwd;
 	char	*oldpwd;
 
+	// if !env return (0)
 	pwd = get_env("PWD", env);
 	oldpwd = get_env("OLDPWD", env);
+	// if !pwd так как может быть unset PWD 
 	if (!oldpwd)
 	{
 		ft_putendl_fd("OLDPWD is not set", 2);
 		return (EXIT_FAILURE);
 	}
+	/* часть кода повторяется в 3 функциях, можно вынести в отдельную 
+	например exit_failure & swap_value*/
 	if (chdir(oldpwd) != 0)
 	{
 		perror("chdir error");
@@ -87,7 +91,9 @@ int	handle_cd(char **args, t_env *env, int *fd)
 {
 	int	res;
 
-	if (args[1] && args[2])
+	// лучше использовать размер массива
+	// argc = size of args
+	if (args[1] && args[2]) // SEGFAULT
 	{
 		ft_putendl_fd("Too many arguments", 2);
 		return (EXIT_FAILURE);

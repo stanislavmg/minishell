@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 10:54:08 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:17:00 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:39:45 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	handle_pwd(char **args, t_env *env, int *fd)
 {
 	char	pwd[PATH_MAX];
-
+	// зачем тут env
 	if (getcwd(pwd, sizeof(pwd)) != NULL)
 		ft_putendl_fd(pwd, fd[1]);
 	else

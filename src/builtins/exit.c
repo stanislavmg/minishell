@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:16:52 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:37:10 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static int	ft_isnum(char *str)
 {
+	// if !str
 	while (*str)
 	{
 		if (!(*str >= '0' && *str <= '9'))
@@ -32,6 +33,7 @@ static long long int	ft_atol(const char *str)
 	i = 0;
 	res = 0;
 	mod = 1;
+	/* такое можно вынести в отдельную функцию ft_isspace() */
 	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
 		|| str[i] == '\r' || str[i] == '\v' || str[i] == '\f')
 		i++;
@@ -54,7 +56,7 @@ int	handle_exit(char **args, t_env *env, int *fd)
 {
 	long long int	exit_status;
 
-	if (args[2])
+	if (args[2]) // SEGFAULT
 	{
 		ft_putendl_fd("Too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
@@ -66,7 +68,7 @@ int	handle_exit(char **args, t_env *env, int *fd)
 			ft_putendl_fd("numeric argument required", STDERR_FILENO);
 			return (EXIT_FAILURE);
 		}
-		if (ft_strlen(args[1]) > 19)
+		if (ft_strlen(args[1]) > 19) // 
 		{
 			ft_putendl_fd("Incorrect argument", STDERR_FILENO);
 			return (EXIT_FAILURE);

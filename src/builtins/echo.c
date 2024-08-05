@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 07:16:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:16:34 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:30:53 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	handele_echo(char **args, t_env *env, int *fd)
 
 	i = 1;
 	flag = 0;
-	while (ft_strcmp(args[i], "-n") == 0)
+	// проверки на null
+	while (ft_strcmp(args[i], "-n") == 0)// SEGFAULT
 	{
 		flag = 1;
 		i++;

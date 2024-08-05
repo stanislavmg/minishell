@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:16:56 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:50:11 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,14 @@ static char	**get_exports(t_env *env)
 	i = 0;
 	count = ft_list_size(env);
 	exports = malloc(sizeof(char *) * (count + 1));
+	// нет проверки на !export
 	while (i < count)
 	{
+		// не совсем понял зачем выделять память под строки
 		exports[i] = malloc(sizeof(char) * (ft_strlen(env->key) + ft_strlen(env->value) + 4));
 		fill_export_string(exports[i], env);
 		env = env->next;
-		i++;	
+		i++;
 	}
 	exports[i] = NULL;
 	return (exports);

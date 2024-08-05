@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:16:42 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:32:59 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int	set_env(t_env *env, char *key, char *value)
 
 int	handle_env(char **args, t_env *env, int *fd)
 {
+	// нужно добавить проверку if (env->attr == EXPORT) then printf(env)
+	// также проверки на нул
 	while (env)
 	{
 		if (ft_strlen(env -> value) > 0)
@@ -54,5 +56,5 @@ int	handle_env(char **args, t_env *env, int *fd)
 		}
 		env = env -> next;
 	}
-	return (EXIT_SUCCESS);
+	return (EXIT_SUCCESS); // переделать на exit
 }

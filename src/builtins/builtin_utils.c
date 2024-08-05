@@ -3,19 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:13:58 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:22:45 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "../../inc/builtins.h" // просто "builtins.h"
 
 int	handle_command(char **args, t_env *env, int *fd)
 {
 	int	result;
 
+// if !args || !env
+// fd не нужен
 	if (strcmp(args[0], "cd") == 0)
 		result = handle_cd(args, env, fd);
 	else if (strcmp(args[0], "env") == 0)
@@ -40,13 +42,14 @@ void	free_array(char **arr)
 	int	i;
 
 	i = 0;
+	//if !arr
 	while (arr[i])
 	{
 		free(arr[i]);
 		i++;
 	}
 	free(arr);
-	arr = NULL;
+	arr = NULL; //  не надо, т.к память уже не наша
 }
 
 int	ft_strcmp(const char *s1, const char *s2)
@@ -54,7 +57,8 @@ int	ft_strcmp(const char *s1, const char *s2)
 	size_t	i;
 
 	i = 0;
-	while (s1[i] == s2[i] && s1[i] && s2[i])
+	// if !s1 !s2
+	while (s1[i] == s2[i] && s1[i] && s2[i]) //SEGFAULT
 		i++;
 	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));
 }
