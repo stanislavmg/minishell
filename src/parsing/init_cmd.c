@@ -65,3 +65,25 @@ t_exec_cmd	*new_exec_cmd(t_list *args)
 	return (new_cmd);
 }
 
+char **add_field_argv(t_list *args)
+{
+	char	**argv;
+	int		argc;
+	int		i;
+
+	if (!args)
+		return (NULL);
+	i = -1;
+	argc = ft_lstsize(args) + 1;
+	argv = (char **)malloc(sizeof(char *) * argc);
+	if (!argv)
+		return (NULL);
+	while (++i < argc - 1)
+	{
+		argv[i] = (char *)args->data;
+		args->data = NULL;
+		args = args->next;
+	}
+	argv[i] = NULL;
+	return (argv);
+}

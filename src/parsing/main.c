@@ -33,11 +33,19 @@ int	main(int ac, char **av, char **env)
 		}
 		lex = new_lexer(input_str, env_lst);
 		init_list(lex);
-		//print_tokens(lex->tokens);
+		print_tokens(lex->tokens);
 		parser = new_parser(lex);
-		root = build_AST(parser);
-		//print_tree((t_ast *)root);
-		travers_tree((t_ast *)root, env_lst);
+		root = new_ast(parser);
+		if (!parser->err)
+			travers_tree((t_ast *)root, env_lst);
+		else
+		{
+			if (parser->cur_token_pos)
+				print_msh_err(parser->cur_token_pos->data);
+			else
+				print_msh_err(ft_lstlast(lex->tokens)->data);
+		}
+		print_tree((t_ast *)root);
 		free_lexer(lex);
 		free_parser(parser); 
 		free_ast((t_ast *)root);

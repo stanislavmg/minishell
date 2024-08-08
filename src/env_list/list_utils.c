@@ -32,7 +32,7 @@ void	free_env(void *env)
 	free(env);
 }
 
-t_env	*search_env(t_list *list_env, char *key)
+t_env	*get_env(t_list *list_env, char *key)
 {
 	t_env *target;
 

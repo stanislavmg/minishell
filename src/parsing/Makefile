@@ -3,7 +3,7 @@ LIB     = libft.a
 INCLUDE = ../../inc
 MAIN 	?= main.c
 
-SRC     = parser.c init_cmd.c debug.c print_tree.c destructors.c parser_utils.c\
+SRC     = parser.c init_cmd.c debug.c destructors.c parser_utils.c here_doc.c ast.c\
 		  $(addprefix lexer/, lexer.c methods.c string.c lexer_utils.c)\
           $(addprefix ../env_list/, list_init.c list_utils.c)\
           $(addprefix ../exec/, exec.c exec_utils.c)
@@ -15,7 +15,7 @@ LEX_OBJ = $(LEX_SRC:%.c=%.o)
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -Wall -g3 -I$(INCLUDE) #-fsanitize=address 
+CFLAGS  = -Wall -g3 -I$(INCLUDE) -fsanitize=address 
 
 all: $(NAME)
 
@@ -25,8 +25,8 @@ $(NAME): $(OBJ) $(MAIN:.c=.o) ${LIB}
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-${LIB}:
-	 make -C .. ../libft all bonus clean && mv .. ../libft/$(LIB) .
+$(LIB):
+	 make -C .. ../../libft all bonus clean && mv .. ../../libft/$(LIB) .
 
 lexer: $(LEX_OBJ)
 	$(CC) $(CFLAGS) -o lex $(LEX_OBJ) $(LIB)

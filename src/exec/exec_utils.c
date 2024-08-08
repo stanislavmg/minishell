@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/05 12:30:50 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "exec.h"
 
 void	exit_failure(char *msg)
@@ -13,7 +25,7 @@ int	get_last_status(t_list *list_env)
 
 	if (!list_env)
 		return (1);
-	last_status = search_env(list_env, "?");
+	last_status = get_env(list_env, "?");
 	if (!last_status)
 		return (1);
 	return (ft_atoi(last_status->value));
@@ -26,7 +38,7 @@ void	set_last_status(t_list *list_env, int new_value)
 	last_status = NULL;
 	if (!list_env)
 		return ;
-	last_status = search_env(list_env, "?");
+	last_status = get_env(list_env, "?");
 	if (!last_status)
 		return ;
 	free(last_status->value);

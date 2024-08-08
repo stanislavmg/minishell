@@ -23,7 +23,7 @@ t_parser *new_parser(t_lexer *lex)
 	t_parser 	*parser;
 	t_env		*path;
 
-	path = search_env(lex->env, "PATH");
+	path = get_env(lex->env, "PATH");
 	parser = (t_parser *)ft_calloc(1, sizeof(t_parser));
 	if (!parser)
 		return (NULL);

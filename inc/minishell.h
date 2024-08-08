@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 12:30:25 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/06 11:10:22 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef MINISHEL_H
 #define MINISHEL_H
@@ -6,6 +17,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
 #include <ctype.h>

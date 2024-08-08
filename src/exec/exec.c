@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/06 11:08:33 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "exec.h"
 
 int	start_pipeline(t_ast *root, t_list *list_env)
@@ -185,37 +197,4 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	}
 	perror(cmd->argv[0]);
 	exit(EXIT_FAILURE);
-}
-
-int	ft_close(int fd)
-{
-	/* If fd isn't std stream */
-	if (fd > 3)
-	{
-		if (close(fd))
-			return (-1);
-	}
-	return (0);
-}
-
-int	ft_open(char *fname, int mode)
-{
-	int	fd;
-
-	fd = 0;
-	/* If mode is readonly then this is input file */
-	if (mode == O_RDONLY)
-	{
-		if (access(fname, F_OK) || access(fname, R_OK))
-			fd = -1;
-	}
-	/* Else output file */
-	else
-	{
-		if (!access(fname, F_OK) && access(fname, W_OK))
-			fd = -1;
-	}
-	if (fd != -1)
-		fd = open(fname, mode, 0644);
-	return (fd);
 }

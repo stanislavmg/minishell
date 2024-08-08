@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/08 12:22:49 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PARSER_H
 # define PARSER_H
 
@@ -50,7 +62,8 @@ t_exec_cmd		*new_exec_cmd(t_list *args);
 t_cmd	      *add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
 t_cmd	      *build_tree(t_parser *parser);
 t_cmd	      *build_subtree(t_parser *parser);
-t_cmd       *build_AST(t_parser *parser);
+t_cmd       *new_ast(t_parser *parser);
+char *here_doc_start(t_token *hd_token);
 
 // parse utils
 int	        is_redirect(e_token type);
@@ -60,9 +73,12 @@ char	    **get_path(char *path_env);
 char	    *parsing_path(char **path_env, char *cmd_name);
 t_exec_cmd	*new_exec_cmd(t_list *args);
 int	        free_cmd(t_exec_cmd *cmd);
-e_token     get_token_type(t_list *token);
+e_token     get_token_type(t_parser *parser);
 t_redir		*new_redir(e_token redirect_type, char *fname);
-
+void	push_var(t_list **var_lst, t_token *token);
+t_cmd *new_branch(t_list *var, t_list *args, t_list *redir);
+t_cmd	*parse_block(t_parser *parser);
+void	print_msh_err(t_token *token);
 
 // free
 void	free_ast(t_ast *root);

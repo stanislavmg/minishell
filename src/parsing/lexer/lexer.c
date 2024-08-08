@@ -240,7 +240,7 @@ char	*variable_handle(t_lexer *lex)
 		!is_catchar(lex->str_pos[i]))
 		i++;
 	new_word = get_word(lex->str_pos, i);
-	var = search_env(lex->env, new_word);
+	var = get_env(lex->env, new_word);
 	lex->str_pos += i;
 	free(new_word);
 	if (!var)
@@ -285,7 +285,7 @@ int	insert_variable(t_list *list_env, t_env *new_var)
 
 	if (!new_var)
 		return (1);
-	search_var = search_env(list_env, new_var->key);
+	search_var = get_env(list_env, new_var->key);
 	if (!search_var)
 		ft_lstadd_back(&list_env, ft_lstnew(new_var));
 	else

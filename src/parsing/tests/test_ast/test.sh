@@ -2,8 +2,9 @@
 
 DIR=../../
 MSH=./minishell
-INPUT=test_case.txt 
-REDIR=test_output.txt
+INPUT=brackets.txt 
+REDIR=redirect.txt
+SYNTAX=syntax.txt
 OUTPUT=output
 LOG=log
 NUM=1

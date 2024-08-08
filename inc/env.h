@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/07/23 11:01:55 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:10:17 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 int		set_env(t_list *list_env, t_var *new_env, int attr);
 t_env	*new_env(char *key, char *value, int attr);
 void	free_env(void *env);
-t_env	*search_env(t_list *list_env, char *key);
+t_env	*get_env(t_list *list_env, char *key);
 char 	*get_var_name(const char *token_word);
 char 	*get_var_value(const char *token_word);
 t_list	*new_env_list(char **env);

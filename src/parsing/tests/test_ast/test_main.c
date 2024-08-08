@@ -28,7 +28,7 @@ int	main(int ac, char **av, char **env)
 	lex = new_lexer(input_str, env_lst);
 	init_list(lex);
 	parser = new_parser(lex);
-	root = build_AST(parser);
+	root = new_ast(parser);
 	travers_tree((t_ast *)root, env_lst);
 	free_lexer(lex);
 	free_parser(parser);
