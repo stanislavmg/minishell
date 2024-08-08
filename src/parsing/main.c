@@ -36,8 +36,11 @@ int	main(int ac, char **av, char **env)
 		print_tokens(lex->tokens);
 		parser = new_parser(lex);
 		root = new_ast(parser);
+		print_tree((t_ast *)root);
 		if (!parser->err)
+		{
 			travers_tree((t_ast *)root, env_lst);
+		}
 		else
 		{
 			if (parser->cur_token_pos)
@@ -45,7 +48,6 @@ int	main(int ac, char **av, char **env)
 			else
 				print_msh_err(ft_lstlast(lex->tokens)->data);
 		}
-		print_tree((t_ast *)root);
 		free_lexer(lex);
 		free_parser(parser); 
 		free_ast((t_ast *)root);

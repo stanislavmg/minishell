@@ -5,9 +5,12 @@ t_cmd *new_ast(t_parser *parser)
 	t_cmd		*root;
 	e_token		type;
 
-	root = build_tree(parser);
-	if (!root)
-		return (NULL);
+	root = NULL;
+	type = get_token_type(parser);
+	if (is_cmd_delimeter(type) || type == CLOSED_BRACKET)
+		parser->err = ERR_SYNTAX;
+	else
+		root = build_tree(parser);
 	while (parser->cur_token_pos && !parser->err)
 	{
 		type = get_token_type(parser);
@@ -33,6 +36,8 @@ t_cmd	*build_tree(t_parser *parser)
 	type = get_token_type(parser);
 	if (is_cmd_delimeter(type))
 		parser->err = ERR_SYNTAX;
+	else if (type == CLOSED_BRACKET)
+		return (root);
 	else if (type == OPEN_BRACKET)
 	{
 		parser->cur_token_pos = parser->cur_token_pos->next;
@@ -48,7 +53,9 @@ t_cmd	*parse_block(t_parser *parser)
 	t_cmd *root;
 	e_token	type;
 
-	if (!parser || !parser->cur_token_pos)
+	root = NULL;
+
+	if (!parser || !parser->cur_token_pos || get_token_type(parser) == CLOSED_BRACKET)
 		parser->err = ERR_SYNTAX;
 	else
 		root = build_tree(parser);
@@ -84,12 +91,14 @@ t_cmd	*parse_cmd(t_parser *parser)
 	var = NULL;
 	args = NULL;
 	redir = NULL;
-	if (is_cmd_delimeter(get_token_type(parser)))
+	if (is_cmd_delimeter(get_token_type(parser)) || OPEN_BRACKET == get_token_type(parser))
 	{
 		parser->err = ERR_SYNTAX;
 		return (NULL);
 	}
 	while (parser->cur_token_pos && 
+			!parser->err &&
+
 			!is_cmd_delimeter(get_token_type(parser)) &&
 			get_token_type(parser) != CLOSED_BRACKET)
 	{
@@ -104,7 +113,10 @@ t_cmd	*parse_cmd(t_parser *parser)
 			ft_lstadd_back(&args, ft_lstnew(cur_token->word));
 			cur_token->word = NULL;
 		}
-		parser->cur_token_pos = parser->cur_token_pos->next;
+		if (cur_token->type == OPEN_BRACKET)
+			parser->err = ERR_SYNTAX;
+		else
+			parser->cur_token_pos = parser->cur_token_pos->next;
 	}
 	parser->cmd_start = 0;
 	return (new_branch(var, args, redir));

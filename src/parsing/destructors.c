@@ -22,7 +22,7 @@ void	free_arr(char **arr)
 void	free_parser(t_parser *parser)
 {
 	free_arr(parser->paths);
-	free(parser);	
+	free(parser);
 }
 
 void	free_ast(t_ast *root)
