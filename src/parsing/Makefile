@@ -19,14 +19,14 @@ CFLAGS  = -Wall -g3 -I$(INCLUDE) -fsanitize=address
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(MAIN:.c=.o) ${LIB}
+$(NAME): $(OBJ) $(MAIN:.c=.o) $(LIB)
 	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIB):
-	 make -C .. ../../libft all bonus clean && mv .. ../../libft/$(LIB) .
+	 make -C ../../libft all bonus clean && mv ../../libft/$(LIB) .
 
 lexer: $(LEX_OBJ)
 	$(CC) $(CFLAGS) -o lex $(LEX_OBJ) $(LIB)

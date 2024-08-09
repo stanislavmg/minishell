@@ -75,6 +75,12 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 		new_word = scan_token(lex);
 	else
 		new_word = get_word(value, len);
+	if (!new_word)
+	{
+		lex->err = ERR_SYNTAX;
+		new_word = get_word(value, len);
+		
+	}
 	push_token(&lex->tokens, new_word, type);
 	return (0);
 }

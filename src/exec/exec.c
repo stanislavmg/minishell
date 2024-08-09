@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/06 11:08:33 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:36:12 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	open_redirect(t_ast *root, t_list *list_env)
     pid = fork();
 	if (!pid)
 	{
-		if (rfile->mode == O_RDONLY)
+		if (rfile->type == INPUT_TRUNC || rfile->type == HERE_DOC)
         	dup2(fd, STDIN_FILENO);
 		else
         	dup2(fd, STDOUT_FILENO);

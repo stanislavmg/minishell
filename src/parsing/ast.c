@@ -16,10 +16,10 @@ t_cmd *new_ast(t_parser *parser)
 		type = get_token_type(parser);
 		if (is_redirect(type))
 			type = REDIRECT;
-		else if (is_cmd_delimeter(type))
-			parser->cur_token_pos = parser->cur_token_pos->next;
 		if (type == OPEN_BRACKET || type == CLOSED_BRACKET)
 			parser->err = ERR_SYNTAX;
+		else if (is_cmd_delimeter(type))
+			parser->cur_token_pos = parser->cur_token_pos->next;
 		root = add_tnode(root, build_tree(parser), type);
 	}
 	return (root);
@@ -36,8 +36,6 @@ t_cmd	*build_tree(t_parser *parser)
 	type = get_token_type(parser);
 	if (is_cmd_delimeter(type))
 		parser->err = ERR_SYNTAX;
-	else if (type == CLOSED_BRACKET)
-		return (root);
 	else if (type == OPEN_BRACKET)
 	{
 		parser->cur_token_pos = parser->cur_token_pos->next;
@@ -62,8 +60,6 @@ t_cmd	*parse_block(t_parser *parser)
 	type = get_token_type(parser);
 	while (parser->cur_token_pos && CLOSED_BRACKET != type && !parser->err)
 	{
-		if (is_redirect(type))
-			type = REDIRECT;
 		if (is_cmd_delimeter(type))
 			parser->cur_token_pos = parser->cur_token_pos->next;
 		root = add_tnode(root, build_tree(parser), type);
@@ -79,6 +75,35 @@ t_cmd	*parse_block(t_parser *parser)
 void	print_msh_err(t_token *token)
 {
 	printf("minishell: syntax error near unexpected token `%s'\n", token->word);
+}
+
+void remove_duplicate(t_list **redirects)
+{
+	t_redir	*r_token;
+	t_list	*tmp;
+	t_list	*prev;
+
+	if (!redirects)
+		return ;
+	tmp = *redirects;
+	prev = NULL;
+	while (tmp)
+	{
+		r_token = tmp->data;
+		if (HERE_DOC == r_token->type)
+		{
+			if (!prev)
+				*redirects = tmp->next;
+			else
+				prev->next = tmp->next;
+			unlink(r_token->fname);
+			free(r_token->fname);
+			ft_lstdelone(tmp, free);
+			return ;
+		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
 }
 
 t_cmd	*parse_cmd(t_parser *parser)
@@ -98,7 +123,6 @@ t_cmd	*parse_cmd(t_parser *parser)
 	}
 	while (parser->cur_token_pos && 
 			!parser->err &&
-
 			!is_cmd_delimeter(get_token_type(parser)) &&
 			get_token_type(parser) != CLOSED_BRACKET)
 	{
@@ -106,7 +130,11 @@ t_cmd	*parse_cmd(t_parser *parser)
 		if (ft_strchr(cur_token->word, '=') && !parser->cmd_start)
 			push_var(&var, cur_token);
 		else if (is_redirect(cur_token->type))
-			ft_lstadd_back(&redir, ft_lstnew(parse_redirect(cur_token)));
+		{
+			if (cur_token->type == HERE_DOC)
+				remove_duplicate(&redir);
+			ft_lstadd_front(&redir, ft_lstnew(parse_redirect(cur_token)));
+		}
 		else if (cur_token->type == STRING)
 		{
 			parser->cmd_start = 1;
@@ -152,7 +180,7 @@ t_cmd *new_branch(t_list *var, t_list *args, t_list *redir)
 
 t_cmd	*build_tree_fromlist(t_list *nodes, e_token type)
 {
-	t_cmd		*root;
+	t_cmd	*root;
 
 	if (!nodes)
 		return (NULL);

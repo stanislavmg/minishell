@@ -29,7 +29,7 @@ void	free_ast(t_ast *root)
 {
 	if (!root)
 		return ;
-	if (root->type != COMMAND && root->type != VARIABLE	&& root->type != IO_FILE)
+	if (root->type != COMMAND && root->type != VARIABLE	&& !is_redirect(root->type))
 		free_ast((t_ast *)root->left);
 	else if (root->type == COMMAND)
 		free_cmd((t_exec_cmd *)root);
@@ -38,9 +38,13 @@ void	free_ast(t_ast *root)
 		free(((t_var *)root)->key);
 		free(((t_var *)root)->value);
 	}
-	else if (root->type == IO_FILE)
-		free(((t_redir *)root)->fname);		
-	if (root->type != COMMAND && root->type != VARIABLE	&& root->type != IO_FILE)
+	else if (is_redirect(root->type))
+	{
+		if (root->type == HERE_DOC)
+			unlink(((t_redir *)root)->fname);
+		free(((t_redir *)root)->fname);
+	}
+	if (root->type != COMMAND && root->type != VARIABLE	&& !is_redirect(root->type))
 		free_ast((t_ast *)root->right);
 	free(root);
 }

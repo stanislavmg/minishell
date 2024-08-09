@@ -5,7 +5,7 @@ t_redir *new_redir(e_token redirect_type, char *fname)
 	t_redir *new_node;
 
 	new_node = (t_redir *)malloc(sizeof(t_redir));
-	new_node->type = IO_FILE;
+	new_node->type = redirect_type;
 	new_node->fname = fname;
 	if (OUTPUT_TRUNC == redirect_type)
 		new_node->mode = O_TRUNC | O_CREAT | O_RDWR;

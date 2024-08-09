@@ -18,12 +18,9 @@ t_cmd *parse_redirect(t_token *token)
 	t_redir *new_node;
 
 	if (token->type == HERE_DOC)
-		new_node = new_redir(token->type, here_doc_start(token));
-	else
-	{
-		new_node = new_redir(token->type, token->word);
-		token->word = NULL;
-	}
+		here_doc_start(token);
+	new_node = new_redir(token->type, token->word);
+	token->word = NULL;
 	return ((t_cmd *)new_node);
 }
 

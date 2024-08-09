@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/08 12:22:49 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:22:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_cmd	      *add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
 t_cmd	      *build_tree(t_parser *parser);
 t_cmd	      *build_subtree(t_parser *parser);
 t_cmd       *new_ast(t_parser *parser);
-char *here_doc_start(t_token *hd_token);
+int 		here_doc_start(t_token *hd_token);
 
 // parse utils
 int	        is_redirect(e_token type);

@@ -47,7 +47,7 @@ void free_token(void *cur_token_pos)
 
 void	free_lexer(t_lexer *lex)
 {
-	//free(lex->input_str);
+	free(lex->input_str);
 	ft_lstclear(&lex->tokens, free_token);
 	free(lex);
 }
@@ -61,15 +61,10 @@ int	init_list(t_lexer *lex)
 	{
 		new_word = scan_token(lex);
 		if (lex->err)
-		{
-			error_handle(lex);
-			//free_lexer(lex);
 			return (1);
-		}
 		else if (new_word && *new_word) //FIXME leak when return ""
 			push_token(&lex->tokens, new_word, STRING);
 	}
-	//push_token(&lex->tokens, NULL, END);
 	return (0);
 }
 
