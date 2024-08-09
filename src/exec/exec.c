@@ -6,11 +6,84 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/09 17:36:12 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:22:30 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "exec.h"
+
+int	travers_tree(t_ast *root, t_list *list_env)
+{
+	if (!root)
+		return (0);
+	if (root->type == COMMAND)
+		start_job(list_env, (t_exec_cmd *)root);
+	else if (root->type == VARIABLE)
+		set_env(list_env, (t_var *)root, HIDDEN);
+	else if (root->type == OR)
+	{
+		travers_tree((t_ast *)root->left, list_env);
+		if (get_last_status(list_env))
+			travers_tree((t_ast *)root->right, list_env);
+	}
+	else if (root->type == AND)
+	{
+		travers_tree((t_ast *)root->left, list_env);
+		if (get_last_status(list_env) == EXIT_SUCCESS) 
+			travers_tree((t_ast *)root->right, list_env);
+	}
+	else if (root->type == PIPE)
+		start_pipeline(root, list_env);
+	else if (root->type == REDIRECT)
+		open_redirect(root, list_env);
+	else if (root->type == SEMICOLON)
+	{
+		travers_tree((t_ast *)root->left, list_env);
+		travers_tree((t_ast *)root->right, list_env);
+	}
+	return (0);
+}
+
+void	start_job(t_list *list_env, t_exec_cmd *cmd)
+{
+	pid_t	pid;
+	int 	exit_code;
+	char	**envp;
+
+	envp = new_env_arr(list_env);
+	pid = fork();
+	if (!pid)
+		ft_execve(cmd, envp);
+	if (pid == -1)
+	{
+		printf("fork error\n");
+		return ;
+	}
+	waitpid(pid, &exit_code, 0);
+	free_arr(envp);
+	set_last_status(list_env, exit_code);
+}
+
+int	ft_execve(t_exec_cmd *cmd, char **env)
+{
+	char	**paths;
+
+	paths = NULL;
+	while (*env && strncmp(*env, "PATH=", 5))
+		env++;
+	paths = get_path(*env + 5);
+	cmd->path = parsing_path(paths, cmd->argv[0]);
+	free_arr(paths);
+	if (cmd->path)
+		execve(cmd->path, cmd->argv, env);
+	else
+	{
+		printf("minishell: %s: command not found\n", cmd->argv[0]);
+		exit(EXIT_FAILURE);
+	}
+	perror(cmd->argv[0]);
+	exit(EXIT_FAILURE);
+}
 
 int	start_pipeline(t_ast *root, t_list *list_env)
 {
@@ -99,102 +172,4 @@ int	open_redirect(t_ast *root, t_list *list_env)
 		set_last_status(list_env, exit_code);
 	}
 	return (exit_code);
-}
-
-int	travers_tree(t_ast *root, t_list *list_env)
-{
-	if (!root)
-		return (0);
-	if (root->type == COMMAND)
-		start_job(list_env, (t_exec_cmd *)root);
-	else if (root->type == VARIABLE)
-		set_env(list_env, (t_var *)root, HIDDEN);
-	else if (root->type == OR)
-	{
-		travers_tree((t_ast *)root->left, list_env);
-		if (get_last_status(list_env))
-			travers_tree((t_ast *)root->right, list_env);
-	}
-	else if (root->type == AND)
-	{
-		travers_tree((t_ast *)root->left, list_env);
-		if (get_last_status(list_env) == EXIT_SUCCESS) 
-			travers_tree((t_ast *)root->right, list_env);
-	}
-	else if (root->type == PIPE)
-		start_pipeline(root, list_env);
-	else if (root->type == REDIRECT)
-		open_redirect(root, list_env);
-	else if (root->type == SEMICOLON)
-	{
-		travers_tree((t_ast *)root->left, list_env);
-		travers_tree((t_ast *)root->right, list_env);
-	}
-	return (0);
-}
-
-char	**new_env_arr(t_list *list_env)
-{
-	int		i;
-	t_env	*var;
-	int		size;
-	char	**envp;
-	char	*t;
-
-	envp = NULL;
-	i = 0;
-	size = ft_lstsize(list_env);
-	envp = (char **)malloc(sizeof(char *) * (size + 1));
-	while (i < size)
-	{
-		var = list_env->data;
-		t = ft_strjoin(var->key, "=");
-		envp[i] = ft_strjoin(t, var->value);
-		free(t);
-		list_env = list_env->next;
-		i++;
-	}
-	envp[i] = NULL;
-	return (envp);
-}
-
-void	start_job(t_list *list_env, t_exec_cmd *cmd)
-{
-	pid_t	pid;
-	int 	exit_code;
-	char	**envp;
-
-	envp = new_env_arr(list_env);
-	pid = fork();
-	if (!pid)
-		ft_execve(cmd, envp);
-	if (pid == -1)
-	{
-		printf("fork error\n");
-		return ;
-	}
-	waitpid(pid, &exit_code, 0);
-	free_arr(envp);
-	set_last_status(list_env, exit_code);
-}
-
-int	ft_execve(t_exec_cmd *cmd, char **env)
-{
-	char	**paths;
-
-	paths = NULL;
-	while (*env && strncmp(*env, "PATH=", 5))
-		env++;
-	paths = get_path(*env + 5);
-	cmd->path = parsing_path(paths, cmd->argv[0]);
-	free_arr(paths);
-	if (cmd->path)
-		execve(cmd->path, cmd->argv, env);
-	else
-	{
-		printf("minishell: %s: command not found\n", cmd->argv[0]);
-		exit(EXIT_FAILURE);
-	}
-	perror(cmd->argv[0]);
-	exit(EXIT_FAILURE);
 }

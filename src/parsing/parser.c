@@ -3,7 +3,9 @@
 t_var	*new_tvar(const char *key_and_value)
 {
 	t_var	*new_var;
+	struct dirent t;
 
+	t.
 	new_var = (t_var *)malloc(sizeof(t_var));
 	if (!new_var)
 		return (NULL);

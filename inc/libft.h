@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 17:05:47 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/06 11:15:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:19:56 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 int		ft_open(char *fname, int mode);
 int		ft_close(int fd);
-/**************************************************************/
-/**************************************************************/
+
+/* EXTRA FUNCTION */
+
 t_list	*ft_lstnew(void *data);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 int		ft_lstsize(t_list *lst);

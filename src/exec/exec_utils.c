@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/05 12:30:50 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:22:41 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,29 @@ void	set_last_status(t_list *list_env, int new_value)
 		return ;
 	free(last_status->value);
 	last_status->value = ft_itoa(new_value);
+}
+
+char	**new_env_arr(t_list *list_env)
+{
+	int		i;
+	t_env	*var;
+	int		size;
+	char	**envp;
+	char	*t;
+
+	envp = NULL;
+	i = 0;
+	size = ft_lstsize(list_env);
+	envp = (char **)malloc(sizeof(char *) * (size + 1));
+	while (i < size)
+	{
+		var = list_env->data;
+		t = ft_strjoin(var->key, "=");
+		envp[i] = ft_strjoin(t, var->value);
+		free(t);
+		list_env = list_env->next;
+		i++;
+	}
+	envp[i] = NULL;
+	return (envp);
 }

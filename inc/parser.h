@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/09 17:22:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:33:04 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "env.h"
 # include "error.h"
 # include "minishell.h"
+# include <dirent.h>
 # include <fcntl.h>
 # include <stdio.h>
 # include <ctype.h>
@@ -25,10 +26,10 @@
 
 // lexer methods
 t_lexer	*new_lexer(char *input, t_list *env_list);
-t_token *new_token(char *word, e_token type);
-void	  push_token(t_list **token_list, char *new_word, e_token type);
-int	    	init_list(t_lexer *lex);
-void	  free_lexer(t_lexer *lex);
+t_token	*new_token(char *word, e_token type);
+void	push_token(t_list **token_list, char *new_word, e_token type);
+int		init_list(t_lexer *lex);
+void	free_lexer(t_lexer *lex);
 
 // tokenization
 char	*scan_token(t_lexer *lex);
@@ -51,45 +52,43 @@ int	    is_redirectchar(char ch);
 int	    is_catchar(char ch);
 
 // expand tokens and build tree
-t_parser    *new_parser(t_lexer *lex);
-t_var	      *new_tvar(const char *key_and_value);
-t_cmd	*build_tree_fromlist(t_list *nodes, e_token type);
-t_cmd	      *add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
-t_cmd	      	*parse_cmd(t_parser *parser);
-char		 	**add_field_argv(t_list *args);
+t_parser	*new_parser(t_lexer *lex);
+t_var		*new_tvar(const char *key_and_value);
+t_cmd		*build_tree_fromlist(t_list *nodes, e_token type);
+t_cmd		*add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
+t_cmd		*parse_cmd(t_parser *parser);
+char		**add_field_argv(t_list *args);
 t_cmd 		*parse_redirect(t_token *token);
-t_exec_cmd		*new_exec_cmd(t_list *args);
-t_cmd	      *add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
-t_cmd	      *build_tree(t_parser *parser);
-t_cmd	      *build_subtree(t_parser *parser);
-t_cmd       *new_ast(t_parser *parser);
+t_exec_cmd	*new_exec_cmd(t_list *args);
+t_cmd		*add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
+t_cmd		*build_tree(t_parser *parser);
+t_cmd		*new_ast(t_parser *parser);
 int 		here_doc_start(t_token *hd_token);
 
 // parse utils
-int	        is_redirect(e_token type);
-int	        is_cmd_delimeter(e_token type);
-void	    free_arr(char **arr);
-char	    **get_path(char *path_env);
-char	    *parsing_path(char **path_env, char *cmd_name);
+int			is_redirect(e_token type);
+int			is_cmd_delimeter(e_token type);
+void		free_arr(char **arr);
+char		**get_path(char *path_env);
+char		*parsing_path(char **path_env, char *cmd_name);
 t_exec_cmd	*new_exec_cmd(t_list *args);
-int	        free_cmd(t_exec_cmd *cmd);
-e_token     get_token_type(t_parser *parser);
+int			free_cmd(t_exec_cmd *cmd);
+e_token		get_token_type(t_parser *parser);
 t_redir		*new_redir(e_token redirect_type, char *fname);
-void	push_var(t_list **var_lst, t_token *token);
-t_cmd *new_branch(t_list *var, t_list *args, t_list *redir);
-t_cmd	*parse_block(t_parser *parser);
-void	print_msh_err(t_token *token);
+void		push_var(t_list **var_lst, t_token *token);
+t_cmd 		*new_branch(t_list *var, t_list *args, t_list *redir);
+t_cmd		*parse_block(t_parser *parser);
+void		print_msh_err(t_token *token);
 
 // free
 void	free_ast(t_ast *root);
 void	free_parser(t_parser *parser);
 void	free_arr(char **arr);
-int	  free_cmd(t_exec_cmd *cmd);
+int		free_cmd(t_exec_cmd *cmd);
 
 // debug
-const char    *get_type(int type);
-void          print_tree(t_ast* root);
-void	        print_tokens(t_list *tokens);
-
+const char	*get_type(int type);
+void		print_tree(t_ast* root);
+void		print_tokens(t_list *tokens);
 
 #endif
