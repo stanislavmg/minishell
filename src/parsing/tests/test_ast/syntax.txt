@@ -1,6 +1,14 @@
-;;
-(ls;) | (wc;)
-ls;
 ls (
 ) ls
 || ls
+ls >> >
+< ;
+<
+;
+(
+)
+; ls
+(ls) | wc)
+echo h ||| ls
+ls && || echo h
+ls && | echo h 

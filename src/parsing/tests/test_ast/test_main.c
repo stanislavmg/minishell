@@ -27,9 +27,26 @@ int	main(int ac, char **av, char **env)
 		return 1;
 	lex = new_lexer(input_str, env_lst);
 	init_list(lex);
+	if (lex->err){
+		print_msh_err(ft_lstlast(lex->tokens)->data);
+		lex->input_str = NULL;
+		free_lexer(lex);
+		return (1);
+	}
 	parser = new_parser(lex);
 	root = new_ast(parser);
-	travers_tree((t_ast *)root, env_lst);
+	if (!parser->err)
+	{
+		travers_tree((t_ast *)root, env_lst);
+	}
+	else
+	{
+		if (parser->cur_token_pos)
+			print_msh_err(parser->cur_token_pos->data);
+		else
+			print_msh_err(ft_lstlast(lex->tokens)->data);
+	}
+	lex->input_str = NULL;
 	free_lexer(lex);
 	free_parser(parser);
 	free_ast((t_ast *)root);
