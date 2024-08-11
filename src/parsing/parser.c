@@ -3,9 +3,7 @@
 t_var	*new_tvar(const char *key_and_value)
 {
 	t_var	*new_var;
-	struct dirent t;
 
-	t.
 	new_var = (t_var *)malloc(sizeof(t_var));
 	if (!new_var)
 		return (NULL);
@@ -15,18 +13,18 @@ t_var	*new_tvar(const char *key_and_value)
 	return (new_var);
 }
 
-t_cmd *parse_redirect(t_token *token)
+t_cmd *parse_redirect(t_token *token, t_list *env)
 {
 	t_redir *new_node;
 
 	if (token->type == HERE_DOC)
-		here_doc_start(token);
+		here_doc_start(token, env);
 	new_node = new_redir(token->type, token->word);
 	token->word = NULL;
 	return ((t_cmd *)new_node);
 }
 
-void	push_var(t_list **var_lst, t_token *token)
+void	add_variable_node(t_list **var_lst, t_token *token)
 {
 	t_list	*new_lst_node;
 	t_var	*new_var;

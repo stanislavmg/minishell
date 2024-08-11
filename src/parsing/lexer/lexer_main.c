@@ -4,11 +4,11 @@ int	main(int ac, char **av, char **env)
 {
 	t_lexer 	*lex;
 	t_token 	*list;
-	t_env		*env_list;
+	t_list		*env_list;
 	int 		i;
 
 	lex = NULL;
-	env_list = create_envlist(env);
+	env_list = new_env_list(env);
 	lex = new_lexer(av[1], env_list);
 	init_list(lex);
 	if (!lex || !lex->tokens)

@@ -12,19 +12,6 @@ int	is_redirect(e_token type)
 			OUTPUT_ADD == type || OUTPUT_TRUNC == type);
 }
 
-pid_t	ft_fork(void)
-{
-	pid_t pid;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("minishell: ");
-		return (-1);
-	}
-	return (pid);
-}
-
 char *get_var_name(const char *token_word)
 {
 	char	*var_name;

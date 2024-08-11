@@ -6,17 +6,31 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/09 18:22:41 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/11 17:37:24 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-void	exit_failure(char *msg)
+void	exit_failure(char *msg, int error)
 {
-	printf("minishell: ");
-	perror(msg);
-	exit(errno);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	if (error == CMD_NOT_FOUND)
+	{
+		if (ft_strchr(msg, '/'))
+			ft_printf("minishell: %s: No such file or directory\n", msg);
+		else
+			ft_printf("minishell: %s: command not found\n", msg);
+	}
+	else if (error == PERM_DENIED)
+	{
+		ft_putstr_fd(msg, STDERR_FILENO);
+		ft_putstr_fd(":", STDERR_FILENO);
+		ft_putstr_fd(" Permission denied\n", STDERR_FILENO);
+	}
+	else
+		perror(msg);
+	exit(error);
 }
 
 int	get_last_status(t_list *list_env)
@@ -68,4 +82,17 @@ char	**new_env_arr(t_list *list_env)
 	}
 	envp[i] = NULL;
 	return (envp);
+}
+
+pid_t	ft_fork(void)
+{
+	pid_t pid;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("minishell: ");
+		return (-1);
+	}
+	return (pid);
 }

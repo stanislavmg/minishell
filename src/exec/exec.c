@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/09 18:22:30 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:14:35 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,31 +56,32 @@ void	start_job(t_list *list_env, t_exec_cmd *cmd)
 		ft_execve(cmd, envp);
 	if (pid == -1)
 	{
-		printf("fork error\n");
+		ft_putstr_fd("fork error\n", STDERR_FILENO);
 		return ;
 	}
 	waitpid(pid, &exit_code, 0);
 	free_arr(envp);
-	set_last_status(list_env, exit_code);
+	set_last_status(list_env, WEXITSTATUS(exit_code));
 }
 
 int	ft_execve(t_exec_cmd *cmd, char **env)
 {
 	char	**paths;
+	int		i;
 
+	i = 0;
 	paths = NULL;
-	while (*env && strncmp(*env, "PATH=", 5))
-		env++;
-	paths = get_path(*env + 5);
+	while (env[i] && strncmp(env[i], "PATH=", 5))
+		i++;
+	paths = get_path(env[i] + 5);
 	cmd->path = parsing_path(paths, cmd->argv[0]);
 	free_arr(paths);
+	if (access(cmd->path, F_OK) || !cmd->path)
+		exit_failure(cmd->argv[0], CMD_NOT_FOUND);
+	if (access(cmd->path, X_OK))
+		exit_failure(cmd->argv[0], PERM_DENIED);
 	if (cmd->path)
 		execve(cmd->path, cmd->argv, env);
-	else
-	{
-		printf("minishell: %s: command not found\n", cmd->argv[0]);
-		exit(EXIT_FAILURE);
-	}
 	perror(cmd->argv[0]);
 	exit(EXIT_FAILURE);
 }
@@ -95,18 +96,18 @@ int	start_pipeline(t_ast *root, t_list *list_env)
 	if (!root)
 		return (0);
 	if (pipe(pdes) == -1)
-	{
-        perror("pipe");
-        exit(EXIT_FAILURE);
-    }
+		exit_failure("pipe", EXIT_FAILURE);
     ps1 = fork();
     if (ps1 == 0)
 	{
         dup2(pdes[1], STDOUT_FILENO);
         close(pdes[0]);
         close(pdes[1]);
-        exit(travers_tree((t_ast *)root->left, list_env));
+		travers_tree((t_ast *)root->left, list_env);
+        exit(get_last_status(list_env));
     }
+	else if (ps1 < 0)
+		exit_failure("fork", EXIT_FAILURE); // FIXME need free
 	else if (ps1 > 0)
 	{
 		ps2 = fork();
@@ -115,32 +116,20 @@ int	start_pipeline(t_ast *root, t_list *list_env)
         	dup2(pdes[0], STDIN_FILENO);
         	ft_close(pdes[0]);
 			waitpid(ps1, &exit_code, 0);
-			set_last_status(list_env, exit_code);
-        	exit(travers_tree((t_ast *)root->right, list_env));
+			set_last_status(list_env, WEXITSTATUS(exit_code));
+			travers_tree((t_ast *)root->right, list_env);
+        	exit(get_last_status(list_env));
 		}
+		else if (ps2 < 0)
+			exit_failure("fork", EXIT_FAILURE);
 		close(pdes[0]);
         close(pdes[1]);
 		waitpid(ps2, &exit_code, 0);
-		set_last_status(list_env, exit_code);
+		set_last_status(list_env, WEXITSTATUS(exit_code));
     }
 	else
-	{
-        perror("fork");
-        return -1;
-    }
+		exit_failure("fork", EXIT_FAILURE); // FIXME need free
 	return (exit_code);
-}
-
-int open_io(t_redir *io_file)
-{
-	int	fd;
-
-	fd = ft_open(io_file->fname, io_file->mode);
-	if (fd == -1)
-		return (1);
-
-	ft_close(fd);
-	return (0);
 }
 
 int	open_redirect(t_ast *root, t_list *list_env)
@@ -154,12 +143,12 @@ int	open_redirect(t_ast *root, t_list *list_env)
 		return (1);
 	exit_code = 0;
 	rfile = (t_redir *)root->right;
-	fd = ft_open(rfile->fname, rfile->mode);
-	if (fd == -1)
-		exit_failure(rfile->fname);
     pid = fork();
 	if (!pid)
 	{
+		fd = ft_open(rfile->fname, rfile->mode);
+		if (fd == -1)
+			exit_failure(rfile->fname, PERM_DENIED);
 		if (rfile->type == INPUT_TRUNC || rfile->type == HERE_DOC)
         	dup2(fd, STDIN_FILENO);
 		else
@@ -168,8 +157,8 @@ int	open_redirect(t_ast *root, t_list *list_env)
 	}
 	else
 	{
-		waitpid(pid, &exit_code, 0);
-		set_last_status(list_env, exit_code);
+		wait(&exit_code);
+		set_last_status(list_env, WEXITSTATUS(exit_code));
 	}
 	return (exit_code);
 }

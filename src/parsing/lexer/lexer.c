@@ -155,8 +155,9 @@ char	*double_quotes_handle(t_lexer *lex)
 	if (lex->str_pos[i] != '\"')
 	{
 		lex->err = ERR_QUOTE;
-		return (NULL);
+		return (new_word);
 	}
+	lex->in_qoutes = 0;
 	if (is_catchar(lex->str_pos[i + 1]))
 	{
 		new_word = poststring_handle(lex, new_word, i);
@@ -169,7 +170,6 @@ char	*double_quotes_handle(t_lexer *lex)
 		else
 			new_word = get_word(lex->str_pos, i);
 	}
-	lex->in_qoutes = 0;
 	lex->str_pos += i + 1;
 	return (new_word);
 }
@@ -198,7 +198,12 @@ char	*single_quotes_handle(t_lexer *lex)
 	return (new_word);
 }
 
-char	*slash_handle(t_lexer *lex) // ` " $
+int	is_screning_ch(int ch)
+{
+	return (ch == '`' || ch == '\"' || ch == '$' || ch == '\\');
+}
+
+char	*slash_handle(t_lexer *lex)
 {
 	char *new_word;
 	char *t;
@@ -206,10 +211,7 @@ char	*slash_handle(t_lexer *lex) // ` " $
 	lex->str_pos++;
 	if (lex->in_qoutes)
 	{
-		if (*lex->str_pos == '`' ||
-			*lex->str_pos == '\"' ||
-			*lex->str_pos == '$' ||
-			*lex->str_pos == '\\')
+		if (is_screning_ch(*lex->str_pos))
 		{
 			new_word = get_word(lex->str_pos, 1);
 			lex->str_pos++;
@@ -292,9 +294,6 @@ int	insert_variable(t_list *list_env, t_env *new_var)
 	if (!new_var)
 		return (1);
 	search_var = get_env(list_env, new_var->key);
-	if (!search_var)
-		ft_lstadd_back(&list_env, ft_lstnew(new_var));
-	else
 	{
 		free(search_var->value);
 		search_var->value = new_var->value;

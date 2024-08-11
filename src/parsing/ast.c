@@ -42,7 +42,7 @@ t_cmd	*build_tree(t_parser *parser)
 		root = parse_block(parser);
 	}
 	else
-		root = parse_cmd(parser);
+		root = parse_line(parser);
 	return (root);
 }
 
@@ -74,7 +74,9 @@ t_cmd	*parse_block(t_parser *parser)
 
 void	print_msh_err(t_token *token)
 {
-	printf("minishell: syntax error near unexpected token `%s'\n", token->word);
+	ft_putstr_fd("minishell: syntax error near unexpected token `",STDERR_FILENO);
+	ft_putstr_fd(token->word, STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
 }
 
 void remove_duplicate(t_list **redirects)
@@ -106,7 +108,33 @@ void remove_duplicate(t_list **redirects)
 	}
 }
 
-t_cmd	*parse_cmd(t_parser *parser)
+void	add_redirection_node(t_list **redir, t_parser *parser)
+{
+	t_cmd *new_redirect;
+	t_token 	*cur_token;
+
+	if (!parser || !parser->cur_token_pos)
+		return ;
+	cur_token = parser->cur_token_pos->data;
+	if (cur_token->type == HERE_DOC)
+		remove_duplicate(redir);
+	new_redirect = parse_redirect(cur_token, parser->env_lst);
+	ft_lstadd_front(redir, ft_lstnew(new_redirect));
+}
+
+void	add_cmd_arg(t_list **args, t_parser *parser)
+{
+	t_token 	*cur_token;
+
+	if (!parser || !parser->cur_token_pos)
+		return ;
+	cur_token = parser->cur_token_pos->data;
+	parser->cmd_start = 1;
+	ft_lstadd_back(args, ft_lstnew(cur_token->word));
+	cur_token->word = NULL;
+}
+
+t_cmd *new_cmd_tree(t_parser *parser)
 {
 	t_list		*args;
 	t_list		*var;
@@ -116,41 +144,42 @@ t_cmd	*parse_cmd(t_parser *parser)
 	var = NULL;
 	args = NULL;
 	redir = NULL;
-	if (is_cmd_delimeter(get_token_type(parser)) || OPEN_BRACKET == get_token_type(parser))
-	{
-		parser->err = ERR_SYNTAX;
-		return (NULL);
-	}
-	while (parser->cur_token_pos && 
-			!parser->err &&
-			!is_cmd_delimeter(get_token_type(parser)) &&
-			get_token_type(parser) != CLOSED_BRACKET)
+	while (parser->cur_token_pos && !parser->err &&
+		!is_cmd_delimeter(get_token_type(parser)) &&
+		get_token_type(parser) != CLOSED_BRACKET)
 	{
 		cur_token = parser->cur_token_pos->data;
 		if (ft_strchr(cur_token->word, '=') && !parser->cmd_start)
-			push_var(&var, cur_token);
+			add_variable_node(&var, cur_token);
 		else if (is_redirect(cur_token->type))
-		{
-			if (cur_token->type == HERE_DOC)
-				remove_duplicate(&redir);
-			ft_lstadd_front(&redir, ft_lstnew(parse_redirect(cur_token)));
-		}
+			add_redirection_node(&redir, parser);
 		else if (cur_token->type == STRING)
-		{
-			parser->cmd_start = 1;
-			ft_lstadd_back(&args, ft_lstnew(cur_token->word));
-			cur_token->word = NULL;
-		}
+			add_cmd_arg(&args, parser);
 		if (cur_token->type == OPEN_BRACKET)
 			parser->err = ERR_SYNTAX;
 		else
 			parser->cur_token_pos = parser->cur_token_pos->next;
 	}
 	parser->cmd_start = 0;
-	return (new_branch(var, args, redir));
+	return (parse_cmd(var, args, redir));
 }
 
-t_cmd *new_branch(t_list *var, t_list *args, t_list *redir)
+t_cmd *parse_line(t_parser *parser)
+{
+	t_cmd *root;
+
+	root = NULL;
+	if (is_cmd_delimeter(get_token_type(parser)) ||
+		OPEN_BRACKET == get_token_type(parser))
+	{
+		parser->err = ERR_SYNTAX;
+		return (NULL);
+	}
+	root = new_cmd_tree(parser);
+	return (root);
+}
+
+t_cmd *parse_cmd(t_list *var, t_list *args, t_list *redir)
 {
 	t_cmd *root;
 

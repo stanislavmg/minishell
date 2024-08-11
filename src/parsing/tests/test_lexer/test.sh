@@ -6,9 +6,9 @@ NUM=1
 
 if [ "$1" == "-re" ]; then
 	rm lex &> /dev/null
-	make -C ../ lexer clean
-	if [ -f ../lex ]; then
-		mv ../lex ./
+	make -C ../../ lexer clean
+	if [ -f ../../lex ]; then
+		mv ../../lex ./
 	else
 		echo "Make error"
 		exit

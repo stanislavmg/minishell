@@ -11,3 +11,4 @@ Hello "$USER in $PWD"
 "str \\ \$USER \""
 hello$USE" world"
 test=USER=109; $test
+echo hello 1 2 3 >"out""4" 5 6 7

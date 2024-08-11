@@ -2,6 +2,8 @@
 
 int	free_cmd(t_exec_cmd *cmd)
 {
+	if (!cmd)
+		return (0);
 	free_arr(cmd->argv);
 	free(cmd->path);
 	return (0);
@@ -21,6 +23,8 @@ void	free_arr(char **arr)
 
 void	free_parser(t_parser *parser)
 {
+	if (!parser)
+		return ;
 	free_arr(parser->paths);
 	free(parser);
 }

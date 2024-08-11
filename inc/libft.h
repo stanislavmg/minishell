@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 17:05:47 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/09 18:19:56 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:25:22 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct s_list
 	struct s_list	*next;
 }				t_list;
 
+int		ft_printf(const char *s, ...);
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);

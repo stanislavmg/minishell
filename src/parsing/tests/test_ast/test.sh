@@ -12,12 +12,15 @@ SYNTAX=syntax.txt
 OUTPUT=output
 LOG=log
 NUM=1
+VG_ERR=142
+VALGRIND=valgrind --leak-check=full --error-exitcode=$VG_ERR
 
 function print_line() {
     local number="$1"
     local status="$2"
     local command="$3"
     local color=""
+
     if [ "${status}" == "[ KO ]" ]; then
         color=${RED}
     else
@@ -56,7 +59,11 @@ rm -f ${LOG}/*
 echo -e "\n${BOLD}BASE TEST${RESET}\n" 
 while IFS= read -r line; do
     bash -c "$line" > "${OUTPUT}/${NUM}_bash"
-    ./minishell "$line" > "${OUTPUT}/${NUM}_msh"
+    ${VALGRIND} ./minishell "$line" > "${OUTPUT}/${NUM}_msh" 2> /dev/null
+    if [ $? -eq ${VG_ERR} ]; then
+        echo "MEMORY LEAK"
+        print_line "${NUM}" "[ KO ]" "${line}"
+    fi
     if ! diff "${OUTPUT}/${NUM}_bash" "${OUTPUT}/${NUM}_msh" >/dev/null 2>&1; then
         echo "Test case ${NUM}: $line" > "${LOG}/${NUM}_log"
         echo -n "Bash output: " >> "${LOG}/${NUM}_log"
@@ -87,7 +94,11 @@ echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
 while IFS= read -r line; do
     bash -c "$line" 2> /dev/null > out
     mv out out_bash
-    ./minishell "$line" 2> /dev/null > out
+    ${VALGRIND} ./minishell "$line" 2> /dev/null > out
+    if [ $? -eq ${VG_ERR} ]; then
+        echo "MEMORY LEAK"
+        print_line "${NUM}" "[ KO ]" "${line}"
+    fi
     mv out out_msh
     if ! diff out_bash out_msh >/dev/null; then
         echo "Test case ${NUM}: $line" > "${LOG}/${NUM}_log"

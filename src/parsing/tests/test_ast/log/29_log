@@ -1,0 +1,7 @@
+Test case 29: (echo "Start"; hostname | grep "minishell"; echo "End") > out
+Bash output: 
+Start
+End
+
+Minishell output: 
+End

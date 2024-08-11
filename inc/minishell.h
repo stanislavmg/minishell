@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:25 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/06 11:10:22 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/10 17:44:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ typedef struct s_parser
 {
   t_list      *cur_token_pos;
   t_ast       *cmd_tree;
-  t_env       *env_lst;
+  t_list      *env_lst;
   char        **paths;
   int         cmd_start;
   int         brackets_count;
@@ -116,6 +116,7 @@ typedef struct s_data
 	t_parser *parser;
 	t_ast 	 *root;
 	t_list   *env_list;
+  char     *input;
 } t_data;
 
 #endif
