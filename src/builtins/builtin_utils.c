@@ -3,38 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/05 16:22:45 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:10:11 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h" // просто "builtins.h"
+#include "builtins.h"
 
-int	handle_command(char **args, t_env *env, int *fd)
+void	handle_command(char **args, t_list *env)
 {
 	int	result;
 
-// if !args || !env
-// fd не нужен
+	if (!args || !env)
+		exit(EXIT_FAILURE);
 	if (strcmp(args[0], "cd") == 0)
-		result = handle_cd(args, env, fd);
+		result = handle_cd(args, env);
 	else if (strcmp(args[0], "env") == 0)
-		result = handle_env(args, env, fd);
+		result = handle_env(args, env);
 	else if (strcmp(args[0], "pwd") == 0)
-		result = handle_pwd(args, env, fd);
+		result = handle_pwd(args);
 	else if (strcmp(args[0], "export") == 0)	
-		result = handle_export(args, env, fd);
+		result = handle_export(args, env);
 	else if (strcmp(args[0], "echo") == 0)	
-		result = handele_echo(args, env, fd);
+		result = handele_echo(args);
 	else if (strcmp(args[0], "unset") == 0)	
-		result = handle_unset(args, env, fd);
+		result = handle_unset(args, env);
 	else if (strcmp(args[0], "exit") == 0)	
-		result = handle_exit(args, env, fd);
+		result = handle_exit(args);
 	else
-		result = execute_command(args, env, fd);
-	return (result);
+		result = execute_command(args, env);
+	exit(result);
 }
 
 void	free_array(char **arr)
@@ -42,14 +42,14 @@ void	free_array(char **arr)
 	int	i;
 
 	i = 0;
-	//if !arr
+	if (!arr)
+		return ;
 	while (arr[i])
 	{
 		free(arr[i]);
 		i++;
 	}
 	free(arr);
-	arr = NULL; //  не надо, т.к память уже не наша
 }
 
 int	ft_strcmp(const char *s1, const char *s2)
@@ -57,8 +57,9 @@ int	ft_strcmp(const char *s1, const char *s2)
 	size_t	i;
 
 	i = 0;
-	// if !s1 !s2
-	while (s1[i] == s2[i] && s1[i] && s2[i]) //SEGFAULT
+	if (!s1 || !s2)
+		return (NULL);
+	while (s1[i] == s2[i] && s1[i] && s2[i])
 		i++;
 	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));
 }

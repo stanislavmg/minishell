@@ -3,24 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/05 16:30:25 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:07:08 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "builtins.h"
 
-static int	cd_oldpwd(t_env *env)
+static int	cd_oldpwd(t_list *env)
 {
 	char	*pwd;
 	char	*oldpwd;
 
-	// if !env return (0)
-	pwd = get_env("PWD", env);
-	oldpwd = get_env("OLDPWD", env);
-	// if !pwd так как может быть unset PWD 
+	if (!env)
+		return (0);
+	pwd = get_env_value("PWD", env);
+	if (!pwd)
+	{
+		ft_putendl_fd("PWD is not set", 2);
+		return (EXIT_FAILURE);
+	}
+	oldpwd = get_env_value("OLDPWD", env);
 	if (!oldpwd)
 	{
 		ft_putendl_fd("OLDPWD is not set", 2);
@@ -35,19 +40,19 @@ static int	cd_oldpwd(t_env *env)
 	}
 	else
 	{
-		set_env(env, "OLDPWD", ft_strdup(pwd));
-		set_env(env, "PWD", ft_strdup(oldpwd));
+		set_env_value(env, "OLDPWD", ft_strdup(pwd));
+		set_env_value(env, "PWD", ft_strdup(oldpwd));
 	}
 	return (EXIT_SUCCESS);
 }
 
-static int	cd_home(t_env *env)
+static int	cd_home(t_list *env)
 {
 	char	*home;
 	char	*pwd;
 
 	pwd = getcwd(NULL, 0);
-	home = get_env("HOME", env);
+	home = get_env_value("HOME", env);
 	if (!home)
 	{
 		ft_putendl_fd("HOME catalog not found", 2);
@@ -60,14 +65,14 @@ static int	cd_home(t_env *env)
 	}
 	else
 	{
-		set_env(env, "OLDPWD", ft_strdup(pwd));
-		set_env(env, "PWD", ft_strdup(home));
+		set_env_value(env, "OLDPWD", ft_strdup(pwd));
+		set_env_value(env, "PWD", ft_strdup(home));
 	}
 	free(pwd);
 	return (EXIT_SUCCESS);
 }
 
-static int	cd_path(char *path, t_env *env)
+static int	cd_path(char *path, t_list *env)
 {
 	int		result;
 	char	*cwd;
@@ -80,20 +85,20 @@ static int	cd_path(char *path, t_env *env)
 	}
 	else
 	{
-		set_env(env, "OLDPWD", ft_strdup(cwd));
-		set_env(env, "PWD", ft_strdup(path));
+		set_env_value(env, "OLDPWD", ft_strdup(cwd));
+		set_env_value(env, "PWD", ft_strdup(path));
 	}
 	free(cwd);
 	return (EXIT_SUCCESS);
 }
 
-int	handle_cd(char **args, t_env *env, int *fd)
+int	handle_cd(char **args, t_list *env)
 {
 	int	res;
 
-	// лучше использовать размер массива
-	// argc = size of args
-	if (args[1] && args[2]) // SEGFAULT
+	if (!args || !env)
+		return (EXIT_FAILURE);
+	if (args[1] && args[2])
 	{
 		ft_putendl_fd("Too many arguments", 2);
 		return (EXIT_FAILURE);

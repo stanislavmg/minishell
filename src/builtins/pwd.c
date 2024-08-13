@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 10:54:08 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/05 17:39:45 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:02:52 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "builtins.h"
 
-int	handle_pwd(char **args, t_env *env, int *fd)
+int	handle_pwd(char **args)
 {
 	char	pwd[PATH_MAX];
-	// зачем тут env
+
 	if (getcwd(pwd, sizeof(pwd)) != NULL)
-		ft_putendl_fd(pwd, fd[1]);
+		ft_putendl_fd(pwd, STDERR_FILENO);
 	else
 	{
 		ft_putendl_fd("CWD error", STDERR_FILENO);

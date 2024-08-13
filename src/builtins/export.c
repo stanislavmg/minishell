@@ -3,27 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/05 17:50:11 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:03:59 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "builtins.h"
 
-static void	fill_export_string(char *str, t_env *env)
+static void	fill_export_string(char *str, t_list *env)
 {
 	char	*s;
 	int		i;
 	int		j;
+	t_env	*target;
 
 	i = -1;
 	j = 0;
-	s = env -> key;
+	target = (t_env *)env -> content;
+	s = target -> key;
 	while (s[++i])
 		str[i] = s[i];
-	s = env -> value;
+	s = target -> value;
 	if (s && ft_strlen(s) > 0)
 	{
 		str[i++] = '=';
@@ -35,23 +37,43 @@ static void	fill_export_string(char *str, t_env *env)
 	}
 }
 
-static char	**get_exports(t_env *env)
+static void	ft_free_exports(char **exports, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		free(exports[i]);
+		i++;
+	}
+}
+
+static char	**get_exports(t_list *env)
 {
 	char	**exports;
 	int		count;
 	int		i;
+	t_env	*target;
 
 	i = 0;
-	count = ft_list_size(env);
+	count = ft_lstsize(env);
 	exports = malloc(sizeof(char *) * (count + 1));
-	// нет проверки на !export
+	if (!exports)
+		return (NULL);
 	while (i < count)
 	{
-		// не совсем понял зачем выделять память под строки
-		exports[i] = malloc(sizeof(char) * (ft_strlen(env->key) + ft_strlen(env->value) + 4));
+		target = (t_env *) env -> content;
+		exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
+			+ ft_strlen(target -> value) + 4));
+		if (!exports[i])
+		{
+			ft_free_exports(exports, i);
+			return (NULL);
+		}
 		fill_export_string(exports[i], env);
-		env = env->next;
 		i++;
+		env = env -> next;
 	}
 	exports[i] = NULL;
 	return (exports);
@@ -80,7 +102,7 @@ static char	**sort_exports(char **exports)
 	return (exports);
 }
 
-static void	print_export_list(t_env *env, int *fd)
+static void	print_export_list(t_list *env)
 {
 	char	**exports;
 	int		i;
@@ -90,28 +112,30 @@ static void	print_export_list(t_env *env, int *fd)
 	exports = sort_exports(exports);
 	while (exports[i])
 	{
-		ft_putstr_fd("declare -x ", fd[1]);
-		ft_putstr_fd(exports[i], fd[1]);
-		ft_putstr_fd("\n", fd[1]);
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		ft_putstr_fd(exports[i], STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
 		i++;
 	}
 	free_array(exports);
 }
 
-int	handle_export(char **args, t_env *env, int *fd)
+int	handle_export(char **args, t_list *env)
 {
 	int	result;
 
 	result = 0;
+	if (!args || !env)
+		return (EXIT_FAILURE);
 	if (!args[1])
-		print_export_list(env, fd);
+		print_export_list(env);
 	else
 	{
 		if (args[1] && args[3])	
-			result = set_env(env, ft_strdup(args[1]), ft_strdup(args[3]));
+			result = set_env_value(env, ft_strdup(args[1]), ft_strdup(args[3]));
 		else if (args[1] && !args[3])
 		{
-			result = set_env(env, ft_strdup(args[1]), ft_strdup(""));
+			result = set_env_value(env, ft_strdup(args[1]), ft_strdup(""));
 		}
 		else
 			ft_putendl_fd("Incorrect input", STDERR_FILENO);

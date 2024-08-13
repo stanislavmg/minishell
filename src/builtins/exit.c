@@ -3,18 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/05 16:37:10 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:03:51 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "builtins.h"
 
 static int	ft_isnum(char *str)
 {
-	// if !str
+	if (!str)
+		return (EXIT_FAILURE);
 	while (*str)
 	{
 		if (!(*str >= '0' && *str <= '9'))
@@ -22,6 +23,12 @@ static int	ft_isnum(char *str)
 		str++;
 	}
 	return (EXIT_FAILURE);
+}
+
+static int	ft_isspace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\r' || c == '\v' || c == '\f');
 }
 
 static long long int	ft_atol(const char *str)
@@ -33,9 +40,7 @@ static long long int	ft_atol(const char *str)
 	i = 0;
 	res = 0;
 	mod = 1;
-	/* такое можно вынести в отдельную функцию ft_isspace() */
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
-		|| str[i] == '\r' || str[i] == '\v' || str[i] == '\f')
+	while (isspace(str[i]))
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
@@ -52,11 +57,14 @@ static long long int	ft_atol(const char *str)
 	return (res);
 }
 
-int	handle_exit(char **args, t_env *env, int *fd)
+int	handle_exit(char **args)
 {
 	long long int	exit_status;
 
-	if (args[2]) // SEGFAULT
+	ft_putendl_fd("exit", STDOUT_FILENO);
+	if (!args)
+		return (EXIT_FAILURE);
+	if (args[2])
 	{
 		ft_putendl_fd("Too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
