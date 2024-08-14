@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 16:07:08 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:27:53 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	fill_export_string(char *str, t_list *env)
 
 	i = -1;
 	j = 0;
-	target = (t_env *)env -> data;
+	target = (t_env *)env -> content;
 	s = target -> key;
 	while (s[++i])
 		str[i] = s[i];
@@ -57,22 +57,25 @@ static char	**get_exports(t_list *env)
 	t_env	*target;
 
 	i = 0;
-	count = ft_lstsize(env);
+	count = ft_env_count(env, EXPORT);
 	exports = malloc(sizeof(char *) * (count + 1));
 	if (!exports)
 		return (NULL);
 	while (i < count)
 	{
-		target = (t_env *) env -> data;
-		exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
-			+ ft_strlen(target -> value) + 4));
-		if (!exports[i])
+		target = (t_env *) env -> content;
+		if (target->attr & EXPORT)
 		{
-			ft_free_exports(exports, i);
-			return (NULL);
+			exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
+				+ ft_strlen(target -> value) + 4));
+			if (!exports[i])
+			{
+				ft_free_exports(exports, i);
+				return (NULL);
+			}
+			fill_export_string(exports[i], env);
+			i++;
 		}
-		fill_export_string(exports[i], env);
-		i++;
 		env = env -> next;
 	}
 	exports[i] = NULL;
@@ -120,25 +123,63 @@ static void	print_export_list(t_list *env)
 	free_array(exports);
 }
 
+int	ft_arg_is_correct(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+	{
+		ft_printf("minishell: %s: not a valid identifier\n", "NULL");
+		return (0);
+	}
+	if (ft_isdigit(str[0]))
+	{
+		ft_printf("minishell: %s: not a valid identifier\n", str);
+		return (0);
+	}
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]))
+		{
+			ft_printf("minishell: %s: not a valid identifier\n", str);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
 int	handle_export(char **args, t_list *env)
 {
-	int	result;
+	int		result;
+	int		i;
+	char**	arr;
 
-	result = 0;
+	result = EXIT_SUCCESS;
+	i = 1;
 	if (!args || !env)
 		return (EXIT_FAILURE);
 	if (!args[1])
-		print_export_list(env);
-	else
 	{
-		if (args[1] && args[3])	
-			result = set_env_value(env, ft_strdup(args[1]), ft_strdup(args[3]));
-		else if (args[1] && !args[3])
+		print_export_list(env);
+		return (EXIT_SUCCESS);
+	}
+	while (args[i])
+	{
+		if (!ft_arg_is_correct(args[i]))
+			return (EXIT_FAILURE);
+		if (ft_strchr(args[i], '='))
 		{
-			result = set_env_value(env, ft_strdup(args[1]), ft_strdup(""));
+			arr = ft_split(args[i], '=');
+			if (!arr)
+				return (EXIT_FAILURE);
+			result = set_env_value(env, arr[0], arr[1]);
+			free(arr);
 		}
 		else
-			ft_putendl_fd("Incorrect input", STDERR_FILENO);
+			result = set_env_value(env, ft_strdup(args[i]), ft_strdup(""));
+		i++;
 	}
 	return (result);
 }

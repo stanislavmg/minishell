@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 17:16:37 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:03:11 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int	ft_env_count(t_list *env, int attr)
 	while (env)
 	{
 		target = (t_env *) env -> data;
-		if (target -> attr == attr)
+		if (target -> attr & attr)
 			count++;
 		env = env -> next;
 	}

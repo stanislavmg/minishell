@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 16:07:08 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:04:55 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	set_env_value(t_list *env, char *key, char *value)
 	}
 	else
 	{
-		node = new_env(key, value, ENV);
+		node = new_env(key, value, ENV | EXPORT);
 		ft_lstadd_back(&env, ft_lstnew(node));
 	}
 	return (EXIT_SUCCESS);
@@ -74,13 +74,16 @@ int	handle_env(char **args, t_list *env)
 		return (EXIT_FAILURE);
 	while (env)
 	{
-		target = (t_env *)env -> data;
-		if (ft_strlen(target -> value) > 0)
+		target = (t_env *)env -> content;
+		if (target -> attr & ENV)
 		{
-			ft_putstr_fd(target -> key, STDOUT_FILENO);
-			ft_putstr_fd("=", STDOUT_FILENO);
-			ft_putstr_fd(target -> value, STDOUT_FILENO);
-			ft_putstr_fd("\n", STDOUT_FILENO);
+			if (ft_strlen(target -> value) > 0)
+			{
+				ft_putstr_fd(target -> key, STDOUT_FILENO);
+				ft_putstr_fd("=", STDOUT_FILENO);
+				ft_putstr_fd(target -> value, STDOUT_FILENO);
+				ft_putstr_fd("\n", STDOUT_FILENO);
+			}
 		}
 		env = env -> next;
 	}
