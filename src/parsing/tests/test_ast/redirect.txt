@@ -1,0 +1,8 @@
+(hostname; echo "Hello, World!") > out
+(grep "minishell" < input.txt > out)
+(echo "Test"; hostname) > out
+(cat < input.txt; echo "Additional line") > out
+(hostname | grep "minishell") > out
+(echo "Start"; hostname | grep "minishell"; echo "End") > out
+(echo "Header" > out; cat < input.txt >> out)
+(ls nonexistentfile; echo "Check errors") > out

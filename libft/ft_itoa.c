@@ -16,6 +16,7 @@ static void	putnbr(int pos, int n, char *str)
 {
 	unsigned int	num;
 
+	num = 0;
 	if (n < 0)
 		num = n * -1;
 	else
@@ -39,6 +40,7 @@ char	*ft_itoa(int n)
 
 	len = 1;
 	num = n;
+	res = NULL;
 	if (n < 0)
 		len++;
 	else if (n == 0)
@@ -48,7 +50,7 @@ char	*ft_itoa(int n)
 		num /= 10;
 		len++;
 	}
-	res = malloc(len);
+	res = (char *)malloc(len);
 	if (!res)
 		return (NULL);
 	res[len - 1] = 0;

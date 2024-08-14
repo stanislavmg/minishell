@@ -6,7 +6,7 @@
 #    By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/01 17:05:52 by sgoremyk          #+#    #+#              #
-#    Updated: 2024/02/16 14:52:59 by sgoremyk         ###   ########.fr        #
+#    Updated: 2024/08/06 11:09:21 by sgoremyk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ SRCS	=	ft_isalpha.c	ft_strlcpy.c	ft_strtrim.c\
 			ft_itoa.c		ft_calloc.c		ft_substr.c\
 			ft_strdup.c		ft_bzero.c		ft_strjoin.c\
 			ft_memcpy.c		ft_memset.c		ft_memmove.c\
-			ft_strnstr.c
+			ft_strnstr.c	ft_open.c		ft_close.c
 
 SRCS_B	=	ft_lstclear.c	ft_lstnew.c		ft_lstadd_front.c\
 			ft_lstsize.c	ft_lstiter.c	ft_lstadd_back.c\

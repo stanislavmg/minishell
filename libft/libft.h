@@ -6,18 +6,19 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 17:05:47 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/02/04 15:56:55 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:16:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 # include <unistd.h>
+# include <fcntl.h>
 # include <stdlib.h>
 
 typedef struct s_list
 {
-	void			*content;
+	void			*data;
 	struct s_list	*next;
 }				t_list;
 
@@ -56,9 +57,11 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
+int		ft_open(char *fname, int mode);
+int		ft_close(int fd);
 /**************************************************************/
 /**************************************************************/
-t_list	*ft_lstnew(void *content);
+t_list	*ft_lstnew(void *data);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);

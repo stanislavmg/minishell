@@ -6,7 +6,11 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 04:49:46 by amikhush          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/08/14 12:39:23 by sgoremyk         ###   ########.fr       */
+=======
+/*   Updated: 2024/08/14 12:38:04 by sgoremyk         ###   ########.fr       */
+>>>>>>> origin/parser
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +42,11 @@ t_env	*get_env(t_list *list_env, char *key)
 
 	while (list_env)
 	{
+<<<<<<< HEAD
 		target = (t_env *)list_env->content;
+=======
+		target = (t_env *)list_env->data;
+>>>>>>> origin/parser
 		if (strcmp(target->key, key) == 0)
 			return (target);
 		list_env = list_env->next;
