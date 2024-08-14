@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/13 19:10:11 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 07:40:16 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,4 +99,29 @@ char	**ft_first_split(char const *s, char c)
 	ft_strlcpy(res[1], s + (ft_strlen(s) - count + 1), count + 1);
 	res[2] = NULL;
 	return (res);
+}
+
+int	ft_env_count(t_list *env, int attr)
+{
+	int		count;
+	t_env	*target;
+
+	count = 0;
+	while (env)
+	{
+		target = (t_env *) env -> content;
+		if (target -> attr == attr)
+			count++;
+		env = env -> next;
+	}
+	return (count);
+}
+
+void	ft_print_error(char *command, char *str, char *error)
+{
+	ft_putstr_fd(command, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putstr_fd(str, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putendl_fd(error, STDERR_FILENO);
 }

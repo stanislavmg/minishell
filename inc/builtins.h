@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/13 19:10:59 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:14:10 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 // 	struct s_env	*next;
 // } t_env;
 
-int		handle_command(char **args, t_list *env);
+void	handle_command(char **args, t_list *env);
 int		handle_cd(char **args, t_list *env);
 int		handle_env(char **args, t_list *env);
 int		handle_pwd(char **args);
@@ -54,6 +54,7 @@ char	**ft_first_split(char const *s, char c);
 int		ft_strcmp(const char *s1, const char *s2);
 void	free_array(char **arr);
 int		ft_env_count(t_list *env, int attr);
+void	ft_print_error(char *command, char *str, char *error);
 // void	signal_init(void);
 
 #endif

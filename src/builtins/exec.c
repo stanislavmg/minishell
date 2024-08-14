@@ -6,20 +6,20 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 17:11:41 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/04 15:16:47 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:12:44 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "builtins.h"
 
-static char	**find_exec(char *command, t_env *env)
+static char	**find_exec(char *command, t_list *env)
 {
 	char	*path;
 	char	**bins;
 	char	*tmp;
 	int		i;
 
-	path = get_env("PATH", env);
+	path = get_env_value("PATH", env);
 	if (path == NULL)
 	{
 		ft_putendl_fd("PATH not found", STDERR_FILENO);
@@ -38,18 +38,20 @@ static char	**find_exec(char *command, t_env *env)
 	return (bins);
 }
 
-static void	fill_envp_string(char *str, t_env *env)
+static void	fill_envp_string(char *str, t_list *env)
 {
 	char	*s;
 	int		i;
 	int		j;
+	t_env	*target;
 
 	i = -1;
 	j = 0;
-	s = env -> key;
+	target = (t_env *)env -> content;
+	s = target -> key;
 	while (s[++i])
 		str[i] = s[i];
-	s = env -> value;
+	s = target -> value;
 	if (s && ft_strlen(s) > 0)
 	{
 		str[i++] = '=';
@@ -59,27 +61,30 @@ static void	fill_envp_string(char *str, t_env *env)
 	}
 }
 
-static char	**make_env(t_env *env)
+static char	**make_env(t_list *env)
 {
 	char	**envp;
 	int		count;
 	int		i;
+	t_env	*target;
 
 	i = 0;
-	count = ft_list_size(env);
+	count = ft_env_count(env, ENV);
 	envp = malloc(sizeof(char *) * (count + 1));
 	while (i < count)
 	{
-		envp[i] = malloc(sizeof(char) * (ft_strlen(env->key) + ft_strlen(env->value) + 4));
+		target = (t_env *)env -> content;
+		envp[i] = malloc(sizeof(char) * (ft_strlen(target -> key) 
+			+ ft_strlen(target -> value) + 4));
 		fill_envp_string(envp[i], env);
-		env = env->next;
+		env = env -> next;
 		i++;	
 	}
 	envp[i] = NULL;
 	return (envp);
 }
 
-static int	exec_command(char **args, t_env *env, int *fd)
+static int	exec_command(char **args, t_list *env)
 {
 	char	**bins;
 	char	**command_env;
@@ -90,7 +95,8 @@ static int	exec_command(char **args, t_env *env, int *fd)
 	command_env = make_env(env);
 	while (bins[i])
 	{
-		if ((access(bins[i], X_OK) == 0) && (execve(bins[i], args, command_env) == 0))
+		if ((access(bins[i], X_OK) == 0) 
+			&& (execve(bins[i], args, command_env) == 0))
 		{
 			free_array(bins);
 			free_array(command_env);
@@ -104,7 +110,7 @@ static int	exec_command(char **args, t_env *env, int *fd)
 	return (EXIT_SUCCESS);
 }
 
-int	execute_command(char **args, t_env *env, int *fd)
+int	execute_command(char **args, t_list *env)
 {
 	pid_t	pid;
 	int		status;
@@ -112,7 +118,7 @@ int	execute_command(char **args, t_env *env, int *fd)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (exec_command(args, env, fd) != 0)
+		if (exec_command(args, env) != 0)
 			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
@@ -126,7 +132,7 @@ int	execute_command(char **args, t_env *env, int *fd)
 		waitpid(pid, &status, 0);
 		if (WEXITSTATUS(status) != EXIT_SUCCESS)
 		{
-			ft_putendl_fd("Execve error\n", fd[1]);
+			ft_putendl_fd("Execve error\n", STDOUT_FILENO);
 			return (EXIT_FAILURE);
 		}
 	}
