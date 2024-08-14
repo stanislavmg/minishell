@@ -6,6 +6,8 @@ t_cmd *new_ast(t_parser *parser)
 	e_token		type;
 
 	root = NULL;
+	if (!parser)
+		return (NULL);
 	type = get_token_type(parser);
 	if (is_cmd_delimeter(type) || type == CLOSED_BRACKET)
 		parser->err = ERR_SYNTAX;

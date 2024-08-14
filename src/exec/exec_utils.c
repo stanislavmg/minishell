@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/11 17:37:24 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/12 16:32:11 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	exit_failure(char *msg, int error)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	if (error == CMD_NOT_FOUND)
 	{
 		if (ft_strchr(msg, '/'))
@@ -23,13 +22,12 @@ void	exit_failure(char *msg, int error)
 			ft_printf("minishell: %s: command not found\n", msg);
 	}
 	else if (error == PERM_DENIED)
-	{
-		ft_putstr_fd(msg, STDERR_FILENO);
-		ft_putstr_fd(":", STDERR_FILENO);
-		ft_putstr_fd(" Permission denied\n", STDERR_FILENO);
-	}
+		ft_printf("minishell: %s: Permission denied\n", msg);
 	else
+	{
+		ft_printf("minishell: ");
 		perror(msg);
+	}
 	exit(error);
 }
 

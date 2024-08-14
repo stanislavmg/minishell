@@ -21,14 +21,6 @@ void	free_arr(char **arr)
 	free(arr);
 }
 
-void	free_parser(t_parser *parser)
-{
-	if (!parser)
-		return ;
-	free_arr(parser->paths);
-	free(parser);
-}
-
 void	free_ast(t_ast *root)
 {
 	if (!root)

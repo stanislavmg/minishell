@@ -9,8 +9,8 @@ t_lexer	*new_lexer(char *input, t_list *env_list)
 	lex = (t_lexer *)ft_calloc(1, sizeof(t_lexer));
 	if (!lex)
 		return (NULL);
+	lex->input = input;
 	lex->str_pos = input;
-	lex->input_str = input;
 	lex->env = env_list;
 	return (lex);
 }
@@ -27,51 +27,65 @@ t_token	*new_token(char *word, e_token type)
 	return (new_token);
 }
 
-void	error_handle(t_lexer *lex)
-{
-	if (ERR_MEM == lex->err)
-		printf("minishell: No memory\n");
-	else if (ERR_QUOTE == lex->err)
-		printf("minishell: Quotes wasn\'t close\n");
-	else if (ERR_TOKEN == lex->err)
-		printf("minishell: syntax error near unexpected cur_token_pos `%c'\n", *lex->str_pos);
-	else
-		printf("minishell: Undefined error. Abort!\n");
-}
-
 void free_token(void *cur_token_pos)
 {
 	free(((t_token *)cur_token_pos)->word);
 	free(cur_token_pos);
 }
 
-void	free_lexer(t_lexer *lex)
+void add_new_input(t_lexer *lex)
 {
-	if (!lex)
-		return ;
-	free(lex->input_str);
-	ft_lstclear(&lex->tokens, free_token);
-	free(lex);
+	char	*new_input;
+	int		cur_pos;
+
+	new_input = NULL;
+	cur_pos = ft_strlen(lex->input);
+	new_input = readline("> ");
+	lex->input = merge_str(lex->input, new_input);	
+	if (!lex->input)
+		lex->err = ERR_MEM;
+	lex->str_pos = lex->input + cur_pos;
 }
 
-int	init_list(t_lexer *lex)
+
+void start_tokenization(t_lexer *lex)
 {
-	char	*new_word;
+	char *new_word;
 
 	new_word = NULL;
-	while(*lex->str_pos)
+	while(*lex->str_pos && !lex->err)
 	{
 		new_word = scan_token(lex);
-		if (lex->err)
-			return (1);
-		else if (!new_word)
-			continue ;
-		else if (!*new_word)
+		if (new_word && !*new_word)
 			free(new_word);
 		else if (new_word)
-			push_token(&lex->tokens, new_word, STRING);
+			push_token(&lex->tokens, new_word, STRING);	
+		if (!*lex->str_pos && ((t_token *)ft_lstlast(lex->tokens)->data)->type == PIPE)// FIXME when input contain only spaces segfault
+			add_new_input(lex);
 	}
-	return (0);
+	if (lex->err)
+	{
+		print_msh_err(ft_lstlast(lex->tokens)->data);
+		ft_lstclear(&lex->tokens, free_token);
+	}
+	add_history(lex->input);
+	free(lex->input);
+}
+
+t_list	*new_token_list(t_list *env, char *input)
+{
+	t_list	*cmd_tokens;
+	t_lexer *lex;
+
+	if (!input)
+		return (NULL);
+	lex = new_lexer(input, env);
+	if (!lex)
+		return (NULL);
+	start_tokenization(lex);
+	cmd_tokens = lex->tokens;
+	free(lex);
+	return (cmd_tokens);
 }
 
 void	push_token(t_list **token_list, char *new_word, e_token type)

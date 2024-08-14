@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/11 12:14:35 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:15:37 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,33 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	exit(EXIT_FAILURE);
 }
 
+void start_first_ps(t_ast *root, t_list *env, int *pdes)
+{
+	if (root->type != PIPE)
+	{
+		travers_tree(root->left); // FIXME
+		dup2(pdes[1], STDOUT_FILENO);
+		close(pdes[0]);
+		close(pdes[1]);
+		travers_tree(root->right, env);
+	}
+	else
+		travers_tree((t_ast *)root->left, env);
+	exit(get_last_status(env));
+}
+
+void start_second_ps(t_ast *root, t_list *env, int *pdes)
+{
+	ft_close(pdes[1]);
+	dup2(pdes[0], STDIN_FILENO);
+	ft_close(pdes[0]);
+	waitpid(ps1, &exit_code, 0);
+	set_last_status(env, WEXITSTATUS(exit_code));
+	travers_tree((t_ast *)root->right, env);
+	exit(get_last_status(list_env));
+}
+
+
 int	start_pipeline(t_ast *root, t_list *list_env)
 {
 	int		exit_code;
@@ -99,27 +126,14 @@ int	start_pipeline(t_ast *root, t_list *list_env)
 		exit_failure("pipe", EXIT_FAILURE);
     ps1 = fork();
     if (ps1 == 0)
-	{
-        dup2(pdes[1], STDOUT_FILENO);
-        close(pdes[0]);
-        close(pdes[1]);
-		travers_tree((t_ast *)root->left, list_env);
-        exit(get_last_status(list_env));
-    }
+		start_first_ps();
 	else if (ps1 < 0)
 		exit_failure("fork", EXIT_FAILURE); // FIXME need free
 	else if (ps1 > 0)
 	{
 		ps2 = fork();
-		if (ps2 == 0) {
-        	ft_close(pdes[1]);
-        	dup2(pdes[0], STDIN_FILENO);
-        	ft_close(pdes[0]);
-			waitpid(ps1, &exit_code, 0);
-			set_last_status(list_env, WEXITSTATUS(exit_code));
-			travers_tree((t_ast *)root->right, list_env);
-        	exit(get_last_status(list_env));
-		}
+		if (ps2 == 0)
+			start_second_ps();
 		else if (ps2 < 0)
 			exit_failure("fork", EXIT_FAILURE);
 		close(pdes[0]);
@@ -153,6 +167,7 @@ int	open_redirect(t_ast *root, t_list *list_env)
         	dup2(fd, STDIN_FILENO);
 		else
         	dup2(fd, STDOUT_FILENO);
+		ft_close(fd);
 		exit(travers_tree((t_ast *)root->left, list_env));
 	}
 	else

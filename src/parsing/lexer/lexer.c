@@ -79,7 +79,6 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 	{
 		lex->err = ERR_SYNTAX;
 		new_word = get_word(value, len);
-		
 	}
 	push_token(&lex->tokens, new_word, type);
 	return (0);
@@ -119,6 +118,7 @@ char	*poststring_handle(t_lexer *lex, char *lhs, int i)
 	char *t;
 
 	res = NULL;
+	t = NULL;
 	if (lhs)
 		res = merge_str(lhs, get_word(lex->str_pos, i));
 	else
@@ -139,38 +139,37 @@ char	*double_quotes_handle(t_lexer *lex)
 	int		i;
 	char	*new_word;
 
-	i = 0;
 	new_word = NULL;
 	lex->str_pos++;
 	lex->in_qoutes = 1;
-	while (lex->str_pos[i] && lex->str_pos[i] != '\"')
+	while (lex->in_qoutes && !lex->err)
 	{
-		if ('$' == lex->str_pos[i] || '\\' == lex->str_pos[i])
+		i = 0;
+		while (lex->str_pos[i] && lex->str_pos[i] != '\"')
 		{
-			new_word = poststring_handle(lex, new_word, i);
-			i = -1;
+			if ('$' == lex->str_pos[i] || '\\' == lex->str_pos[i])
+			{
+				new_word = merge_str(new_word, get_word(lex->str_pos, i));
+				lex->str_pos += i;
+				new_word = merge_str(new_word, scan_token(lex));
+				i = -1;
+			}
+			i++;
 		}
-		i++;
-	}
-	if (lex->str_pos[i] != '\"')
-	{
-		lex->err = ERR_QUOTE;
-		return (new_word);
-	}
-	lex->in_qoutes = 0;
-	if (is_catchar(lex->str_pos[i + 1]))
-	{
-		new_word = poststring_handle(lex, new_word, i);
-		return (new_word);
-	}
-	else
-	{
-		if (new_word)
+		if (lex->str_pos[i] == '\"')
+		{
 			new_word = merge_str(new_word, get_word(lex->str_pos, i));
+			lex->str_pos += i + 1;
+			if (*lex->str_pos == '\"')
+				lex->str_pos++;
+			else
+				lex->in_qoutes = 0;
+		}
 		else
-			new_word = get_word(lex->str_pos, i);
+			lex->err = ERR_QUOTE;
 	}
-	lex->str_pos += i + 1;
+	if (is_catchar(*lex->str_pos))
+		new_word = merge_str(new_word, scan_token(lex));
 	return (new_word);
 }
 

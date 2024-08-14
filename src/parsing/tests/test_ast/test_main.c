@@ -1,7 +1,6 @@
 #include "exec.h"
 #include "minishell.h"
 
-
 void	free_minishell(t_lexer *lex, t_parser *parser, t_ast *root)
 {
 	free_lexer(lex);

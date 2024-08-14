@@ -66,14 +66,9 @@ static void printTreeHelper(t_ast* root, int space, int level) {
         return;
     }
 
-    // Increase distance between levels
     space += 5;
-
-    // Process right child first
 	if (root->type != COMMAND && root->type != VARIABLE && !is_redirect(root->type))
     	printTreeHelper((t_ast *)root->right, space, level + 1);
-
-    // Print current node after space count
     printf("\n");
     printSpaces(space - 5);
     printf("%s", get_type(root->type));
@@ -84,7 +79,6 @@ static void printTreeHelper(t_ast* root, int space, int level) {
     else if (is_redirect(root->type))
         printf(" = fname=%s", ((t_redir *)root)->fname);
 	printf("\n");    
-    // Process left child
 	if (root->type != COMMAND && root->type != VARIABLE && !is_redirect(root->type))
     	printTreeHelper((t_ast *)root->left, space, level + 1);
 }

@@ -1,12 +1,7 @@
 #include "exec.h"
 #include "minishell.h"
 
-void	free_minishell(t_data *msh)
-{
-	free_lexer(msh->lex);
-	free_parser(msh->parser);
-	free_ast(msh->root);
-}
+
 
 t_data	*new_msh_data(void)
 {
@@ -21,27 +16,30 @@ t_data	*new_msh_data(void)
 	return (msh);
 }
 
-int	init_msh_data(t_data *msh, char *input)
+t_cmd	*init_msh_data(t_list *env, char *input)
 {
-	msh->lex = new_lexer(input, msh->env_list);
-	init_list(msh->lex);
-	if (msh->lex->err)
+	t_list 		*tokens;
+	t_parser	*parser;
+	t_cmd		*ast;
+
+	tokens = new_token_list(env, input);
+	if (!tokens)
+		return (NULL);
+	parser = new_parser(tokens, env);
+	ast = new_ast(parser);
+	print_tree(ast);
+	if (parser->err)
 	{
-		print_msh_err(ft_lstlast(msh->lex->tokens)->data);
-		return (2);
-	}
-	msh->parser = new_parser(msh->lex);
-	msh->root = (t_ast *)new_ast(msh->parser);
-	//print_tree(msh->root);
-	if (msh->parser->err)
-	{
-		if (msh->parser->cur_token_pos)
-			print_msh_err(msh->parser->cur_token_pos->data);
+		if (parser->cur_token_pos)
+			print_msh_err(parser->cur_token_pos->data);
 		else
-			print_msh_err(ft_lstlast(msh->lex->tokens)->data);
-		return (2);
+			print_msh_err(ft_lstlast(tokens)->data);
+		free_ast((t_ast *)ast);
+		ast = NULL;
 	}
-	return (0);
+	ft_lstclear(&tokens, free_token);
+	free(parser);
+	return (ast);
 }
 
 void	set_std_val(t_list *env)
@@ -76,25 +74,36 @@ void	set_std_val(t_list *env)
 int	main(int ac, char **av, char **env)
 {
 	t_data		*msh;
+	char 		*input;
 	
-	(void)ac;
-	(void)av;
+	if (ac == 2)
+	{
+		input = av[1];
+			msh = new_msh_data();
+		msh->env_list = new_env_list(env);
+		set_std_val(msh->env_list);
+		msh->root = (t_ast *)init_msh_data(msh->env_list, input);
+		if (msh->root)
+			travers_tree((t_ast *)msh->root, msh->env_list);
+		ft_lstclear(&msh->env_list, free_env);
+		free(msh);
+		return (0);
+	}
 	msh = new_msh_data();
 	msh->env_list = new_env_list(env);
 	set_std_val(msh->env_list);
-	msh->input = readline(PROMT);
-	while (msh->input)
+	input = readline(PROMT);
+	while (input)
 	{
-		add_history(msh->input);
-		if (!strcmp(msh->input, "exit"))
+		if (!strcmp(input, "exit"))
 			break ;
-		if (!init_msh_data(msh, msh->input))
+		msh->root = (t_ast *)init_msh_data(msh->env_list, input);
+		if (msh->root)
 			travers_tree((t_ast *)msh->root, msh->env_list);
-		free_minishell(msh);
-		msh->input = readline(PROMT);
+		input = readline(PROMT);
 	}
 	ft_lstclear(&msh->env_list, free_env);
-	free(msh->input);
+	free(input);
 	free(msh);
 	return (0);
 }

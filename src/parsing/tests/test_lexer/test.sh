@@ -3,7 +3,7 @@ INPUT=test_case.txt
 OUTPUT=output
 NUM=1
 
-
+mkdir -p "$OUTPUT"
 if [ "$1" == "-re" ]; then
 	rm lex &> /dev/null
 	make -C ../../ lexer clean

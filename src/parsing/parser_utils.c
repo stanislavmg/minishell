@@ -18,16 +18,14 @@ t_redir *new_redir(e_token redirect_type, char *fname)
 	return (new_node);
 }
 
-t_parser *new_parser(t_lexer *lex)
+t_parser *new_parser(t_list *tokens, t_list *env)
 {
 	t_parser 	*parser;
-	t_env		*path;
 
-	path = get_env(lex->env, "PATH");
 	parser = (t_parser *)ft_calloc(1, sizeof(t_parser));
 	if (!parser)
 		return (NULL);
-	parser->cur_token_pos = lex->tokens;
-	parser->paths = get_path(path->value);
+	parser->cur_token_pos = tokens;
+	parser->env_lst = env;
 	return (parser);
 }

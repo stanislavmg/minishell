@@ -20,8 +20,12 @@ char *merge_str(char *s1, char *s2)
 {
 	char	*res;
 
-    if (!s1 || !s2)
-        return (NULL);
+    if (!s1)
+        return (s2);
+	if (!s2)
+		return (s1);
+	if (!s1 && !s2)
+		return (NULL);
     res = ft_strjoin(s1, s2);
     free(s1);
     free(s2);

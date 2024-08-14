@@ -1,7 +1,7 @@
 NAME    = minishell
 LIB     = libft.a
 PRINTF	= libftprintf.a
-INCLUDE = ../../inc
+INCLUDE = ../../include
 MAIN 	?= main.c
 
 SRC     = parser.c init_cmd.c debug.c destructors.c parser_utils.c here_doc.c ast.c\
@@ -9,16 +9,15 @@ SRC     = parser.c init_cmd.c debug.c destructors.c parser_utils.c here_doc.c as
           $(addprefix ../env_list/, list_init.c list_utils.c)\
           $(addprefix ../exec/, exec.c exec_utils.c)
 
-LEX_SRC = $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c lexer_utils.c) \
+LEX_SRC = debug.c\
+		  $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c lexer_utils.c) \
           $(addprefix ../env_list/, list_init.c list_utils.c)\
-		  $(addprefix ../, debug.c)
-		  
 
 LEX_OBJ = $(LEX_SRC:%.c=%.o)
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -Wall -g3 -I$(INCLUDE) #-fsanitize=address 
+CFLAGS  = -Wall -g3 -I$(INCLUDE) -fsanitize=address 
 
 all: $(NAME)
 
