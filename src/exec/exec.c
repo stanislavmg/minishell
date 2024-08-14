@@ -6,11 +6,12 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 12:15:37 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:15:34 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "exec.h"
+# include "builtins.h"
 
 int	travers_tree(t_ast *root, t_list *list_env)
 {
@@ -53,7 +54,10 @@ void	start_job(t_list *list_env, t_exec_cmd *cmd)
 	envp = new_env_arr(list_env);
 	pid = fork();
 	if (!pid)
+	{
+		handle_command(cmd->argv, list_env);
 		ft_execve(cmd, envp);
+	}
 	if (pid == -1)
 	{
 		ft_putstr_fd("fork error\n", STDERR_FILENO);
@@ -71,6 +75,7 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 
 	i = 0;
 	paths = NULL;
+	
 	while (env[i] && strncmp(env[i], "PATH=", 5))
 		i++;
 	paths = get_path(env[i] + 5);
@@ -90,26 +95,42 @@ void start_first_ps(t_ast *root, t_list *env, int *pdes)
 {
 	if (root->type != PIPE)
 	{
-		travers_tree(root->left); // FIXME
+		travers_tree((t_ast *)root->left, env); // FIXME
 		dup2(pdes[1], STDOUT_FILENO);
 		close(pdes[0]);
 		close(pdes[1]);
-		travers_tree(root->right, env);
+		travers_tree((t_ast *)root->right, env);
 	}
 	else
+	{
+		dup2(pdes[1], STDOUT_FILENO);
+		close(pdes[0]);
+		close(pdes[1]);
 		travers_tree((t_ast *)root->left, env);
+		travers_tree((t_ast *)root->right, env);
+	}
 	exit(get_last_status(env));
 }
 
 void start_second_ps(t_ast *root, t_list *env, int *pdes)
 {
-	ft_close(pdes[1]);
-	dup2(pdes[0], STDIN_FILENO);
-	ft_close(pdes[0]);
-	waitpid(ps1, &exit_code, 0);
-	set_last_status(env, WEXITSTATUS(exit_code));
-	travers_tree((t_ast *)root->right, env);
-	exit(get_last_status(list_env));
+	if (root->type != PIPE)
+	{
+		travers_tree((t_ast *)root->right, env); // FIXME
+		dup2(pdes[0], STDIN_FILENO);
+		ft_close(pdes[1]);
+		ft_close(pdes[0]);
+		travers_tree((t_ast *)root->left, env);
+	}
+	else
+	{
+		dup2(pdes[0], STDIN_FILENO);
+		close(pdes[1]);
+		close(pdes[0]);
+		travers_tree((t_ast *)root->right, env);
+		travers_tree((t_ast *)root->left, env);
+	}
+	exit(get_last_status(env));
 }
 
 
@@ -126,18 +147,20 @@ int	start_pipeline(t_ast *root, t_list *list_env)
 		exit_failure("pipe", EXIT_FAILURE);
     ps1 = fork();
     if (ps1 == 0)
-		start_first_ps();
+		start_first_ps(root, list_env, &pdes);
 	else if (ps1 < 0)
 		exit_failure("fork", EXIT_FAILURE); // FIXME need free
 	else if (ps1 > 0)
 	{
 		ps2 = fork();
 		if (ps2 == 0)
-			start_second_ps();
+			start_second_ps(root, list_env, &pdes);
 		else if (ps2 < 0)
 			exit_failure("fork", EXIT_FAILURE);
 		close(pdes[0]);
         close(pdes[1]);
+		waitpid(ps1, &exit_code, 0);
+		set_last_status(list_env, WEXITSTATUS(exit_code));
 		waitpid(ps2, &exit_code, 0);
 		set_last_status(list_env, WEXITSTATUS(exit_code));
     }

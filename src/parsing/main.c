@@ -1,8 +1,6 @@
 #include "exec.h"
 #include "minishell.h"
 
-
-
 t_data	*new_msh_data(void)
 {
 	t_data *msh;

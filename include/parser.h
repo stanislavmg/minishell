@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/10 12:22:17 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 15:48:44 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 t_lexer	*new_lexer(char *input, t_list *env_list);
 t_token	*new_token(char *word, e_token type);
 void	push_token(t_list **token_list, char *new_word, e_token type);
-int		init_list(t_lexer *lex);
-void	free_lexer(t_lexer *lex);
+t_list	*new_token_list(t_list *env, char *input);
+void free_token(void *cur_token_pos);
 
 // tokenization
 char	*scan_token(t_lexer *lex);
@@ -52,7 +52,6 @@ int	    is_redirectchar(char ch);
 int	    is_catchar(char ch);
 
 // expand tokens and build tree
-t_parser	*new_parser(t_lexer *lex);
 t_var		*new_tvar(const char *key_and_value);
 t_cmd		*build_tree_fromlist(t_list *nodes, e_token type);
 t_cmd		*add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
@@ -79,10 +78,10 @@ void		add_variable_node(t_list **var_lst, t_token *token);
 t_cmd 		*parse_cmd(t_list *var, t_list *args, t_list *redir);
 t_cmd		*parse_block(t_parser *parser);
 void		print_msh_err(t_token *token);
+t_parser *new_parser(t_list *tokens, t_list *env);
 
 // free
 void	free_ast(t_ast *root);
-void	free_parser(t_parser *parser);
 void	free_arr(char **arr);
 int		free_cmd(t_exec_cmd *cmd);
 

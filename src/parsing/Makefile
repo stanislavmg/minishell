@@ -1,13 +1,11 @@
 NAME    = minishell
 LIB     = libft.a
-PRINTF	= libftprintf.a
 INCLUDE = ../../include
 MAIN 	?= main.c
 
 SRC     = parser.c init_cmd.c debug.c destructors.c parser_utils.c here_doc.c ast.c\
-		  $(addprefix lexer/, lexer.c methods.c string.c lexer_utils.c)\
-          $(addprefix ../env_list/, list_init.c list_utils.c)\
-          $(addprefix ../exec/, exec.c exec_utils.c)
+		  $(wildcard lexer/*) $(wildcard ../env_list/*) $(wildcard ../exec/*)\
+		  $(wildcard ../ft_printf/*) $(wildcard ../builtins/*)
 
 LEX_SRC = debug.c\
 		  $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c lexer_utils.c) \
@@ -21,14 +19,11 @@ CFLAGS  = -Wall -g3 -I$(INCLUDE) -fsanitize=address
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(MAIN:.c=.o) $(LIB) $(PRINTF)
+$(NAME): $(OBJ) $(MAIN:.c=.o) $(LIB)
 	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
-
-$(PRINTF):
-	make -C ../ft_printf all clean && mv ../ft_printf/$(PRINTF) .
 
 $(LIB):
 	 make -C ../../libft all bonus clean && mv ../../libft/$(LIB) .

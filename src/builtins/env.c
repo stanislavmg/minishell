@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 12:35:29 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:07:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	handle_env(char **args, t_list *env)
 		return (EXIT_FAILURE);
 	while (env)
 	{
-		target = (t_env *)env -> content;
+		target = (t_env *)env -> data;
 		if (ft_strlen(target -> value) > 0)
 		{
 			ft_putstr_fd(target -> key, STDOUT_FILENO);

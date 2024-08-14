@@ -6,11 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/08/14 12:34:15 by sgoremyk         ###   ########.fr       */
-=======
-/*   Updated: 2024/08/06 11:10:17 by sgoremyk         ###   ########.fr       */
->>>>>>> origin/parser
+/*   Updated: 2024/08/14 15:44:26 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +22,7 @@
 # include "minishell.h"
 # include <string.h>
 
-<<<<<<< HEAD
-typedef struct s_env
-{
-	char	*key;
-	char	*value;
-	int 	attr;
-} 	t_env;
-
-//int		set_env(t_list *list_env, t_var *new_env, int attr);
-=======
 int		set_env(t_list *list_env, t_var *new_env, int attr);
->>>>>>> origin/parser
 t_env	*new_env(char *key, char *value, int attr);
 void	free_env(void *env);
 t_env	*get_env(t_list *list_env, char *key);

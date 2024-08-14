@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/13 19:03:59 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:07:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	fill_export_string(char *str, t_list *env)
 
 	i = -1;
 	j = 0;
-	target = (t_env *)env -> content;
+	target = (t_env *)env -> data;
 	s = target -> key;
 	while (s[++i])
 		str[i] = s[i];
@@ -63,7 +63,7 @@ static char	**get_exports(t_list *env)
 		return (NULL);
 	while (i < count)
 	{
-		target = (t_env *) env -> content;
+		target = (t_env *) env -> data;
 		exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
 			+ ft_strlen(target -> value) + 4));
 		if (!exports[i])

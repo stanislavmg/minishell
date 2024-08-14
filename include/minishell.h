@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-#ifndef MINISHELL_H
-#define MINISHELL_H
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
-=======
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -14,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:25 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/10 17:44:51 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:06:32 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +14,7 @@
 #define MINISHEL_H
 
 # define PROMT	"minishell$> "
-
+#include "libft.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -112,7 +104,7 @@ typedef struct s_lexer
 {
   t_list      *tokens;
   t_list      *env;
-  char        *input_str;
+  char        *input;
   char        *str_pos;
   int         in_qoutes;
   int         err;
@@ -120,12 +112,8 @@ typedef struct s_lexer
 
 typedef struct s_data
 {
-	t_lexer	 *lex;
-	t_parser *parser;
 	t_ast 	 *root;
 	t_list   *env_list;
-  char     *input;
 } t_data;
 
->>>>>>> origin/parser
 #endif

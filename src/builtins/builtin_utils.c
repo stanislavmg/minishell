@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 13:00:17 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:15:44 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	handle_command(char **args, t_list *env)
 	else if (strcmp(args[0], "exit") == 0)	
 		result = handle_exit(args);
 	else
-		result = execute_command(args, env);
+		return ;
 	exit(result);
 }
 
@@ -109,7 +109,7 @@ int	ft_env_count(t_list *env, int attr)
 	count = 0;
 	while (env)
 	{
-		target = (t_env *) env -> content;
+		target = (t_env *) env -> data;
 		if (target -> attr == attr)
 			count++;
 		env = env -> next;
