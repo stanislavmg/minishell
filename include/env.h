@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/05 18:10:23 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:34:15 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_env
 	int 	attr;
 } 	t_env;
 
-int		set_env(t_list *list_env, t_var *new_env, int attr);
+//int		set_env(t_list *list_env, t_var *new_env, int attr);
 t_env	*new_env(char *key, char *value, int attr);
 void	free_env(void *env);
 t_env	*get_env(t_list *list_env, char *key);

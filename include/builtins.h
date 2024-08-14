@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 12:14:10 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:14:29 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,6 @@
 # define CONTROL_D 131
 # define WRONG_CODE 255
 
-// typedef struct s_env
-// {
-// 	char			*key;
-// 	char			*value;
-// 	struct s_env	*next;
-// } t_env;
 
 void	handle_command(char **args, t_list *env);
 int		handle_cd(char **args, t_list *env);
@@ -56,5 +50,6 @@ void	free_array(char **arr);
 int		ft_env_count(t_list *env, int attr);
 void	ft_print_error(char *command, char *str, char *error);
 // void	signal_init(void);
+
 
 #endif

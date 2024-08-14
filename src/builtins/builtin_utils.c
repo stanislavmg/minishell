@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 07:40:16 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:00:17 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	handle_command(char **args, t_list *env)
 	int	result;
 
 	if (!args || !env)
-		exit(EXIT_FAILURE);
+		(EXIT_FAILURE);
 	if (strcmp(args[0], "cd") == 0)
 		result = handle_cd(args, env);
 	else if (strcmp(args[0], "env") == 0)
@@ -58,7 +58,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 
 	i = 0;
 	if (!s1 || !s2)
-		return (NULL);
+		return (1);
 	while (s1[i] == s2[i] && s1[i] && s2[i])
 		i++;
 	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));

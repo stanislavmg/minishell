@@ -1,0 +1,13 @@
+export VAR1=value1 VAR2=value2
+export VAR3=
+export VAR4="                    1"
+export VAR5="1                    "
+export VAR6="       1             "
+export =
+export VAR7=hello=world
+export =VAR8=helloworld
+export VAR9=helloworld=
+export "       "
+export "   " "    " "     "
+export "    " VAR10=spaces "   "
+

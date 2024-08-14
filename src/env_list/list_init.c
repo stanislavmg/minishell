@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:42 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/05 16:17:10 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:26:16 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,27 +40,27 @@ t_list	*new_env_list(char **env)
 	return (list_env);
 }
 
-int		set_env(t_list *list_env, t_var *var, int attr)
-{
-	t_env *target;
+// int		set_env(t_list *list_env, t_var *var, int attr)
+// {
+// 	t_env *target;
 
-	if (!list_env || !var)
-		return (1);
-	target = get_env(list_env, var->key);
-	if (!target)
-	{
-		target = new_env(var->key, var->value, attr);
-		ft_lstadd_back(&list_env, ft_lstnew(target));
-		var->key = NULL;
-		var->value = NULL;
-	}
-	else if (target->value == var->value)
-		return (0);
-	else
-	{
-		free(target->value);
-		target->value = var->value;
-		var->value = NULL;
-	}
-	return (0);
-}
+// 	if (!list_env || !var)
+// 		return (1);
+// 	target = get_env(list_env, var->key);
+// 	if (!target)
+// 	{
+// 		target = new_env(var->key, var->value, attr);
+// 		ft_lstadd_back(&list_env, ft_lstnew(target));
+// 		var->key = NULL;
+// 		var->value = NULL;
+// 	}
+// 	else if (target->value == var->value)
+// 		return (0);
+// 	else
+// 	{
+// 		free(target->value);
+// 		target->value = var->value;
+// 		var->value = NULL;
+// 	}
+// 	return (0);
+// }
