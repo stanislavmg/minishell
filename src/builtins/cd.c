@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/13 19:07:08 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:16:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ static int	cd_home(t_list *env)
 
 static int	cd_path(char *path, t_list *env)
 {
-	int		result;
 	char	*cwd;
 
 	cwd = getcwd(NULL, 0);

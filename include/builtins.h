@@ -6,22 +6,19 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 13:37:59 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:50:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BUILTINS_H
 # define BUILTINS_H
-# include "minishell.h"
+# include "env.h"
 # include <signal.h>
 # include <limits.h>
 # include <stdio.h>
 # include <strings.h>
 # include <stdio.h>
 # include <ctype.h>
-# include "env.h"
-# include "libft.h"
-
 
 # define INVALID_COMMAND 2
 # define CANT_EXECUTE 126
@@ -30,7 +27,6 @@
 # define CONTROL_C 130
 # define CONTROL_D 131
 # define WRONG_CODE 255
-
 
 void	handle_command(char **args, t_list *env);
 int		handle_cd(char **args, t_list *env);
@@ -49,7 +45,6 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	free_array(char **arr);
 int		ft_env_count(t_list *env, int attr);
 void	ft_print_error(char *command, char *str, char *error);
-// void	signal_init(void);
 
 
 #endif

@@ -94,7 +94,7 @@ echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
 while IFS= read -r line; do
     bash -c "$line" 2> /dev/null > out
     mv out out_bash
-    ./minishell "$line" >& out
+    ./minishell "$line" 2> /dev/null > out
     if [ $? -eq ${VG_ERR} ]; then
         echo "MEMORY LEAK"
         print_line "${NUM}" "[ KO ]" "${line}"

@@ -21,14 +21,14 @@ int	main(int ac, char **av, char **env)
 	env_lst = new_env_list(env);
 	ft_lstadd_back(&env_lst, ft_lstnew(n));
 	if (av[1])
-		input_str = av[1];
+		input_str = ft_strdup(av[1]);
 	else
 		return 1;
 	lex = new_lexer(input_str, env_lst);
 	init_list(lex);
 	if (lex->err){
 		print_msh_err(ft_lstlast(lex->tokens)->data);
-		lex->input_str = NULL;
+		lex->input = NULL;
 		free_lexer(lex);
 		return (1);
 	}
@@ -45,8 +45,6 @@ int	main(int ac, char **av, char **env)
 		else
 			print_msh_err(ft_lstlast(lex->tokens)->data);
 	}
-	lex->input_str = NULL;
-	free_lexer(lex);
 	free_parser(parser);
 	free_ast((t_ast *)root);
 	return (0);

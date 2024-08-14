@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 15:44:26 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:50:32 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # define ENV	0x02
 # define HIDDEN	0x03
 
-# include "libft.h"
 # include "minishell.h"
 # include <string.h>
 

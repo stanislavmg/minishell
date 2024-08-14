@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:40:17 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 14:27:28 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:08:22 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_printf(const char *s, ...)
 		if (s[i] == '%')
 		{
 			count += i;
-			write(1, s, i++);
+			write(STDERR_FILENO, s, i++);
 			count += multiplexer(s[i], &args);
 			s += i + 1;
 			i = -1;

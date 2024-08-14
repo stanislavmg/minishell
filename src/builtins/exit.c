@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/13 19:03:51 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:17:58 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ static int	ft_isnum(char *str)
 	return (EXIT_FAILURE);
 }
 
-static int	ft_isspace(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n'
-		|| c == '\r' || c == '\v' || c == '\f');
-}
+// static int	ft_isspace(char c)
+// {
+// 	return (c == ' ' || c == '\t' || c == '\n'
+// 		|| c == '\r' || c == '\v' || c == '\f');
+// }
 
 static long long int	ft_atol(const char *str)
 {

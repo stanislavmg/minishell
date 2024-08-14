@@ -25,7 +25,7 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 		return (NULL);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
-	print_tree(ast);
+	//print_tree(ast);
 	if (parser->err)
 	{
 		if (parser->cur_token_pos)
@@ -48,12 +48,12 @@ void	set_std_val(t_list *env)
 	
 	if (!env)
 		return ;
-	n = new_env(get_var_name("?=0"), get_var_value("?=0"), HIDDEN);
+	n = new_env(get_var_name("?=0"), get_var_value("?=0"), ENV | EXPORT);
 	ft_lstadd_back(&env, ft_lstnew(n));
 	shell_lvl = get_env(env, "SHLVL");
 	if (!shell_lvl)
 	{
-		n = new_env(get_var_name("SHLVL=0"), get_var_value("SHLVL=1"), HIDDEN);
+		n = new_env(get_var_name("SHLVL=0"), get_var_value("SHLVL=1"), ENV | EXPORT);
 		ft_lstadd_back(&env, ft_lstnew(n));
 	}
 	else if (!*shell_lvl->value)
@@ -76,7 +76,7 @@ int	main(int ac, char **av, char **env)
 	
 	if (ac == 2)
 	{
-		input = av[1];
+		input = ft_strdup(av[1]);
 			msh = new_msh_data();
 		msh->env_list = new_env_list(env);
 		set_std_val(msh->env_list);

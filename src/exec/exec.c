@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 16:15:34 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:06:18 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,21 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	perror(cmd->argv[0]);
 	exit(EXIT_FAILURE);
 }
+int is_logic_operator(e_token type)
+{
+	return (type == OR || type == AND || type == SEMICOLON);
+}
 
 void start_first_ps(t_ast *root, t_list *env, int *pdes)
 {
-	if (root->type != PIPE)
+	if (root->type != SEMICOLON)
+	{
+		dup2(pdes[1], STDOUT_FILENO);
+		close(pdes[0]);
+		close(pdes[1]);
+		travers_tree(root, env);
+	}
+	else
 	{
 		travers_tree((t_ast *)root->left, env); // FIXME
 		dup2(pdes[1], STDOUT_FILENO);
@@ -101,34 +112,25 @@ void start_first_ps(t_ast *root, t_list *env, int *pdes)
 		close(pdes[1]);
 		travers_tree((t_ast *)root->right, env);
 	}
-	else
-	{
-		dup2(pdes[1], STDOUT_FILENO);
-		close(pdes[0]);
-		close(pdes[1]);
-		travers_tree((t_ast *)root->left, env);
-		travers_tree((t_ast *)root->right, env);
-	}
 	exit(get_last_status(env));
 }
 
 void start_second_ps(t_ast *root, t_list *env, int *pdes)
 {
-	if (root->type != PIPE)
-	{
-		travers_tree((t_ast *)root->right, env); // FIXME
-		dup2(pdes[0], STDIN_FILENO);
-		ft_close(pdes[1]);
-		ft_close(pdes[0]);
-		travers_tree((t_ast *)root->left, env);
-	}
-	else
+	if (root->type != SEMICOLON)
 	{
 		dup2(pdes[0], STDIN_FILENO);
 		close(pdes[1]);
 		close(pdes[0]);
-		travers_tree((t_ast *)root->right, env);
+		travers_tree(root, env);
+	}
+	else
+	{
 		travers_tree((t_ast *)root->left, env);
+		dup2(pdes[0], STDIN_FILENO);
+		ft_close(pdes[1]);
+		ft_close(pdes[0]);
+		travers_tree((t_ast *)root->right, env); // FIXME
 	}
 	exit(get_last_status(env));
 }
@@ -145,16 +147,17 @@ int	start_pipeline(t_ast *root, t_list *list_env)
 		return (0);
 	if (pipe(pdes) == -1)
 		exit_failure("pipe", EXIT_FAILURE);
+	exit_code = 0;
     ps1 = fork();
     if (ps1 == 0)
-		start_first_ps(root, list_env, &pdes);
+		start_first_ps((t_ast *)root->left, list_env, pdes);
 	else if (ps1 < 0)
 		exit_failure("fork", EXIT_FAILURE); // FIXME need free
 	else if (ps1 > 0)
 	{
 		ps2 = fork();
 		if (ps2 == 0)
-			start_second_ps(root, list_env, &pdes);
+			start_second_ps((t_ast *)root->right, list_env, pdes);
 		else if (ps2 < 0)
 			exit_failure("fork", EXIT_FAILURE);
 		close(pdes[0]);

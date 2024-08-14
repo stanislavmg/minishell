@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 16:15:44 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:16:37 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,6 @@ static char	**free_res(char **res, size_t count)
 
 char	**ft_first_split(char const *s, char c)
 {
-	size_t	i;
-	size_t	j;
 	char	**res;
 	int		count;
 

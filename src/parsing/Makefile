@@ -22,7 +22,7 @@ all: $(NAME)
 $(NAME): $(OBJ) $(MAIN:.c=.o) $(LIB)
 	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
-%.o: %.c
+%.o: %.c $(MAIN)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIB):
