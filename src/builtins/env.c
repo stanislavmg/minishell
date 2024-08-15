@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 21:04:55 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/15 15:52:00 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	handle_env(char **args, t_list *env)
 		return (EXIT_FAILURE);
 	while (env)
 	{
-		target = (t_env *)env -> content;
+		target = (t_env *)env -> data;
 		if (target -> attr & ENV)
 		{
 			if (ft_strlen(target -> value) > 0)
