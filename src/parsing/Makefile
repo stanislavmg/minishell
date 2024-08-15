@@ -3,7 +3,7 @@ LIB     = libft.a
 INCLUDE = ../../include
 MAIN 	?= main.c
 
-SRC     = parser.c init_cmd.c debug.c destructors.c parser_utils.c here_doc.c ast.c\
+SRC     = parser.c init_cmd.c debug.c destructors.c parser_utils.c here_doc.c ast.c wildcard.c\
 		  $(wildcard lexer/*) $(wildcard ../env_list/*) $(wildcard ../exec/*)\
 		  $(wildcard ../ft_printf/*) $(wildcard ../builtins/*)
 
@@ -15,7 +15,7 @@ LEX_OBJ = $(LEX_SRC:%.c=%.o)
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -Wall -g3 -I$(INCLUDE) -fsanitize=address 
+CFLAGS  = -Wall -g -I$(INCLUDE) -fsanitize=address 
 
 all: $(NAME)
 

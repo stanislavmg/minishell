@@ -127,12 +127,16 @@ void	add_redirection_node(t_list **redir, t_parser *parser)
 void	add_cmd_arg(t_list **args, t_parser *parser)
 {
 	t_token 	*cur_token;
-
+	t_list		*new_node;
 	if (!parser || !parser->cur_token_pos)
 		return ;
 	cur_token = parser->cur_token_pos->data;
 	parser->cmd_start = 1;
-	ft_lstadd_back(args, ft_lstnew(cur_token->word));
+	if (cur_token->type == WILDCARD)
+		new_node = expand_wildcard(cur_token->word);
+	else
+		new_node = ft_lstnew(cur_token->word);
+	ft_lstadd_back(args, new_node);
 	cur_token->word = NULL;
 }
 
@@ -155,7 +159,7 @@ t_cmd *new_cmd_tree(t_parser *parser)
 			add_variable_node(&var, cur_token);
 		else if (is_redirect(cur_token->type))
 			add_redirection_node(&redir, parser);
-		else if (cur_token->type == STRING)
+		else if (cur_token->type == STRING || cur_token->type == WILDCARD)
 			add_cmd_arg(&args, parser);
 		if (cur_token->type == OPEN_BRACKET)
 			parser->err = ERR_SYNTAX;

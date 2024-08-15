@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:40:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 18:08:45 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/15 11:23:28 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,6 @@ char	ft_printx(size_t num, char ch)
 		return (ft_printu(num, 16, 'A'));
 	else if (ch == 'x')
 		return (ft_printu(num, 16, 'a'));
-	else if (!num && (ch == 'x' || ch == 'X'))
-	{
-		(STDERR_FILENO, "(nil)", 5);
-		return (5);
-	}
 	else
 	{
 		write(STDERR_FILENO, "0x", 2);

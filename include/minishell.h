@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:25 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 16:06:32 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/15 15:32:53 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef enum t_token
   IO_FILE,
   STRING,
   VARIABLE,
+  WILDCARD,
   ASSIGNMENT,
   INPUT_TRUNC,
   OUTPUT_ADD,

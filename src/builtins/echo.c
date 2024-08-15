@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 07:16:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/13 19:08:09 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/15 11:20:44 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	handele_echo(char **args)
 	i = 1;
 	flag = 0;
 	if (!args)
-	while (ft_strcmp(args[i], "-n") == 0)
+	while (strcmp(args[i], "-n") == 0)
 	{
 		flag = 1;
 		i++;

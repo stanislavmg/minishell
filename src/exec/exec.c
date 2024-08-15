@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 18:06:18 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/15 12:10:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	perror(cmd->argv[0]);
 	exit(EXIT_FAILURE);
 }
+
 int is_logic_operator(e_token type)
 {
 	return (type == OR || type == AND || type == SEMICOLON);

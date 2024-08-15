@@ -109,6 +109,11 @@ char	*string_handle(t_lexer *lex)
 	else
 		new_word = get_word(lex->str_pos, i);
 	lex->str_pos += i;
+	if (ft_strchr(new_word, '*'))
+	{
+		push_token(&lex->tokens, new_word, WILDCARD);
+		return (NULL);
+	}
 	return (new_word);
 }
 
