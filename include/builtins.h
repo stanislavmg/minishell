@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 16:50:51 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/15 17:49:19 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define CONTROL_D 131
 # define WRONG_CODE 255
 
-void	handle_command(char **args, t_list *env);
+int		handle_command(char **args, t_list *env);
 int		handle_cd(char **args, t_list *env);
 int		handle_env(char **args, t_list *env);
 int		handle_pwd(char **args);

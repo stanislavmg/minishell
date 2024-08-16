@@ -3,21 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 21:03:11 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/15 17:49:07 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-void	handle_command(char **args, t_list *env)
+int	handle_command(char **args, t_list *env)
 {
 	int	result;
 
+	result = 0;
 	if (!args || !env)
-		(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	if (strcmp(args[0], "cd") == 0)
 		result = handle_cd(args, env);
 	else if (strcmp(args[0], "env") == 0)
@@ -33,8 +34,8 @@ void	handle_command(char **args, t_list *env)
 	else if (strcmp(args[0], "exit") == 0)	
 		result = handle_exit(args);
 	else
-		return ;
-	exit(result);
+		return (0);
+	return (result);
 }
 
 void	free_array(char **arr)

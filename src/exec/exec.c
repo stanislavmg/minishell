@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/15 12:10:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/15 17:51:00 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,29 @@ int	travers_tree(t_ast *root, t_list *list_env)
 	return (0);
 }
 
+int is_builtin(const char *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (strcmp(cmd, "cd") == 0)
+		return (1);
+	else if (strcmp(cmd, "env") == 0)
+		return (1);
+	else if (strcmp(cmd, "pwd") == 0)
+		return (1);
+	else if (strcmp(cmd, "export") == 0)	
+		return (1);
+	else if (strcmp(cmd, "echo") == 0)	
+		return (1);
+	else if (strcmp(cmd, "unset") == 0)	
+		return (1);
+	else if (strcmp(cmd, "exit") == 0)	
+		return (1);
+	else
+		return (0);
+}
+
+
 void	start_job(t_list *list_env, t_exec_cmd *cmd)
 {
 	pid_t	pid;
@@ -52,12 +75,15 @@ void	start_job(t_list *list_env, t_exec_cmd *cmd)
 	char	**envp;
 
 	envp = new_env_arr(list_env);
-	pid = fork();
-	if (!pid)
+	if (is_builtin(cmd->argv[0]))
 	{
-		handle_command(cmd->argv, list_env);
-		ft_execve(cmd, envp);
+		set_last_status(list_env, handle_command(cmd->argv, list_env));
+		return ;
 	}
+	else
+		pid = fork();
+	if (!pid)
+		ft_execve(cmd, envp);
 	if (pid == -1)
 	{
 		ft_putstr_fd("fork error\n", STDERR_FILENO);

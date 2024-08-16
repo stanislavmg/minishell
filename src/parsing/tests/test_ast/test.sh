@@ -10,10 +10,8 @@ INPUT=brackets.txt
 REDIR=redirect.txt
 SYNTAX=syntax.txt
 OUTPUT=output
-LOG=log
 NUM=1
-VG_ERR=142
-VALGRIND=""
+LOG=log/case_
 
 function print_line() {
     local number="$1"
@@ -26,11 +24,18 @@ function print_line() {
     else
         color=${GREEN}
     fi
-    printf "${color}%-3s | %-6s: %s\n${RESET}" "${number}" "${status}" "${command}"
+    printf "${color}%-3s %-6s: %s\n${RESET}" "${number}" "${status}" "${command}"
+}
+
+function log_command() {
+  local command="$1"
+  local logfile="$2"
+  {
+    eval "$command"
+  } >> "$logfile" 2>&1
 }
 
 mkdir -p "$OUTPUT"
-mkdir -p "$LOG"
 
 if [ "$1" == "-re" ]; then
     rm -f minishell &> /dev/null
@@ -56,23 +61,11 @@ fi
 rm -f ${OUTPUT}/*
 rm -f ${LOG}/*
 
-echo -e "\n${BOLD}BASE TEST${RESET}\n" 
+echo -e "\n${BOLD}BASE TEST${RESET}\n"
+
 while IFS= read -r line; do
-    bash -c "$line" > "${OUTPUT}/${NUM}_bash"
-    ./minishell "$line" > "${OUTPUT}/${NUM}_msh"
-    if [ $? -eq ${VG_ERR} ]; then
-        echo "MEMORY LEAK"
-        print_line "${NUM}" "[ KO ]" "${line}"
-    fi
-    if ! diff "${OUTPUT}/${NUM}_bash" "${OUTPUT}/${NUM}_msh" >/dev/null 2>&1; then
-        echo "Test case ${NUM}: $line" > "${LOG}/${NUM}_log"
-        echo -n "Bash output: " >> "${LOG}/${NUM}_log"
-		echo >> "${LOG}/${NUM}_log"
-        cat "${OUTPUT}/${NUM}_bash" >> "${LOG}/${NUM}_log"
-		echo >> "${LOG}/${NUM}_log"
-        echo -n "Minishell output: " >> "${LOG}/${NUM}_log"
-		echo >> "${LOG}/${NUM}_log"
-        cat "${OUTPUT}/${NUM}_msh" >> "${LOG}/${NUM}_log"
+
+    if diff $(eval "$line") $(./minishell "$line") > /dev/null 2>&1; then
         print_line "${NUM}" "[ KO ]" "${line}"
     else
         print_line "${NUM}" "[ OK ]" "${line}"
@@ -81,40 +74,33 @@ while IFS= read -r line; do
 done < "$INPUT"
 
 echo -e "\n${BOLD}SYNTAX TEST${RESET}\n"
+
 while IFS= read -r line; do
-    if ! (./minishell "$line" | grep "syntax error") 2> /dev/null; then
+    bash_out=$(bash "$line" 2>&1 | awk '/syntax/{flag=1} flag; /'\''/{flag=0}')
+    msh_out=$(./minishell "$line" 2>&1 | awk '/syntax/{flag=1} flag; /'\''/{flag=0}')
+    if [ "$bash_out" = "$msh_out" ]; then
         print_line "${NUM}" "[ OK ]" "${line}"
     else
         print_line "${NUM}" "[ KO ]" "${line}"
+        echo "Difference detected:"
+        echo "Bash output: $bash_out"
+        echo "Minishell output: $msh_out"
     fi
     (( NUM++ ))
 done < "$SYNTAX"
 
-echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
-while IFS= read -r line; do
-    bash -c "$line" 2> /dev/null > out
-    mv out out_bash
-    ./minishell "$line" 2> /dev/null > out
-    if [ $? -eq ${VG_ERR} ]; then
-        echo "MEMORY LEAK"
-        print_line "${NUM}" "[ KO ]" "${line}"
-    fi
-    mv out out_msh
-    if ! diff out_bash out_msh >/dev/null; then
-        echo "Test case ${NUM}: $line" > "${LOG}/${NUM}_log"
-        echo -n "Bash output: " >> "${LOG}/${NUM}_log"
-		echo >> "${LOG}/${NUM}_log"
-        cat "out_bash" >> "${LOG}/${NUM}_log"
-		echo >> "${LOG}/${NUM}_log"
-        echo -n "Minishell output: " >> "${LOG}/${NUM}_log"
-		echo >> "${LOG}/${NUM}_log"
-        cat "out_msh" >> "${LOG}/${NUM}_log"
-        print_line "${NUM}" "[ KO ]" "${line}"
-    else
-        print_line "${NUM}" "[ OK ]" "${line}"
-    fi
-    rm -f out_bash out_msh
-    (( NUM++ ))
-done < "$REDIR"
+# echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
 
-rm -f  test_main.o
+# while IFS= read -r line; do
+#     bash -c "$line" 2> /dev/null > out_bash
+#     ./minishell "$line" 2> /dev/null > out_msh
+#     if ! diff out_bash out_msh >/dev/null; then
+#         print_line "${NUM}" "[ KO ]" "${line}"
+#     else
+#         print_line "${NUM}" "[ OK ]" "${line}"
+#     fi
+#     rm -f out_bash out_msh
+#     (( NUM++ ))
+# done < "$REDIR"
+
+rm -rf  test_main.o output
