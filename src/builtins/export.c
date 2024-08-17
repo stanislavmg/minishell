@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 12:29:11 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:10:49 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,54 @@ int	ft_arg_is_correct(char *str)
 	return (1);
 }
 
+int	concat_value(t_env *node, char *value, char *new_key)
+{
+	char	*new_value;
+
+	if (ft_strlen(value) == 0)
+		return (EXIT_SUCCESS);
+	new_value = (char *)malloc(sizeof(char) * (ft_strlen(node->value)
+		+ ft_strlen(value) + 1));
+	if (!new_value)
+	{
+		free(new_key);
+		return (EXIT_FAILURE);
+	}
+	ft_strlcpy(new_value, node->value, ft_strlen(node->value) + 1);
+	ft_strlcpy(new_value + ft_strlen(node->value),
+		value, ft_strlen(value) + 1);
+	free(node->value);
+	node->value = new_value;
+	return (EXIT_SUCCESS);
+}
+
+int	concat_env_value(t_list *env, char *key, char *value)
+{
+	t_env	*node;
+	char	*new_value;
+	char	*new_key;
+
+	if (!env || !key || !value)
+		return (EXIT_FAILURE);
+	new_key = malloc(sizeof(char) * (ft_strlen(key)));
+	if (!new_key)
+		return (EXIT_FAILURE);
+	ft_strlcpy(new_key, key, ft_strlen(key));
+	node = get_env(env, new_key);
+	if (node)
+	{
+		if (concat_value(node, value, new_key) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
+	}
+	else
+	{
+		node = new_env(new_key, value, ENV | EXPORT);
+		ft_lstadd_back(&env, ft_lstnew(node));
+	}
+	free(key);
+	return (EXIT_SUCCESS);
+}
+
 int	handle_export(char **args, t_list *env)
 {
 	int		result;
@@ -180,10 +228,27 @@ int	handle_export(char **args, t_list *env)
 		{
 			if (ft_strchr(args[i], '='))
 			{
-				arr = ft_split(args[i], '=');
+				arr = ft_first_split(args[i], '=');
 				if (!arr)
 					return (EXIT_FAILURE);
-				result = set_env_value(env, arr[0], arr[1]);
+				if (arr[0][ft_strlen(arr[0]) - 1] == '+')
+				{
+					result = concat_env_value(env, arr[0], arr[1]);
+					if (result == EXIT_FAILURE)
+					{
+						free_array(arr);
+						return (EXIT_FAILURE);
+					}
+				}
+				else
+				{
+					result = set_env_value(env, arr[0], arr[1]);
+					if (result == EXIT_FAILURE)
+					{
+						free_array(arr);
+						return (EXIT_FAILURE);
+					}
+				}
 				free(arr);
 			}
 			else
