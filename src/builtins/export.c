@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/15 16:25:36 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 09:52:30 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,19 +130,19 @@ int	ft_arg_is_correct(char *str)
 	i = 0;
 	if (!str)
 	{
-		ft_printf("minishell: %s: not a valid identifier\n", "NULL");
+		ft_printf("minishell: export: '%s': not a valid identifier\n", "NULL");
 		return (0);
 	}
-	if (ft_isdigit(str[0]))
+	if (!((str[0] == '_') || ft_isalpha(str[0])))
 	{
-		ft_printf("minishell: %s: not a valid identifier\n", str);
+		ft_printf("minishell: export: '%s': not a valid identifier\n", str);
 		return (0);
 	}
 	while (str[i] && str[i] != '=')
 	{
 		if (!ft_isalnum(str[i]))
 		{
-			ft_printf("minishell: %s: not a valid identifier\n", str);
+			ft_printf("minishell: export: '%s': not a valid identifier\n", str);
 			return (0);
 		}
 		i++;
@@ -167,18 +167,19 @@ int	handle_export(char **args, t_list *env)
 	}
 	while (args[i])
 	{
-		if (!ft_arg_is_correct(args[i]))
-			return (EXIT_FAILURE);
-		if (ft_strchr(args[i], '='))
+		if (ft_arg_is_correct(args[i]))
 		{
-			arr = ft_split(args[i], '=');
-			if (!arr)
-				return (EXIT_FAILURE);
-			result = set_env_value(env, arr[0], arr[1]);
-			free(arr);
+			if (ft_strchr(args[i], '='))
+			{
+				arr = ft_split(args[i], '=');
+				if (!arr)
+					return (EXIT_FAILURE);
+				result = set_env_value(env, arr[0], arr[1]);
+				free(arr);
+			}
+			else
+				result = set_env_value(env, ft_strdup(args[i]), ft_strdup(""));
 		}
-		else
-			result = set_env_value(env, ft_strdup(args[i]), ft_strdup(""));
 		i++;
 	}
 	return (result);
