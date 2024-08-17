@@ -71,12 +71,13 @@ static int	check_arg(char **args)
 	return (EXIT_SUCCESS);
 }
 
-int	handle_exit(char **args)
+int	handle_exit(char **args, t_data *msh)
 {
 	long long int	exit_status;
 
 	if (!args)
 		return (EXIT_FAILURE);
+  free_minishell_data(msh);
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (check_arg(args) != 0)
 		exit(255);

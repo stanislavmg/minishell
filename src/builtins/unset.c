@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:38:41 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 08:43:02 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:31:14 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	env_delete(t_list **env, char *key)
 	prev = NULL;
 	while (*env)
 	{
-		node = (t_env *)(*env)->content;
+		node = (t_env *)(*env)->data;
 		if (ft_strcmp(node->key, key) == 0)
 		{
 			tmp = (*env)->next;

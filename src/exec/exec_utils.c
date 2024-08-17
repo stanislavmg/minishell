@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/12 16:32:11 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 13:12:40 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,20 @@ void	exit_failure(char *msg, int error)
 		perror(msg);
 	}
 	exit(error);
+}
+
+void	free_minishell_data(t_data *msh)
+{
+	free_ast(msh->root);
+	ft_lstclear(&msh->env, free_env);
+	free(msh);
+}
+
+void	panic(t_data *msh)
+{
+	free_minishell_data(msh);
+	perror("minishell: ");
+	exit(errno);
 }
 
 int	get_last_status(t_list *list_env)
