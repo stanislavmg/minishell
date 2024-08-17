@@ -3,39 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/16 11:08:50 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 08:43:49 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
-
-static void	ft_content_del(void *env)
-{
-	free(((t_env *)env)->key);
-	free(((t_env *)env)->value);
-}
-
-void	env_delete(t_list *env, char *key)
-{
-	t_env	*node;
-	t_list	*tmp;
-
-	while (env)
-	{
-		node = get_env(tmp, key);
-		if (ft_strcmp(node -> key, key) == 0)
-		{
-			tmp = env -> next;
-			ft_lstdelone(env, &ft_content_del);
-			free(env);
-			env = tmp;
-		}
-		env = env -> next;
-	}
-}
 
 char	*get_env_value(char *key, t_list *env)
 {

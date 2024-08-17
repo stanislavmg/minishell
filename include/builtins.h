@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/15 17:49:19 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 08:43:18 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int		handle_exit(char **args);
 int		execute_command(char **args, t_list *env);
 char	*get_env_value(char *key, t_list *env);
 int		set_env_value(t_list *env, char *key, char *value);
-void	env_delete(t_list *env, char *key);
+void	env_delete(t_list **env, char *key);
 char	**ft_first_split(char const *s, char c);
 int		ft_strcmp(const char *s1, const char *s2);
 void	free_array(char **arr);
