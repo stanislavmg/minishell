@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 07:16:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/15 11:20:44 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:49:30 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,9 @@ int	handele_echo(char **args)
 	i = 1;
 	flag = 0;
 	if (!args)
-	while (strcmp(args[i], "-n") == 0)
-	{
+		return (EXIT_FAILURE);
+	while (args[i] && !ft_strcmp(args[i], "-n") && i++)
 		flag = 1;
-		i++;
-	}
 	while (args[i])
 	{
 		write(STDOUT_FILENO, args[i], ft_strlen(args[i]));
