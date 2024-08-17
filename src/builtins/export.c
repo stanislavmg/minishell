@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 09:52:30 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:29:11 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,22 @@ static void	ft_free_exports(char **exports, int count)
 	}
 }
 
+static int	fill_string(t_list *env, t_env *target, char **exports, int i)
+{
+	int	addition_len;
+
+	addition_len = (ft_strlen(target -> value) > 0) ? 4 : 0 ;
+	exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
+		+ ft_strlen(target -> value) + addition_len));
+	if (!exports[i])
+	{
+		ft_free_exports(exports, i);
+		return (EXIT_FAILURE);
+	}
+	fill_export_string(exports[i], env);
+	return (EXIT_SUCCESS);
+}
+
 static char	**get_exports(t_list *env)
 {
 	char	**exports;
@@ -63,17 +79,10 @@ static char	**get_exports(t_list *env)
 		return (NULL);
 	while (i < count)
 	{
-		target = (t_env *) env -> data;
+		target = (t_env *) env -> content;
 		if (target->attr & EXPORT)
 		{
-			exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
-				+ ft_strlen(target -> value) + 4));
-			if (!exports[i])
-			{
-				ft_free_exports(exports, i);
-				return (NULL);
-			}
-			fill_export_string(exports[i], env);
+			fill_string(env, target, exports, i);
 			i++;
 		}
 		env = env -> next;
