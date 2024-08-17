@@ -15,7 +15,7 @@ LEX_OBJ = $(LEX_SRC:%.c=%.o)
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -Wall -g -I$(INCLUDE) -fsanitize=address 
+CFLAGS  = -Wall -g -I$(INCLUDE) #-fsanitize=address 
 
 all: $(NAME)
 

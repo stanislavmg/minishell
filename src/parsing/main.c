@@ -80,29 +80,31 @@ int	main(int ac, char **av, char **env)
 	{
 		input = ft_strdup(av[1]);
 			msh = new_msh_data();
-		msh->env_list = new_env_list(env);
-		set_std_val(msh->env_list);
-		msh->root = (t_ast *)init_msh_data(msh->env_list, input);
+		msh->env = new_env_list(env);
+		set_std_val(msh->env);
+		msh->root = (t_ast *)init_msh_data(msh->env, input);
 		if (msh->root)
-			travers_tree((t_ast *)msh->root, msh->env_list);
-		exit_code = get_last_status(msh->env_list);
-		ft_lstclear(&msh->env_list, free_env);
+			travers_tree((t_ast *)msh->root, msh);
+		exit_code = get_last_status(msh->env);
+		ft_lstclear(&msh->env, free_env);
+		free_ast(msh->root);
 		free(msh);
 		return (exit_code);
 	}
 	msh = new_msh_data();
-	msh->env_list = new_env_list(env);
-	set_std_val(msh->env_list);
+	msh->env = new_env_list(env);
+	set_std_val(msh->env);
 	input = readline(PROMT);
 	while (input)
 	{
-		msh->root = (t_ast *)init_msh_data(msh->env_list, input);
+		msh->root = (t_ast *)init_msh_data(msh->env, input);
 		if (msh->root)
-			travers_tree((t_ast *)msh->root, msh->env_list);
+			travers_tree((t_ast *)msh->root, msh);
+		free_ast(msh->root);
 		input = readline(PROMT);
 	}
-	exit_code = get_last_status(msh->env_list);
-	ft_lstclear(&msh->env_list, free_env);
+	exit_code = get_last_status(msh->env);
+	ft_lstclear(&msh->env, free_env);
 	free(input);
 	free(msh);
 	return (exit_code);

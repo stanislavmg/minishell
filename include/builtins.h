@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 08:43:18 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:44:52 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@
 # define CONTROL_D 131
 # define WRONG_CODE 255
 
-int		handle_command(char **args, t_list *env);
+int		handle_command(char **args, t_data *msh);
 int		handle_cd(char **args, t_list *env);
 int		handle_env(char **args, t_list *env);
 int		handle_pwd(char **args);
 int		handle_export(char **args, t_list *env);
 int		handele_echo(char **args);
 int		handle_unset(char **args, t_list *env);
-int		handle_exit(char **args);
+int		handle_exit(char **args, t_data *msh);
 int		execute_command(char **args, t_list *env);
 char	*get_env_value(char *key, t_list *env);
 int		set_env_value(t_list *env, char *key, char *value);

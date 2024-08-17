@@ -6,33 +6,33 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/15 17:49:07 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:44:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-int	handle_command(char **args, t_list *env)
+int	handle_command(char **args, t_data *msh)
 {
 	int	result;
 
 	result = 0;
-	if (!args || !env)
+	if (!args || !msh)
 		return (EXIT_FAILURE);
 	if (strcmp(args[0], "cd") == 0)
-		result = handle_cd(args, env);
+		result = handle_cd(args, msh->env);
 	else if (strcmp(args[0], "env") == 0)
-		result = handle_env(args, env);
+		result = handle_env(args, msh->env);
 	else if (strcmp(args[0], "pwd") == 0)
 		result = handle_pwd(args);
 	else if (strcmp(args[0], "export") == 0)	
-		result = handle_export(args, env);
+		result = handle_export(args, msh->env);
 	else if (strcmp(args[0], "echo") == 0)	
 		result = handele_echo(args);
 	else if (strcmp(args[0], "unset") == 0)	
-		result = handle_unset(args, env);
+		result = handle_unset(args, msh->env);
 	else if (strcmp(args[0], "exit") == 0)	
-		result = handle_exit(args);
+		result = handle_exit(args, msh);
 	else
 		return (0);
 	return (result);

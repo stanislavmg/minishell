@@ -9,7 +9,6 @@ MSH=./minishell
 INPUT=brackets.txt 
 REDIR=redirect.txt
 SYNTAX=syntax.txt
-OUTPUT=output
 NUM=1
 LOG=log/case_
 
@@ -35,7 +34,7 @@ function log_command() {
   } >> "$logfile" 2>&1
 }
 
-mkdir -p "$OUTPUT"
+mkdir -p "log"
 
 if [ "$1" == "-re" ]; then
     rm -f minishell &> /dev/null
@@ -58,13 +57,10 @@ if [ ! -f "minishell" ]; then
     exit 1
 fi
 
-rm -f ${OUTPUT}/*
 rm -f ${LOG}/*
 
 echo -e "\n${BOLD}BASE TEST${RESET}\n"
-
 while IFS= read -r line; do
-
     if diff $(eval "$line") $(./minishell "$line") > /dev/null 2>&1; then
         print_line "${NUM}" "[ KO ]" "${line}"
     else
@@ -73,34 +69,37 @@ while IFS= read -r line; do
     (( NUM++ ))
 done < "$INPUT"
 
+
 echo -e "\n${BOLD}SYNTAX TEST${RESET}\n"
 
 while IFS= read -r line; do
-    bash_out=$(bash "$line" 2>&1 | awk '/syntax/{flag=1} flag; /'\''/{flag=0}')
-    msh_out=$(./minishell "$line" 2>&1 | awk '/syntax/{flag=1} flag; /'\''/{flag=0}')
-    if [ "$bash_out" = "$msh_out" ]; then
+    bash_out=$(bash -c "$line" 2>&1)
+    msh_out=$(./minishell "$line" 2>&1)
+    bash_trimmed=$(echo "$bash_out" | sed -n "s/.*\(syntax.*\`[^']*'\).*/\1/p")
+    msh_trimmed=$(echo "$msh_out" | cut -d ' ' -f2-)
+
+    if [ "$bash_trimmed" = "$msh_trimmed" ]; then
         print_line "${NUM}" "[ OK ]" "${line}"
     else
         print_line "${NUM}" "[ KO ]" "${line}"
-        echo "Difference detected:"
-        echo "Bash output: $bash_out"
-        echo "Minishell output: $msh_out"
+        echo "Bash output: $bash_trimmed"
+        echo "Minishell output: $msh_trimmed"
     fi
     (( NUM++ ))
 done < "$SYNTAX"
 
-# echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
+echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
 
-# while IFS= read -r line; do
-#     bash -c "$line" 2> /dev/null > out_bash
-#     ./minishell "$line" 2> /dev/null > out_msh
-#     if ! diff out_bash out_msh >/dev/null; then
-#         print_line "${NUM}" "[ KO ]" "${line}"
-#     else
-#         print_line "${NUM}" "[ OK ]" "${line}"
-#     fi
-#     rm -f out_bash out_msh
-#     (( NUM++ ))
-# done < "$REDIR"
+while IFS= read -r line; do
+    bash -c "$line" 2> /dev/null > out_bash
+    ./minishell "$line" 2> /dev/null > out_msh
+    if ! diff out_bash out_msh >/dev/null; then
+        print_line "${NUM}" "[ KO ]" "${line}"
+    else
+        print_line "${NUM}" "[ OK ]" "${line}"
+    fi
+    rm -f out_bash out_msh
+    (( NUM++ ))
+done < "$REDIR"
 
 rm -rf  test_main.o output

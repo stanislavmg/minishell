@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 17:17:58 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:45:34 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,20 @@ static long long int	ft_atol(const char *str)
 	return (res);
 }
 
-int	handle_exit(char **args)
+int	handle_exit(char **args, t_data *msh)
 {
 	long long int	exit_status;
 
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (!args)
 		return (EXIT_FAILURE);
-	if (args[2])
-	{
-		ft_putendl_fd("Too many arguments", STDERR_FILENO);
-		return (EXIT_FAILURE);
-	}
+	/* !!! SEGFAULT !!! */
+	// if (args[2])
+	// {
+	// 	ft_putendl_fd("Too many arguments", STDERR_FILENO);
+	// 	return (EXIT_FAILURE);
+	// }
+	//free_msh_data(msh); // TODO
 	if (args[1])
 	{
 		if (!ft_isnum(args[1]))
@@ -76,7 +78,7 @@ int	handle_exit(char **args)
 			ft_putendl_fd("numeric argument required", STDERR_FILENO);
 			return (EXIT_FAILURE);
 		}
-		if (ft_strlen(args[1]) > 19) // 
+		if (ft_strlen(args[1]) > 19)
 		{
 			ft_putendl_fd("Incorrect argument", STDERR_FILENO);
 			return (EXIT_FAILURE);
