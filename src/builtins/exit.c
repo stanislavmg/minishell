@@ -6,16 +6,26 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 13:20:32 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/18 09:40:23 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
+static int	ft_isspace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\r' || c == '\v' || c == '\f');
+}
+
 static int	ft_isnum(char *str)
 {
 	if (!str)
 		return (EXIT_FAILURE);
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '-' || *str == '+')
+		str++;
 	while (*str)
 	{
 		if (!(*str >= '0' && *str <= '9'))
@@ -34,7 +44,7 @@ static long long int	ft_atol(const char *str)
 	i = 0;
 	res = 0;
 	mod = 1;
-	while (isspace(str[i]))
+	while (ft_isspace(str[i]))
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
