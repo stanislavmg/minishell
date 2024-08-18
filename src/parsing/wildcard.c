@@ -43,6 +43,8 @@ t_list *expand_wildcard(char *pattern)
 	args = NULL;
 	while ((dr = readdir(cwd)))
 	{
+		while (!strcmp(dr->d_name, ".") || !strcmp(dr->d_name, ".."))
+			dr = readdir(cwd);
 		if (ft_fnmatch(pattern, dr->d_name))
 			ft_lstadd_back(&args, ft_lstnew(ft_strdup(dr->d_name)));
 	}

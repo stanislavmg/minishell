@@ -1,5 +1,9 @@
 #include "exec.h"
 #include "minishell.h"
+#include <time.h>
+#include <sys/time.h>
+
+struct timeval start, end;
 
 t_data	*new_msh_data(void)
 {
@@ -25,7 +29,7 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 		return (NULL);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
-	//print_tree(ast);
+	//print_tree((t_ast *)ast);
 	if (parser->err)
 	{
 		if (parser->cur_token_pos)
@@ -94,6 +98,9 @@ int	main(int ac, char **av, char **env)
 	msh = new_msh_data();
 	msh->env = new_env_list(env);
 	set_std_val(msh->env);
+	init_signals(0);
+	init_signals(1);
+	remove_echo_ctl();
 	input = readline(PROMT);
 	while (input)
 	{
@@ -101,6 +108,8 @@ int	main(int ac, char **av, char **env)
 		if (msh->root)
 			travers_tree((t_ast *)msh->root, msh);
 		free_ast(msh->root);
+		while (msh->child_ps)
+			ft_waitpid(msh);
 		input = readline(PROMT);
 	}
 	exit_code = get_last_status(msh->env);

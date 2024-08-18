@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 13:20:32 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/17 14:57:52 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,21 +53,27 @@ static long long int	ft_atol(const char *str)
 
 static int	check_arg(char **args)
 {
-	if (args[2])
-	{
-		ft_putendl_fd("Too many arguments", STDERR_FILENO);
-		return (EXIT_FAILURE);
-	}
+	/* SEGFAULT */
+	
+	// if (args[2])
+	// {
+	// 	ft_putendl_fd("Too many arguments", STDERR_FILENO);
+	// 	return (EXIT_FAILURE);
+	// }
+	
+	/* incorrect work */
 	if (!ft_isnum(args[1]))
 	{
 		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
 		return (EXIT_FAILURE);
 	}
-	if (ft_strlen(args[1]) > 19) // 
-	{
-		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
-		return (EXIT_FAILURE);
-	}
+	
+	/* SEGFAULT */
+	// if (ft_strlen(args[1]) > 19)
+	// {
+	// 	printf("minishell: exit: '%s': numeric argument required\n", args[1]);
+	// 	return (EXIT_FAILURE);
+	// }
 	return (EXIT_SUCCESS);
 }
 
@@ -77,10 +83,12 @@ int	handle_exit(char **args, t_data *msh)
 
 	if (!args)
 		return (EXIT_FAILURE);
-  free_minishell_data(msh);
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (check_arg(args) != 0)
+	{
+ 		free_minishell_data(msh);
 		exit(255);
+	}
 	if (args[1])
 	{
 		exit_status = ft_atol(args[1]);
@@ -91,9 +99,13 @@ int	handle_exit(char **args, t_data *msh)
 		}
 		while (exit_status >= 256)
 			exit_status %= 256;
+ 		free_minishell_data(msh);
 		exit(exit_status);
 	}
 	else
+	{
+ 		free_minishell_data(msh);
 		exit(0);
+	}
 	return (EXIT_SUCCESS);
 }

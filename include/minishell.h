@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:25 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/17 12:41:48 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/18 19:28:01 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #define MINISHEL_H
 
 # define PROMT	"minishell$> "
-
 #include "libft.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -116,6 +115,7 @@ typedef struct s_data
 {
 	t_ast 	 *root;
 	t_list   *env;
+  t_list   *child_ps;
 } t_data;
 
 #endif
