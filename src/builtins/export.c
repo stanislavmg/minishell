@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 20:09:14 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 20:58:15 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ static void	fill_export_string(char *str, t_list *env)
 		str[i++] = '"';
 		str[i] = '\0';
 	}
+	else
+		str[i++] = '\0';
 }
 
 static void	ft_free_exports(char **exports, int count)
@@ -54,7 +56,7 @@ static int	fill_string(t_list *env, t_env *target, char **exports, int i)
 	int	addition_len;
 	int	value_len;
 
-	addition_len = (target -> value == NULL) ? 0 : 4 ;
+	addition_len = (target -> value == NULL) ? 1 : 4 ;
 	value_len = (target -> value == NULL) ? 0 : ft_strlen(target -> value) ;
 	exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key) 
 		+ value_len + addition_len));
@@ -103,7 +105,7 @@ static char	**sort_exports(char **exports)
 	while (exports[i + 1])
 	{
 		j = i + 1;
-		if (strcmp(exports[i], exports[j]) > 0)
+		if (ft_strcmp(exports[i], exports[j]) > 0)
 		{
 			temp = exports[j];
 			exports[j] = exports[i];
