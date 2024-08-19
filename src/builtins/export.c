@@ -3,11 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-
-/*   Updated: 2024/08/19 08:04:04 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 19:04:51 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +81,7 @@ static char	**get_exports(t_list *env)
 		return (NULL);
 	while (i < count)
 	{
-		target = (t_env *) env -> data;
+		target = (t_env *) env -> content;
 		if (target->attr & EXPORT)
 		{
 			fill_string(env, target, exports, i);
@@ -142,7 +141,7 @@ int	ft_arg_is_correct(char *str)
 	i = 0;
 	if (!str)
 	{
-		printf("minishell: export: '%s': not a valid identifier\n", "NULL");
+		printf("minishell: export: '%s': not a valid identifier\n", str);
 		return (0);
 	}
 	if (!((str[0] == '_') || ft_isalpha(str[0])))
@@ -150,9 +149,9 @@ int	ft_arg_is_correct(char *str)
 		printf("minishell: export: '%s': not a valid identifier\n", str);
 		return (0);
 	}
-	while (str[i] && str[i] != '=')
+	while (str[i] && str[i] != '=' && !(str[i] == '+' && str[i + 1] == '='))
 	{
-		if (!ft_isalnum(str[i]))
+		if (!ft_isalnum(str[i]) && str[i] != '_')
 		{
 			printf("minishell: export: '%s': not a valid identifier\n", str);
 			return (0);
@@ -165,19 +164,21 @@ int	ft_arg_is_correct(char *str)
 int	concat_value(t_env *node, char *value, char *new_key)
 {
 	char	*new_value;
+	int		node_value_len;
 
+	node_value_len = (node->value == NULL) ? 0 : ft_strlen(node->value) ;
 	if (ft_strlen(value) == 0)
 		return (EXIT_SUCCESS);
-	new_value = (char *)malloc(sizeof(char) * (ft_strlen(node->value)
+	new_value = (char *)malloc(sizeof(char) * (node_value_len
 		+ ft_strlen(value) + 1));
 	if (!new_value)
 	{
 		free(new_key);
 		return (EXIT_FAILURE);
 	}
-	ft_strlcpy(new_value, node->value, ft_strlen(node->value) + 1);
-	ft_strlcpy(new_value + ft_strlen(node->value),
-		value, ft_strlen(value) + 1);
+	if (node_value_len > 0)
+		ft_strlcpy(new_value, node->value, node_value_len + 1);
+	ft_strlcpy(new_value + node_value_len, value, ft_strlen(value) + 1);
 	free(node->value);
 	node->value = new_value;
 	return (EXIT_SUCCESS);
@@ -186,7 +187,6 @@ int	concat_value(t_env *node, char *value, char *new_key)
 int	concat_env_value(t_list *env, char *key, char *value)
 {
 	t_env	*node;
-	char	*new_value;
 	char	*new_key;
 
 	if (!env || !key || !value)
