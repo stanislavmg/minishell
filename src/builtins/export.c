@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 19:04:51 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 20:09:14 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static char	**get_exports(t_list *env)
 		return (NULL);
 	while (i < count)
 	{
-		target = (t_env *) env -> content;
+		target = (t_env *) env -> data;
 		if (target->attr & EXPORT)
 		{
 			fill_string(env, target, exports, i);
