@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 08:05:11 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 18:12:01 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ int	ft_count_args(char **args)
 {
 	int	count;
 
+	count = 0;
 	while (*args)
 	{
 		count++;

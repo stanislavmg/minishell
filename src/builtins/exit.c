@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 08:11:06 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 18:14:52 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,19 +66,19 @@ static int	check_arg(char **args)
 	int	argc;
 
 	argc = ft_count_args(args);
-	if (!args || !argc)
-	return (EXIT_FAILURE);
-	if (argc > 0 && !ft_isnum(args[1]))
+	if (!args || argc == 0)
+		return (EXIT_FAILURE);
+	if (argc > 1 && !ft_isnum(args[1]))
 	{
 		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
 		return (EXIT_FAILURE);
 	}
-	if (argc > 1)
+	if (argc > 2)
 	{
 		printf("minishell: exit: too many arguments\n");
 		return (EXIT_FAILURE);
 	}
-	if (argc > 0 && ft_strlen(args[1]) > 19)
+	if (argc > 1 && ft_strlen(args[1]) > 19)
 	{
 		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
 		return (EXIT_FAILURE);
@@ -92,7 +92,7 @@ int	handle_exit(char **args, t_data *msh)
 
 	if (!args)
 		return (EXIT_FAILURE);
-  free_minishell_data(msh);
+	free_minishell_data(msh);
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (check_arg(args) != 0)
 		exit(255);
