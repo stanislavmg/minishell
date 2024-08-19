@@ -6,16 +6,26 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 14:57:52 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:11:06 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
+static int	ft_isspace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\r' || c == '\v' || c == '\f');
+}
+
 static int	ft_isnum(char *str)
 {
 	if (!str)
 		return (EXIT_FAILURE);
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '-' || *str == '+')
+		str++;
 	while (*str)
 	{
 		if (!(*str >= '0' && *str <= '9'))
@@ -34,7 +44,7 @@ static long long int	ft_atol(const char *str)
 	i = 0;
 	res = 0;
 	mod = 1;
-	while (isspace(str[i]))
+	while (ft_isspace(str[i]))
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
@@ -53,27 +63,26 @@ static long long int	ft_atol(const char *str)
 
 static int	check_arg(char **args)
 {
-	/* SEGFAULT */
-	
-	// if (args[2])
-	// {
-	// 	ft_putendl_fd("Too many arguments", STDERR_FILENO);
-	// 	return (EXIT_FAILURE);
-	// }
-	
-	/* incorrect work */
-	if (!ft_isnum(args[1]))
+	int	argc;
+
+	argc = ft_count_args(args);
+	if (!args || !argc)
+	return (EXIT_FAILURE);
+	if (argc > 0 && !ft_isnum(args[1]))
 	{
 		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
 		return (EXIT_FAILURE);
 	}
-	
-	/* SEGFAULT */
-	// if (ft_strlen(args[1]) > 19)
-	// {
-	// 	printf("minishell: exit: '%s': numeric argument required\n", args[1]);
-	// 	return (EXIT_FAILURE);
-	// }
+	if (argc > 1)
+	{
+		printf("minishell: exit: too many arguments\n");
+		return (EXIT_FAILURE);
+	}
+	if (argc > 0 && ft_strlen(args[1]) > 19)
+	{
+		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
+		return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
 }
 

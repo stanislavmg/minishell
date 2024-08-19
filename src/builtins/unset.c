@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:38:41 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 11:31:14 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/17 17:20:06 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ void	env_delete(t_list **env, char *key)
 
 int	handle_unset(char **args, t_list *env)
 {
-	t_env	*node;
-
 	if (!args || !env)
 		return (EXIT_FAILURE);
 	if (!args[1])

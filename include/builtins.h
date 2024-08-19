@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 13:49:52 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:22:21 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int		handle_export(char **args, t_list *env);
 int		handele_echo(char **args);
 int		handle_unset(char **args, t_list *env);
 int		handle_exit(char **args, t_data *msh);
-int		execute_command(char **args, t_list *env);
+// int		execute_command(char **args, t_list *env);
 char	*get_env_value(char *key, t_list *env);
 int		set_env_value(t_list *env, char *key, char *value);
 void	env_delete(t_list **env, char *key);
@@ -46,5 +46,6 @@ void	free_array(char **arr);
 int		ft_env_count(t_list *env, int attr);
 void	ft_print_error(char *command, char *str, char *error);
 void		free_minishell_data(t_data *msh);
+int		ft_count_args(char **args);
 
 #endif
