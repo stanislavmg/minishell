@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 10:54:08 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 17:22:41 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 20:02:43 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@ int	handle_pwd(char **args)
 {
 	char	pwd[PATH_MAX];
 
+	if (!args)
+		return (EXIT_FAILURE);
 	if (getcwd(pwd, sizeof(pwd)) != NULL)
 		ft_putendl_fd(pwd, STDERR_FILENO);
 	else
