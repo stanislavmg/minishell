@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 08:05:22 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:22:21 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int		handle_export(char **args, t_list *env);
 int		handele_echo(char **args);
 int		handle_unset(char **args, t_list *env);
 int		handle_exit(char **args, t_data *msh);
-int		execute_command(char **args, t_list *env);
+// int		execute_command(char **args, t_list *env);
 char	*get_env_value(char *key, t_list *env);
 int		set_env_value(t_list *env, char *key, char *value);
 void	env_delete(t_list **env, char *key);
