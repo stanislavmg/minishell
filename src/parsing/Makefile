@@ -2,10 +2,10 @@ NAME    = minishell
 LIB     = libft.a
 INCLUDE = ../../include
 MAIN 	?= main.c
-
+READLINE = 
 SRC     = parser.c init_cmd.c debug.c destructors.c parser_utils.c here_doc.c ast.c wildcard.c\
 		  $(wildcard lexer/*) $(wildcard ../env_list/*) $(wildcard ../exec/*)\
-		  $(wildcard ../ft_printf/*) $(wildcard ../builtins/*)
+		  $(wildcard ../builtins/*)
 
 LEX_SRC = debug.c\
 		  $(addprefix lexer/, lexer.c lexer_main.c methods.c string.c lexer_utils.c) \

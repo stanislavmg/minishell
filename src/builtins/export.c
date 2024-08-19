@@ -3,9 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
+
 /*   Updated: 2024/08/19 08:04:04 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -81,7 +82,7 @@ static char	**get_exports(t_list *env)
 		return (NULL);
 	while (i < count)
 	{
-		target = (t_env *) env -> content;
+		target = (t_env *) env -> data;
 		if (target->attr & EXPORT)
 		{
 			fill_string(env, target, exports, i);
@@ -141,19 +142,19 @@ int	ft_arg_is_correct(char *str)
 	i = 0;
 	if (!str)
 	{
-		ft_printf("minishell: export: '%s': not a valid identifier\n", "NULL");
+		printf("minishell: export: '%s': not a valid identifier\n", "NULL");
 		return (0);
 	}
 	if (!((str[0] == '_') || ft_isalpha(str[0])))
 	{
-		ft_printf("minishell: export: '%s': not a valid identifier\n", str);
+		printf("minishell: export: '%s': not a valid identifier\n", str);
 		return (0);
 	}
 	while (str[i] && str[i] != '=')
 	{
 		if (!ft_isalnum(str[i]))
 		{
-			ft_printf("minishell: export: '%s': not a valid identifier\n", str);
+			printf("minishell: export: '%s': not a valid identifier\n", str);
 			return (0);
 		}
 		i++;

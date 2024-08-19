@@ -45,6 +45,7 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	free_array(char **arr);
 int		ft_env_count(t_list *env, int attr);
 void	ft_print_error(char *command, char *str, char *error);
+void		free_minishell_data(t_data *msh);
 int		ft_count_args(char **args);
 
 #endif

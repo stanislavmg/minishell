@@ -128,12 +128,18 @@ void	add_cmd_arg(t_list **args, t_parser *parser)
 {
 	t_token 	*cur_token;
 	t_list		*new_node;
+
+	new_node = NULL;
 	if (!parser || !parser->cur_token_pos)
 		return ;
 	cur_token = parser->cur_token_pos->data;
 	parser->cmd_start = 1;
 	if (cur_token->type == WILDCARD)
+	{
 		new_node = expand_wildcard(cur_token->word);
+		if (!new_node)
+			new_node = ft_lstnew(cur_token->word);
+	}
 	else
 		new_node = ft_lstnew(cur_token->word);
 	ft_lstadd_back(args, new_node);
