@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 17:10:49 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:04:04 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	fill_export_string(char *str, t_list *env)
 	while (s[++i])
 		str[i] = s[i];
 	s = target -> value;
-	if (s && ft_strlen(s) > 0)
+	if (s)
 	{
 		str[i++] = '=';
 		str[i++] = '"';
@@ -52,10 +52,12 @@ static void	ft_free_exports(char **exports, int count)
 static int	fill_string(t_list *env, t_env *target, char **exports, int i)
 {
 	int	addition_len;
+	int	value_len;
 
-	addition_len = (ft_strlen(target -> value) > 0) ? 4 : 0 ;
-	exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
-		+ ft_strlen(target -> value) + addition_len));
+	addition_len = (target -> value == NULL) ? 0 : 4 ;
+	value_len = (target -> value == NULL) ? 0 : ft_strlen(target -> value) ;
+	exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key) 
+		+ value_len + addition_len));
 	if (!exports[i])
 	{
 		ft_free_exports(exports, i);
@@ -252,7 +254,7 @@ int	handle_export(char **args, t_list *env)
 				free(arr);
 			}
 			else
-				result = set_env_value(env, ft_strdup(args[i]), ft_strdup(""));
+				result = set_env_value(env, ft_strdup(args[i]), NULL);
 		}
 		i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 12:44:52 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:05:22 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,6 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	free_array(char **arr);
 int		ft_env_count(t_list *env, int attr);
 void	ft_print_error(char *command, char *str, char *error);
-
+int		ft_count_args(char **args);
 
 #endif

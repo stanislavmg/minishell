@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/17 12:44:08 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:05:11 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,4 +123,16 @@ void	ft_print_error(char *command, char *str, char *error)
 	ft_putstr_fd(str, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
 	ft_putendl_fd(error, STDERR_FILENO);
+}
+
+int	ft_count_args(char **args)
+{
+	int	count;
+
+	while (*args)
+	{
+		count++;
+		args++;
+	}
+	return (count);
 }

@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/18 09:40:23 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:11:06 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,22 @@ static long long int	ft_atol(const char *str)
 
 static int	check_arg(char **args)
 {
-	if (args[2])
-	{
-		ft_putendl_fd("Too many arguments", STDERR_FILENO);
-		return (EXIT_FAILURE);
-	}
-	if (!ft_isnum(args[1]))
+	int	argc;
+
+	argc = ft_count_args(args);
+	if (!args || !argc)
+	return (EXIT_FAILURE);
+	if (argc > 0 && !ft_isnum(args[1]))
 	{
 		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
 		return (EXIT_FAILURE);
 	}
-	if (ft_strlen(args[1]) > 19) // 
+	if (argc > 1)
+	{
+		printf("minishell: exit: too many arguments\n");
+		return (EXIT_FAILURE);
+	}
+	if (argc > 0 && ft_strlen(args[1]) > 19)
 	{
 		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
 		return (EXIT_FAILURE);
