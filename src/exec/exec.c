@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/18 22:07:32 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 11:23:02 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,14 @@ int	travers_tree(t_ast *root, t_data *msh)
 	else if (root->type == OR)
 	{
 		travers_tree((t_ast *)root->left, msh);
+		ft_waitpid(msh);
 		if (get_last_status(msh->env))
 			travers_tree((t_ast *)root->right, msh);
 	}
 	else if (root->type == AND)
 	{
 		travers_tree((t_ast *)root->left, msh);
+		ft_waitpid(msh);
 		if (get_last_status(msh->env) == EXIT_SUCCESS) 
 			travers_tree((t_ast *)root->right, msh);
 	}
@@ -42,6 +44,7 @@ int	travers_tree(t_ast *root, t_data *msh)
 	else if (root->type == SEMICOLON)
 	{
 		travers_tree((t_ast *)root->left, msh);
+		ft_waitpid(msh);
 		travers_tree((t_ast *)root->right, msh);
 	}
 	return (0);
@@ -91,11 +94,6 @@ void	start_job(t_exec_cmd *cmd,  t_data *msh)
 		free_arr(envp);
 		if (!msh->child_ps)
 			ft_lstadd_front(&msh->child_ps, ft_lstnew(pid));
-		else
-		{
-			ft_lstadd_front(&msh->child_ps, ft_lstnew(pid));
-			ft_waitpid(msh);
-		}
 	}
 }
 void close_fds_except_std(void) 
@@ -161,6 +159,7 @@ int	exec_first_ps(t_data *msh, t_ast *root, int out_pdes)
 	else
 	{
 		travers_tree((t_ast *)root->left, msh);
+		ft_waitpid(msh);
 		if (dup2(out_pdes, STDOUT_FILENO) == -1)
 			return (1);
 		close(out_pdes);
@@ -181,6 +180,7 @@ int	exec_second_ps(t_data *msh, t_ast *root, int in_pdes)
 	else
 	{
 		travers_tree((t_ast *)root->left, msh);
+		ft_waitpid(msh);
 		if (dup2(in_pdes, STDIN_FILENO) == -1)
 			return (1);
 		close(in_pdes);
