@@ -6,28 +6,37 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/17 13:12:40 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 11:12:35 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+extern int g_exit_code;
 
-void	exit_failure(char *msg, int error)
+void	print_err(char *sender, char *msg)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(sender, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	if (msg)
+		ft_putstr_fd(msg, STDERR_FILENO);
+	else
+		perror("minishell: ");
+}
+
+void	exit_failure(char *sender, int error)
 {
 	if (error == CMD_NOT_FOUND)
 	{
-		if (ft_strchr(msg, '/'))
-			ft_printf("minishell: %s: No such file or directory\n", msg);
+		if (ft_strchr(sender, '/'))
+			print_err(sender, "No such file or directory\n");
 		else
-			ft_printf("minishell: %s: command not found\n", msg);
+			print_err(sender, "command not found\n");
 	}
 	else if (error == PERM_DENIED)
-		ft_printf("minishell: %s: Permission denied\n", msg);
+		print_err(sender, "Permission denied\n");
 	else
-	{
-		ft_printf("minishell: ");
-		perror(msg);
-	}
+		print_err(sender, NULL);
 	exit(error);
 }
 
@@ -42,33 +51,35 @@ void	panic(t_data *msh)
 {
 	free_minishell_data(msh);
 	perror("minishell: ");
-	exit(errno);
+	exit(EXIT_FAILURE);
 }
 
 int	get_last_status(t_list *list_env)
 {
-	t_env	*last_status;
+	// t_env	*last_status;
 
-	if (!list_env)
-		return (1);
-	last_status = get_env(list_env, "?");
-	if (!last_status)
-		return (1);
-	return (ft_atoi(last_status->value));
+	// if (!list_env)
+	// 	return (1);
+	// last_status = get_env(list_env, "?");
+	// if (!last_status)
+	// 	return (1);
+	// return (ft_atoi(last_status->value));
+	return (g_exit_code);
 }
 
 void	set_last_status(t_list *list_env, int new_value)
 {
-	t_env	*last_status;
+	//t_env	*last_status;
 
-	last_status = NULL;
-	if (!list_env)
-		return ;
-	last_status = get_env(list_env, "?");
-	if (!last_status)
-		return ;
-	free(last_status->value);
-	last_status->value = ft_itoa(new_value);
+	g_exit_code = new_value;
+	// last_status = NULL;
+	// if (!list_env)
+	// 	return ;
+	// last_status = get_env(list_env, "?");
+	// if (!last_status)
+	// 	return ;
+	// free(last_status->value);
+	// last_status->value = ft_itoa(new_value);
 }
 
 char	**new_env_arr(t_list *list_env)

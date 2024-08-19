@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/17 12:50:25 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/18 20:00:33 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,12 @@
 
 # include "parser.h"
 # include <sys/types.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <errno.h>
+
+void	init_signals(int i);
+void	remove_echo_ctl(void);
 
 int			get_last_status(t_list *env);
 void		set_last_status(t_list *list_env, int new_value);
@@ -29,5 +33,5 @@ char		**new_env_arr(t_list *list_env);
 int			open_redirect(t_ast *root,  t_data *msh);
 void		free_minishell_data(t_data *msh);
 void		panic(t_data *msh);
-
+void		ft_waitpid(t_data *msh);
 #endif

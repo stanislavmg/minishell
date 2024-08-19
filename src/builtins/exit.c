@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 18:14:52 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/19 18:21:47 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,10 +92,12 @@ int	handle_exit(char **args, t_data *msh)
 
 	if (!args)
 		return (EXIT_FAILURE);
-	free_minishell_data(msh);
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (check_arg(args) != 0)
+	{
+ 		free_minishell_data(msh);
 		exit(255);
+	}
 	if (args[1])
 	{
 		exit_status = ft_atol(args[1]);
@@ -106,9 +108,13 @@ int	handle_exit(char **args, t_data *msh)
 		}
 		while (exit_status >= 256)
 			exit_status %= 256;
+ 		free_minishell_data(msh);
 		exit(exit_status);
 	}
 	else
+	{
+ 		free_minishell_data(msh);
 		exit(0);
+	}
 	return (EXIT_SUCCESS);
 }

@@ -4,3 +4,6 @@ a.out
 .DS_Store
 minishell
 out
+include/readline
+lib
+share
