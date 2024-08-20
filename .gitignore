@@ -3,6 +3,7 @@ a.out
 .vscode
 .DS_Store
 minishell
+minishell_tester
 out
 include/readline
 lib
