@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 20:58:15 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/20 18:56:01 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,19 +143,19 @@ int	ft_arg_is_correct(char *str)
 	i = 0;
 	if (!str)
 	{
-		printf("minishell: export: '%s': not a valid identifier\n", str);
+		ft_print_error("export", "NULL", "not a valid identifier");
 		return (0);
 	}
 	if (!((str[0] == '_') || ft_isalpha(str[0])))
 	{
-		printf("minishell: export: '%s': not a valid identifier\n", str);
+		ft_print_error("export", str, "not a valid identifier");
 		return (0);
 	}
 	while (str[i] && str[i] != '=' && !(str[i] == '+' && str[i + 1] == '='))
 	{
 		if (!ft_isalnum(str[i]) && str[i] != '_')
 		{
-			printf("minishell: export: '%s': not a valid identifier\n", str);
+			ft_print_error("export", str, "not a valid identifier");
 			return (0);
 		}
 		i++;

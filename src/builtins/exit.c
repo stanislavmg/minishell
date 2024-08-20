@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/20 16:36:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/20 19:08:43 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,27 +62,18 @@ static long long int	ft_atol(const char *str)
 	return (res);
 }
 
-static int	check_arg(char **args)
+static int	check_arg(char **args, int argc)
 {
-	int	argc;
-
-	argc = 0;
-	argc = ft_count_args(args);
 	if (!args || argc == 0)
 		return (EXIT_FAILURE);
 	if (argc > 1 && !ft_isnum(args[1]))
 	{
-		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
-		return (EXIT_FAILURE);
-	}
-	if (argc > 2)
-	{
-		printf("minishell: exit: too many arguments\n");
+		ft_print_error("exit", args[1], "numeric argument required");
 		return (EXIT_FAILURE);
 	}
 	if (argc > 1 && ft_strlen(args[1]) > 19)
 	{
-		printf("minishell: exit: '%s': numeric argument required\n", args[1]);
+		ft_print_error("exit", args[1], "numeric argument required");
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
@@ -91,11 +82,18 @@ static int	check_arg(char **args)
 int	handle_exit(char **args, t_data *msh)
 {
 	long long int	exit_status;
+	int	argc;
 
 	if (!args)
 		return (EXIT_FAILURE);
+	argc = ft_count_args(args);
+	if (argc > 2)
+	{
+		ft_print_error("exit", "", "too many arguments");
+		return (EXIT_FAILURE);
+	}
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	if (check_arg(args) != 0)
+	if (check_arg(args, argc) != 0)
 	{
  		free_minishell_data(msh);
 		exit(255);
@@ -105,7 +103,7 @@ int	handle_exit(char **args, t_data *msh)
 		exit_status = ft_atol(args[1]);
 		if (exit_status > LLONG_MAX || exit_status < LLONG_MIN)
 		{
-			printf("minishell: exit: '%s': numeric argument required\n", args[1]);
+			ft_print_error("exit", args[1], "numeric argument required");
 			exit(255);
 		}
 		while (exit_status >= 256)

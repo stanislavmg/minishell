@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/15 16:17:17 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/20 20:01:35 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,11 @@ static int	cd_oldpwd(t_list *env)
 	if (!env)
 		return (0);
 	pwd = get_env_value("PWD", env);
-	if (!pwd)
-	{
-		ft_putendl_fd("PWD is not set", 2);
-		return (EXIT_FAILURE);
-	}
 	oldpwd = get_env_value("OLDPWD", env);
 	if (!oldpwd)
 	{
-		ft_putendl_fd("OLDPWD is not set", 2);
+		ft_print_error("cd", "", "OLDPWD not set");
+		free(pwd);
 		return (EXIT_FAILURE);
 	}
 	/* часть кода повторяется в 3 функциях, можно вынести в отдельную 
@@ -36,13 +32,16 @@ static int	cd_oldpwd(t_list *env)
 	if (chdir(oldpwd) != 0)
 	{
 		perror("chdir error");
+		free(pwd);
 		return (EXIT_FAILURE);
 	}
 	else
 	{
-		set_env_value(env, "OLDPWD", ft_strdup(pwd));
+		ft_putendl_fd(oldpwd, STDOUT_FILENO);
 		set_env_value(env, "PWD", ft_strdup(oldpwd));
+		set_env_value(env, "OLDPWD", ft_strdup(pwd));
 	}
+	free(pwd);
 	return (EXIT_SUCCESS);
 }
 
@@ -55,12 +54,14 @@ static int	cd_home(t_list *env)
 	home = get_env_value("HOME", env);
 	if (!home)
 	{
-		ft_putendl_fd("HOME catalog not found", 2);
+		ft_print_error("cd", "", "HOME not set");
+		free(pwd);
 		return (EXIT_FAILURE);
 	}
 	if (chdir(home) != 0)
 	{
-		perror("chdir error");
+		perror("minishell: chdir error: ");
+		free(pwd);
 		return (EXIT_FAILURE);
 	}
 	else
@@ -75,17 +76,21 @@ static int	cd_home(t_list *env)
 static int	cd_path(char *path, t_list *env)
 {
 	char	*cwd;
+	char	*pwd;
 
 	cwd = getcwd(NULL, 0);
 	if (chdir(path) != 0)
 	{
-		ft_putendl_fd("No such file or directory", STDERR_FILENO);
+		ft_print_error("cd", path, "No such file or directory");
+		free(cwd);
 		return (EXIT_FAILURE);
 	}
 	else
 	{
+		pwd = getcwd(NULL, 0);
 		set_env_value(env, "OLDPWD", ft_strdup(cwd));
-		set_env_value(env, "PWD", ft_strdup(path));
+		set_env_value(env, "PWD", ft_strdup(pwd));
+		free(pwd);
 	}
 	free(cwd);
 	return (EXIT_SUCCESS);
@@ -94,15 +99,17 @@ static int	cd_path(char *path, t_list *env)
 int	handle_cd(char **args, t_list *env)
 {
 	int	res;
+	int	argc;
 
-	if (!args || !env)
+	argc = ft_count_args(args);
+	if (!args || !env || argc == 0)
 		return (EXIT_FAILURE);
-	if (args[1] && args[2])
+	if (argc > 2)
 	{
-		ft_putendl_fd("Too many arguments", 2);
+		ft_print_error("cd", "", "Too many arguments");
 		return (EXIT_FAILURE);
 	}
-	if (!args[1])
+	if (argc == 1)
 		res = cd_home(env);
 	else if (strcmp(args[1], "-") == 0)
 		res = cd_oldpwd(env);
