@@ -1,5 +1,6 @@
 export VAR1=value1 VAR2=value2
 export VAR3=
+export VAR3=
 export VAR4="                    1"
 export VAR5="1                    "
 export VAR6="       1             "

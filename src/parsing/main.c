@@ -4,6 +4,7 @@
 #include <sys/time.h>
 
 struct timeval start, end;
+extern int g_exit_code;
 
 t_data	*new_msh_data(void)
 {
@@ -52,7 +53,8 @@ void	set_std_val(t_list *env)
 	
 	if (!env)
 		return ;
-	n = new_env(get_var_name("?=0"), get_var_value("?=0"), ENV | EXPORT);
+	g_exit_code = 0;
+	n = new_env(get_var_name("?=0"), get_var_value("?=0"), HIDDEN);
 	ft_lstadd_back(&env, ft_lstnew(n));
 	shell_lvl = get_env(env, "SHLVL");
 	if (!shell_lvl)
@@ -71,36 +73,39 @@ void	set_std_val(t_list *env)
 		free(shell_lvl->value);
 		shell_lvl->value = ft_itoa(tmp_value);
 	}
+	/* OLDPWDRESET */
+}
+
+void one_arg_exec(t_data *msh, char **av)
+{
+	char 		*input;
+	int			exit_code;
+	
+	exit_code = 0;
+	input = ft_strdup(av[1]);
+	msh->root = (t_ast *)init_msh_data(msh->env, input);
+	if (msh->root)
+		travers_tree((t_ast *)msh->root, msh);
+	exit_code = get_last_status(msh->env);
+	ft_lstclear(&msh->env, free_env);
+	free_ast(msh->root);
+	free(msh);
+	exit(exit_code);
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_data		*msh;
 	char 		*input;
-	int			exit_code;
 	
-	exit_code = 0;
-	if (ac == 2)
-	{
-		input = ft_strdup(av[1]);
-			msh = new_msh_data();
-		msh->env = new_env_list(env);
-		set_std_val(msh->env);
-		msh->root = (t_ast *)init_msh_data(msh->env, input);
-		if (msh->root)
-			travers_tree((t_ast *)msh->root, msh);
-		exit_code = get_last_status(msh->env);
-		ft_lstclear(&msh->env, free_env);
-		free_ast(msh->root);
-		free(msh);
-		return (exit_code);
-	}
 	msh = new_msh_data();
 	msh->env = new_env_list(env);
 	set_std_val(msh->env);
 	init_signals(0);
 	init_signals(1);
 	remove_echo_ctl();
+	if (ac > 1)
+		one_arg_exec(msh, av);
 	input = readline(PROMT);
 	while (input)
 	{
@@ -112,9 +117,8 @@ int	main(int ac, char **av, char **env)
 			ft_waitpid(msh);
 		input = readline(PROMT);
 	}
-	exit_code = get_last_status(msh->env);
 	ft_lstclear(&msh->env, free_env);
 	free(input);
 	free(msh);
-	return (exit_code);
+	return (g_exit_code);
 }

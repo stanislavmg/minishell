@@ -41,7 +41,7 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	ft_strlcpy(cmd_path, cmd_name, ft_strlen(cmd_name) + 1);
 	while (path_env[i])
 	{
-		if (!access(cmd_path, F_OK))
+		if (!access(cmd_path, F_OK | X_OK))
 			return (cmd_path);
 		free(cmd_path);
 		cmd_path = ft_strjoin(path_env[i], cmd_name);

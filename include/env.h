@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/14 16:50:32 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/19 12:38:01 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 # define ENV_H
 
 /* variables attributes */
+# define HIDDEN	0x00
 # define EXPORT 0x01
 # define ENV	0x02
-# define HIDDEN	0x03
+
 
 # include "minishell.h"
 # include <string.h>

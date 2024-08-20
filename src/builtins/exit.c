@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 18:21:47 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/20 16:36:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
+extern int g_exit_code;
 
 static int	ft_isspace(char c)
 {
@@ -65,6 +66,7 @@ static int	check_arg(char **args)
 {
 	int	argc;
 
+	argc = 0;
 	argc = ft_count_args(args);
 	if (!args || argc == 0)
 		return (EXIT_FAILURE);
@@ -114,7 +116,7 @@ int	handle_exit(char **args, t_data *msh)
 	else
 	{
  		free_minishell_data(msh);
-		exit(0);
+		exit(g_exit_code);
 	}
 	return (EXIT_SUCCESS);
 }

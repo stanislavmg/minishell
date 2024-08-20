@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/15 15:35:50 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/20 10:16:28 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ t_token	*new_token(char *word, e_token type);
 void	push_token(t_list **token_list, char *new_word, e_token type);
 t_list	*new_token_list(t_list *env, char *input);
 void free_token(void *cur_token_pos);
+void	add_new_input(t_lexer *lex);
 
 // tokenization
+void	start_tokenization(t_lexer *lex);
 char	*scan_token(t_lexer *lex);
 char	*metachar_handle(t_lexer *lex);
 char	*string_handle(t_lexer *lex);

@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/19 11:23:02 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/20 16:14:27 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	start_job(t_exec_cmd *cmd,  t_data *msh)
 	if (!pid)
 		panic(msh);
 	if (is_builtin(cmd->argv[0]))
-		g_exit_code = handle_command(cmd->argv, msh);
+		set_last_status(msh->env, handle_command(cmd->argv, msh));
 	else
 	{
 		envp = new_env_arr(msh->env);
@@ -92,8 +92,7 @@ void	start_job(t_exec_cmd *cmd,  t_data *msh)
 		if (*pid == -1)
 			panic(msh);
 		free_arr(envp);
-		if (!msh->child_ps)
-			ft_lstadd_front(&msh->child_ps, ft_lstnew(pid));
+		ft_lstadd_back(&msh->child_ps, ft_lstnew(pid));
 	}
 }
 void close_fds_except_std(void) 
@@ -103,6 +102,22 @@ void close_fds_except_std(void)
 	fd = 2;
 	while (++fd < max)
         close(fd);
+}
+
+void	check_cmd_permission(t_exec_cmd *cmd)
+{
+	struct stat file_info;
+	
+	if (!cmd->path)
+		exit_failure(cmd->argv[0], CMD_NOT_FOUND);
+	if (stat(cmd->path, &file_info))
+		exit_failure(cmd->path, ERR_INIT_STAT);
+	if (!(file_info.st_mode & S_IXUSR) && (file_info.st_mode & (S_IXGRP | S_IXOTH)))
+		exit_failure(cmd->argv[0], PERM_DENIED);
+	else if (!(file_info.st_mode & S_IXUSR))
+		exit_failure(cmd->argv[0], PERM_DENIED);
+	if (S_ISDIR(file_info.st_mode))
+		exit_failure(cmd->path, ERR_IS_DIR);
 }
 
 int	ft_execve(t_exec_cmd *cmd, char **env)
@@ -120,14 +135,10 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	paths = get_path(env[i] + 5);
 	cmd->path = parsing_path(paths, cmd->argv[0]);
 	free_arr(paths);
-	if (access(cmd->path, F_OK))
-		exit_failure(cmd->argv[0], CMD_NOT_FOUND);
-	if (access(cmd->path, X_OK))
-		exit_failure(cmd->argv[0], PERM_DENIED);
-	if (cmd->path)
-		execve(cmd->path, cmd->argv, env);
-	perror(cmd->argv[0]);
-	exit(EXIT_FAILURE);
+	check_cmd_permission(cmd);
+	execve(cmd->path, cmd->argv, env);
+	exit_failure(cmd->argv[0], ERR_EXECVE);
+	return (0);
 }
 
 int is_logic_operator(e_token type)
@@ -138,11 +149,13 @@ int is_logic_operator(e_token type)
 void ft_waitpid(t_data *msh)
 {
 	t_list *t;
+	int status;
 
 	if (!msh || !msh->child_ps)
 		return ;
 	t = msh->child_ps->next;
-	waitpid((*(pid_t *)msh->child_ps->data), &g_exit_code, 0);
+	waitpid((*(pid_t *)msh->child_ps->data), &status, 0);
+	set_last_status(msh->env, WEXITSTATUS(status));	
 	ft_lstdelone(msh->child_ps, free);
 	msh->child_ps = t;
 }
@@ -212,36 +225,41 @@ int start_pipeline(t_ast *root, t_data *msh)
 		panic(msh);
 	if (dup2(saved_stdin, STDIN_FILENO) == -1)
 		panic(msh);
-	close(saved_stdin);
-	ft_waitpid(msh);
-	// ft_waitpid(msh);
+	close_fds_except_std();
     return (0);
 }
 
 int	open_redirect(t_ast *root, t_data *msh)
 {
+	t_redir	*rfile;
 	int 	saved_stdout;
 	int		saved_stdin;
-	t_redir	*rfile;
 	int		fd;
 
 	if (!root)
 		return (1);
+	fd = -1;
 	saved_stdout = dup(STDOUT_FILENO);
     saved_stdin = dup(STDIN_FILENO);
 	rfile = (t_redir *)root->right;
-	fd = ft_open(rfile->fname, rfile->mode);
-	if (fd == -1)
-		exit_failure(rfile->fname, PERM_DENIED); //FIXME need return and perror
+	if (!check_file_permission(rfile->fname, rfile->mode))
+		fd = open(rfile->fname, rfile->mode, 0644);
+	else
+	{
+		set_last_status(msh->env, 1);
+		return(1);
+	}
 	if (rfile->type == INPUT_TRUNC || rfile->type == HERE_DOC)
 	{
-		dup2(fd, STDIN_FILENO);
+		if (fd > 0)
+			dup2(fd, STDIN_FILENO);
 		travers_tree((t_ast *)root->left, msh);
 		dup2(saved_stdin, STDIN_FILENO);
 	}
 	else
 	{
-		dup2(fd, STDOUT_FILENO);
+		if (fd > 0)
+			dup2(fd, STDOUT_FILENO);
 		travers_tree((t_ast *)root->left, msh);
 		dup2(saved_stdout, STDOUT_FILENO);
 	}
