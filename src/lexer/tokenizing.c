@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:11:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 12:37:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/22 13:17:49 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	start_tokenization(t_lexer *lex)
 			free(new_word);
 		else if (new_word)
 			push_token(&lex->tokens, new_word, STRING);
-		// FIXME when input contain only spaces segfault
 		if (!*lex->str_pos && ft_lstlast(lex->tokens)
 			&& ((t_token *)ft_lstlast(lex->tokens)->data)->type == PIPE)
 			add_new_input(lex);
@@ -34,7 +33,8 @@ void	start_tokenization(t_lexer *lex)
 		print_msh_err(ft_lstlast(lex->tokens)->data);
 		ft_lstclear(&lex->tokens, free_token);
 	}
-	add_history(lex->input);
+	if (!string_is_spaces(lex->input))
+		add_history(lex->input);
 	free(lex->input);
 }
 
@@ -47,14 +47,14 @@ char	*scan_token(t_lexer *lex)
 		return (NULL);
 	if (!lex || !*lex->str_pos)
 		return (NULL);
-	while (isspace(*lex->str_pos))
+	while (ft_isspace(*lex->str_pos))
 		lex->str_pos++;
 	if (!*lex->str_pos)
 		return (NULL);
-	if (is_metachar(*lex->str_pos))
-		metachar_handle(lex);
-	else if (!strncmp(lex->str_pos, "\"", 1))
+	if (!strncmp(lex->str_pos, "\"", 1))
 		new_word = double_quotes_handle(lex);
+	else if (is_metachar(*lex->str_pos))
+		metachar_handle(lex);
 	else if (!strncmp(lex->str_pos, "\'", 1))
 		new_word = single_quotes_handle(lex);
 	else if (!strncmp(lex->str_pos, "\\", 1))
@@ -100,19 +100,65 @@ char	*metachar_handle(t_lexer *lex)
 	return (NULL);
 }
 
+char	*get_hd_stop_word(t_lexer *lex)
+{
+	int		i;
+	char	*stop_word;
+	char	qoutes;
+
+	i = 0;
+	qoutes = 0;
+	stop_word = NULL;
+	while (ft_isspace(*lex->str_pos))
+		lex->str_pos++;
+	if (*lex->str_pos == '\'' || *lex->str_pos == '\"')
+	{
+		qoutes = *lex->str_pos;
+		lex->str_pos++;
+	}
+	while (lex->str_pos[i] && lex->str_pos[i] != qoutes
+			&& !ft_isspace(lex->str_pos[i])
+			&& !is_metachar(lex->str_pos[i])
+			&& !is_redirectchar(lex->str_pos[i]))
+		i++;
+	if (qoutes && lex->str_pos[i] != qoutes)
+		lex->err = ERR_SYNTAX;
+	stop_word = get_word(lex->str_pos, i);
+	lex->str_pos += i;
+	if (qoutes)
+		lex->str_pos++;
+	if (*lex->str_pos && !ft_isspace(*lex->str_pos) && !is_metachar(*lex->str_pos))
+		stop_word = merge_str(stop_word, get_hd_stop_word(lex));
+	return (stop_word);
+}
+
+int	is_token_delimeter(int ch)
+{
+	return (ch == 0 || ft_isspace(ch) || is_metachar(ch) || is_redirect(ch));
+}
+
 int	default_handle(t_lexer *lex, const char *value, e_token type)
 {
 	int		len;
 	char	*new_word;
-
+	t_list	*last_token;
+	
 	if (!lex || !value)
 		return (1);
+	last_token = NULL;
 	len = ft_strlen(value);
 	lex->str_pos += len;
 	if (is_redirect(type))
-		new_word = scan_token(lex);
-	else
-		new_word = get_word(value, len);
+	{
+		push_token(&lex->tokens, NULL, type);
+		last_token = ft_lstlast(lex->tokens);
+		if (type == HERE_DOC)
+			((t_token *)last_token->data)->word = get_hd_stop_word(lex);
+		else
+			((t_token *)last_token->data)->word = scan_token(lex);
+		return (0);
+	}
+	new_word = get_word(value, len);
 	if (!new_word)
 	{
 		lex->err = ERR_SYNTAX;
@@ -131,50 +177,19 @@ char	*string_handle(t_lexer *lex)
 	new_word = NULL;
 	if (!lex || !lex->str_pos)
 		return (NULL);
-	while (lex->str_pos[i]
-		&& !is_metachar(lex->str_pos[i])
-		&& !isspace(lex->str_pos[i]))
-	{
-		if (is_catchar(lex->str_pos[i]))
-		{
-			new_word = poststring_handle(lex, new_word, i);
-			i = -1;
-		}
+	while (!is_token_delimeter(lex->str_pos[i]) && !is_catchar(lex->str_pos[i]))
 		i++;
-	}
-	if (new_word)
-		new_word = merge_str(new_word, get_word(lex->str_pos, i));
-	else
-		new_word = get_word(lex->str_pos, i);
+	new_word = get_word(lex->str_pos, i);
 	lex->str_pos += i;
-	if (ft_strchr(new_word, '*'))
+	if (ft_strchr(new_word, '*') && ft_isspace(*lex->str_pos)) // FIXME if *lex->str_pos == 0
 	{
-		push_token(&lex->tokens, new_word, WILDCARD);
-		return (NULL);
+		expand_wildcard(lex, new_word);
+		free(new_word);
+		new_word = NULL;
 	}
+	if (is_catchar(*lex->str_pos))
+			new_word = merge_str(new_word, scan_token(lex));	
 	return (new_word);
-}
-
-char	*poststring_handle(t_lexer *lex, char *lhs, int i)
-{
-	char	*res;
-	char	*t;
-
-	res = NULL;
-	t = NULL;
-	if (lhs)
-		res = merge_str(lhs, get_word(lex->str_pos, i));
-	else
-		res = get_word(lex->str_pos, i);
-	lex->str_pos += i;
-	if (lex->in_qoutes && (*lex->str_pos == '\"' || *lex->str_pos == '\''))
-	{
-		lex->in_qoutes = 0;
-		lex->str_pos++;
-	}
-	t = scan_token(lex);
-	res = merge_str(res, t);
-	return (res);
 }
 
 char	*double_quotes_handle(t_lexer *lex)
@@ -183,36 +198,26 @@ char	*double_quotes_handle(t_lexer *lex)
 	char	*new_word;
 
 	new_word = NULL;
-	lex->str_pos++;
+	i = 0;
+	if (!lex->in_qoutes)
+		lex->str_pos++;
 	lex->in_qoutes = 1;
-	while (lex->in_qoutes && !lex->err)
-	{
-		i = 0;
-		while (lex->str_pos[i] && lex->str_pos[i] != '\"')
-		{
-			if ('$' == lex->str_pos[i] || '\\' == lex->str_pos[i])
-			{
-				new_word = merge_str(new_word, get_word(lex->str_pos, i));
-				lex->str_pos += i;
-				new_word = merge_str(new_word, scan_token(lex));
-				i = -1;
-			}
-			i++;
-		}
-		if (lex->str_pos[i] == '\"')
-		{
-			new_word = merge_str(new_word, get_word(lex->str_pos, i));
-			lex->str_pos += i + 1;
-			if (*lex->str_pos == '\"')
-				lex->str_pos++;
-			else
-				lex->in_qoutes = 0;
-		}
-		else
-			lex->err = ERR_QUOTE;
-	}
-	if (is_catchar(*lex->str_pos))
+	while (lex->str_pos[i] && lex->str_pos[i] != '\"' && lex->str_pos[i] != '$'
+			&& lex->str_pos[i] != '\\')
+		i++;
+	new_word = get_word(lex->str_pos, i);
+	lex->str_pos += i;
+	if (*lex->str_pos == '$' || *lex->str_pos == '\\')
 		new_word = merge_str(new_word, scan_token(lex));
+	if (*lex->str_pos == '\"' && lex->in_qoutes)
+	{
+		lex->in_qoutes = 0;
+		lex->str_pos++;
+	}
+	if (is_catchar(*lex->str_pos) || !ft_isspace(*lex->str_pos))
+		new_word = merge_str(new_word, scan_token(lex));
+	if (lex->in_qoutes)
+		lex->err = ERR_QUOTE;
 	return (new_word);
 }
 
@@ -235,12 +240,12 @@ char	*single_quotes_handle(t_lexer *lex)
 	new_word = get_word(lex->str_pos, i);
 	lex->str_pos += i + 1;
 	lex->in_qoutes = 0;
-	if (is_catchar(*lex->str_pos) || !isspace(*lex->str_pos))
-		new_word = poststring_handle(lex, new_word, 0);
+	if (is_catchar(*lex->str_pos))
+		new_word = merge_str(new_word, scan_token(lex));
 	return (new_word);
 }
 
-int	is_screning_ch(int ch)
+int	is_screening_ch(int ch)
 {
 	return (ch == '`' || ch == '\"' || ch == '$' || ch == '\\');
 }
@@ -248,29 +253,27 @@ int	is_screning_ch(int ch)
 char	*slash_handle(t_lexer *lex)
 {
 	char	*new_word;
-	char	*t;
 
 	lex->str_pos++;
 	if (lex->in_qoutes)
 	{
-		if (is_screning_ch(*lex->str_pos))
+		if (is_screening_ch(*lex->str_pos))
 		{
 			new_word = get_word(lex->str_pos, 1);
 			lex->str_pos++;
-			return (new_word);
 		}
 		else
-			return (ft_strdup("\\"));
+			new_word = ft_strdup("\\");
+		new_word = merge_str(new_word, double_quotes_handle(lex));
 	}
-	if (!*lex->str_pos)
-		return (get_word("", 0));
-	new_word = get_word(lex->str_pos, 1);
-	lex->str_pos++;
-	if (*lex->str_pos && !isspace(*lex->str_pos) && !is_metachar(*lex->str_pos))
+	else
 	{
-		t = scan_token(lex);
-		new_word = merge_str(new_word, t);
+		new_word = get_word(lex->str_pos, 1);
+		if (*lex->str_pos)
+			lex->str_pos++;
 	}
+	if(is_catchar(*lex->str_pos))
+		new_word = merge_str(new_word, scan_token(lex));
 	return (new_word);
 }
 
@@ -284,66 +287,33 @@ char	*variable_handle(t_lexer *lex)
 	var = NULL;
 	new_word = NULL;
 	lex->str_pos++;
-	while (lex->str_pos[i]
-		&& !is_metachar(lex->str_pos[i])
-		&& !isspace(lex->str_pos[i])
-		&& !is_catchar(lex->str_pos[i]))
-		i++;
-	if (i == 0)
-		return (get_word("$", 1));
-	new_word = get_word(lex->str_pos, i);
-	var = get_env(lex->env, new_word);
+	if (*lex->str_pos == '?')
+	{
+		new_word = ft_strdup("?");
+		i = 1;
+	}
+	else
+	{
+		while (!is_token_delimeter(lex->str_pos[i]) && !is_catchar(lex->str_pos[i]))
+			i++;
+		if (i == 0)
+			new_word = get_word("$", 1);
+		else
+			new_word = get_word(lex->str_pos, i);
+	}
 	lex->str_pos += i;
+	if (i){
+	var = get_env(lex->env, new_word);
 	free(new_word);
 	if (!var)
-		return (get_word("", 0));
-	new_word = get_word(var->value, ft_strlen(var->value));
-	if (lex->in_qoutes)
-		return (new_word);
-	if (is_catchar(*lex->str_pos))
-		new_word = poststring_handle(lex, new_word, 0);
-	return (new_word);
-}
-
-int	var_assignment(t_lexer *lex)
-{
-	char	*var_name;
-	char	*var_value;
-
-	var_name = get_var_name(lex->str_pos);
-	if (!var_name)
-		return (1);
-	lex->str_pos += ft_strlen(var_name);
-	if ('(' == *lex->str_pos)
-	{
-		lex->str_pos++;
-		while (isspace(*lex->str_pos))
-			lex->str_pos++;
-		var_value = scan_token(lex);
-		if (')' == *lex->str_pos)
-			lex->str_pos++;
-	}
-	else if (isspace(*lex->str_pos))
-		var_value = ft_strdup("");
+		new_word = get_word("", 0);
 	else
-		var_value = scan_token(lex);
-	lex->str_pos += ft_strlen(var_value);
-	return (0);
-}
-
-int	insert_variable(t_list *list_env, t_env *new_var)
-{
-	t_env	*search_var;
-
-	if (!new_var)
-		return (1);
-	search_var = get_env(list_env, new_var->key);
-	{
-		free(search_var->value);
-		search_var->value = new_var->value;
-		new_var->value = NULL;
-		free(new_var->key);
-		free(new_var);
+		new_word = ft_strdup(var->value);
 	}
-	return (0);
+	if (lex->in_qoutes)
+		new_word = merge_str(new_word, double_quotes_handle(lex));
+	else if (is_catchar(*lex->str_pos) || !ft_isspace(*lex->str_pos))
+		new_word = merge_str(new_word, scan_token(lex));
+
+	return (new_word);
 }

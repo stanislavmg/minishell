@@ -6,20 +6,36 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:01:04 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/19 18:14:06 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/21 10:59:21 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+int	string_is_spaces(const char *str)
+{
+	if (!str || !*str)
+		return (1);
+	while (ft_isspace(*str))
+		str++;
+	if (*str)
+		return (0);
+	return (1);
+}
 
 void	add_new_input(t_lexer *lex)
 {
 	char	*new_input;
 	int		cur_pos;
 
-	new_input = NULL;
-	cur_pos = ft_strlen(lex->input);
 	new_input = readline("> ");
+	cur_pos = ft_strlen(lex->input);
+	while (!*new_input || string_is_spaces(new_input))
+	{
+		lex->input = merge_str(lex->input, new_input);
+		cur_pos = ft_strlen(lex->input);
+		new_input = readline("> ");
+	}
 	lex->input = merge_str(lex->input, new_input);
 	if (!lex->input)
 		lex->err = ERR_MEM;

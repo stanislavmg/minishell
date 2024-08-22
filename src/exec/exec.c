@@ -6,14 +6,14 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 16:14:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:17:09 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "exec.h"
-# include "builtins.h"
+#include "exec.h"
+#include "builtins.h"
 
-int g_exit_code;
+int	g_exit_code;
 
 int	travers_tree(t_ast *root, t_data *msh)
 {
@@ -27,14 +27,14 @@ int	travers_tree(t_ast *root, t_data *msh)
 	{
 		travers_tree((t_ast *)root->left, msh);
 		ft_waitpid(msh);
-		if (get_last_status(msh->env))
+		if (get_exit_code())
 			travers_tree((t_ast *)root->right, msh);
 	}
 	else if (root->type == AND)
 	{
 		travers_tree((t_ast *)root->left, msh);
 		ft_waitpid(msh);
-		if (get_last_status(msh->env) == EXIT_SUCCESS) 
+		if (!get_exit_code())
 			travers_tree((t_ast *)root->right, msh);
 	}
 	else if (root->type == PIPE)
@@ -50,7 +50,7 @@ int	travers_tree(t_ast *root, t_data *msh)
 	return (0);
 }
 
-int is_builtin(const char *cmd)
+int	is_builtin(const char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -60,19 +60,19 @@ int is_builtin(const char *cmd)
 		return (1);
 	else if (strcmp(cmd, "pwd") == 0)
 		return (1);
-	else if (strcmp(cmd, "export") == 0)	
+	else if (strcmp(cmd, "export") == 0)
 		return (1);
-	else if (strcmp(cmd, "echo") == 0)	
+	else if (strcmp(cmd, "echo") == 0)
 		return (1);
-	else if (strcmp(cmd, "unset") == 0)	
+	else if (strcmp(cmd, "unset") == 0)
 		return (1);
-	else if (strcmp(cmd, "exit") == 0)	
+	else if (strcmp(cmd, "exit") == 0)
 		return (1);
 	else
 		return (0);
 }
 
-void	start_job(t_exec_cmd *cmd,  t_data *msh)
+void	start_job(t_exec_cmd *cmd, t_data *msh)
 {
 	pid_t	*pid;
 	char	**envp;
@@ -95,29 +95,34 @@ void	start_job(t_exec_cmd *cmd,  t_data *msh)
 		ft_lstadd_back(&msh->child_ps, ft_lstnew(pid));
 	}
 }
-void close_fds_except_std(void) 
+
+void	close_fds_except_std(void)
 {
-    int fd;
-	int max = sysconf(_SC_OPEN_MAX); //FIXME need user const
+	int	fd;
+	int	max = sysconf(_SC_OPEN_MAX); //FIXME need user const
+
 	fd = 2;
 	while (++fd < max)
-        close(fd);
+		close(fd);
 }
 
 void	check_cmd_permission(t_exec_cmd *cmd)
 {
-	struct stat file_info;
-	
+	struct stat	file_info;
+
 	if (!cmd->path)
 		exit_failure(cmd->argv[0], CMD_NOT_FOUND);
 	if (stat(cmd->path, &file_info))
 		exit_failure(cmd->path, ERR_INIT_STAT);
-	if (!(file_info.st_mode & S_IXUSR) && (file_info.st_mode & (S_IXGRP | S_IXOTH)))
+	if (!(file_info.st_mode & S_IXUSR)
+		&& (file_info.st_mode & (S_IXGRP | S_IXOTH)))
 		exit_failure(cmd->argv[0], PERM_DENIED);
 	else if (!(file_info.st_mode & S_IXUSR))
 		exit_failure(cmd->argv[0], PERM_DENIED);
-	if (S_ISDIR(file_info.st_mode))
+	if (S_ISDIR(file_info.st_mode) && ft_strchr(cmd->path, '/'))
 		exit_failure(cmd->path, ERR_IS_DIR);
+	else if(S_ISDIR(file_info.st_mode))
+		exit_failure(cmd->path, CMD_NOT_FOUND);
 }
 
 int	ft_execve(t_exec_cmd *cmd, char **env)
@@ -141,21 +146,21 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	return (0);
 }
 
-int is_logic_operator(e_token type)
+int	is_logic_operator(e_token type)
 {
 	return (type == OR || type == AND || type == SEMICOLON);
 }
 
-void ft_waitpid(t_data *msh)
+void	ft_waitpid(t_data *msh)
 {
-	t_list *t;
-	int status;
+	t_list	*t;
+	int		status;
 
 	if (!msh || !msh->child_ps)
 		return ;
 	t = msh->child_ps->next;
 	waitpid((*(pid_t *)msh->child_ps->data), &status, 0);
-	set_last_status(msh->env, WEXITSTATUS(status));	
+	set_last_status(msh->env, WEXITSTATUS(status));
 	ft_lstdelone(msh->child_ps, free);
 	msh->child_ps = t;
 }
@@ -202,17 +207,17 @@ int	exec_second_ps(t_data *msh, t_ast *root, int in_pdes)
 	return (0);
 }
 
-int start_pipeline(t_ast *root, t_data *msh)
+int	start_pipeline(t_ast *root, t_data *msh)
 {
-    int pdes[2];
-    int	saved_stdout;
+	int	pdes[2];
+	int	saved_stdout;
 	int	saved_stdin;
 
-    if (!root)
-        return (0);
+	if (!root)
+		return (0);
 	saved_stdout = dup(STDOUT_FILENO);
-    saved_stdin = dup(STDIN_FILENO);
-    if (saved_stdout == -1 || saved_stdin == -1)
+	saved_stdin = dup(STDIN_FILENO);
+	if (saved_stdout == -1 || saved_stdin == -1)
 		return (1);
 	if (pipe(pdes) == -1)
 		panic(msh);
@@ -225,14 +230,17 @@ int start_pipeline(t_ast *root, t_data *msh)
 		panic(msh);
 	if (dup2(saved_stdin, STDIN_FILENO) == -1)
 		panic(msh);
-	close_fds_except_std();
-    return (0);
+	close(saved_stdout);
+	close(saved_stdin);
+	close(pdes[0]);
+	close(pdes[1]);
+	return (0);
 }
 
 int	open_redirect(t_ast *root, t_data *msh)
 {
 	t_redir	*rfile;
-	int 	saved_stdout;
+	int		saved_stdout;
 	int		saved_stdin;
 	int		fd;
 
@@ -240,14 +248,14 @@ int	open_redirect(t_ast *root, t_data *msh)
 		return (1);
 	fd = -1;
 	saved_stdout = dup(STDOUT_FILENO);
-    saved_stdin = dup(STDIN_FILENO);
+	saved_stdin = dup(STDIN_FILENO);
 	rfile = (t_redir *)root->right;
 	if (!check_file_permission(rfile->fname, rfile->mode))
 		fd = open(rfile->fname, rfile->mode, 0644);
 	else
 	{
 		set_last_status(msh->env, 1);
-		return(1);
+		return (1);
 	}
 	if (rfile->type == INPUT_TRUNC || rfile->type == HERE_DOC)
 	{

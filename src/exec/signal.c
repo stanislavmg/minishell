@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/20 17:47:19 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/20 17:47:40 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <signal.h>
 #include <termios.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <readline/readline.h>
-
 #include "libft.h"
+
 static void	sig_handle(int signum, siginfo_t *info, void *context);
 
 void	init_signals(int i)

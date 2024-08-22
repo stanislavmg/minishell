@@ -6,11 +6,11 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:42 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 14:28:37 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/20 17:38:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "env.h"
+#include "env.h"
 
 t_list	*new_env_list(char **env)
 {
@@ -40,9 +40,9 @@ t_list	*new_env_list(char **env)
 	return (list_env);
 }
 
-int		set_env(t_list *list_env, t_var *var, int attr)
+int	set_env(t_list *list_env, t_var *var, int attr)
 {
-	t_env *target;
+	t_env	*target;
 
 	if (!list_env || !var)
 		return (1);

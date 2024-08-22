@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 04:49:46 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/14 14:28:01 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/20 17:38:41 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	free_env(void *env)
 
 t_env	*get_env(t_list *list_env, char *key)
 {
-	t_env *target;
+	t_env	*target;
 
 	while (list_env)
 	{
@@ -46,7 +46,7 @@ t_env	*get_env(t_list *list_env, char *key)
 	return (NULL);
 }
 
-char *get_var_name(const char *token_word)
+char	*get_var_name(const char *token_word)
 {
 	char	*var_name;
 	char	*end_var_name;
@@ -64,7 +64,7 @@ char *get_var_name(const char *token_word)
 	return (var_name);
 }
 
-char *get_var_value(const char *token_word)
+char	*get_var_value(const char *token_word)
 {
 	char	*var_value;
 	char	*start_var_value;

@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/20 19:08:43 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:28:25 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 extern int g_exit_code;
-
-static int	ft_isspace(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n'
-		|| c == '\r' || c == '\v' || c == '\f');
-}
 
 static int	ft_isnum(char *str)
 {

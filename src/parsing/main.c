@@ -28,6 +28,7 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 	tokens = new_token_list(env, input);
 	if (!tokens)
 		return (NULL);
+	//print_tokens(tokens);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
 	//print_tree((t_ast *)ast);
@@ -53,6 +54,7 @@ void	set_std_val(t_list *env)
 	
 	if (!env)
 		return ;
+	/* FIXME violation of encapsulation */
 	g_exit_code = 0;
 	n = new_env(get_var_name("?=0"), get_var_value("?=0"), HIDDEN);
 	ft_lstadd_back(&env, ft_lstnew(n));
@@ -86,7 +88,7 @@ void one_arg_exec(t_data *msh, char **av)
 	msh->root = (t_ast *)init_msh_data(msh->env, input);
 	if (msh->root)
 		travers_tree((t_ast *)msh->root, msh);
-	exit_code = get_last_status(msh->env);
+	exit_code = get_exit_code();
 	ft_lstclear(&msh->env, free_env);
 	free_ast(msh->root);
 	free(msh);
@@ -104,8 +106,8 @@ int	main(int ac, char **av, char **env)
 	init_signals(0);
 	init_signals(1);
 	remove_echo_ctl();
-	if (ac > 1)
-		one_arg_exec(msh, av);
+	// if (ac > 1)
+	// 	one_arg_exec(msh, av);
 	input = readline(PROMT);
 	while (input)
 	{

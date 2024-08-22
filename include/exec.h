@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 10:45:26 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/20 17:55:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 void	init_signals(int i);
 void	remove_echo_ctl(void);
 
-int			get_last_status(t_list *env);
+int			get_exit_code(void);
 void		set_last_status(t_list *list_env, int new_value);
 int			start_pipeline(t_ast *root, t_data *msh);
 int			ft_execve(t_exec_cmd *cmd, char **env);

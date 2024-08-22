@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 10:16:28 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/22 13:17:17 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ char	*scan_token(t_lexer *lex);
 char	*metachar_handle(t_lexer *lex);
 char	*string_handle(t_lexer *lex);
 char	*redirect_handle(t_lexer *lex);
-char	*poststring_handle(t_lexer *lex, char *lhs, int i);
 char	*variable_handle(t_lexer *lex);
 char	*slash_handle(t_lexer *lex);
 char	*single_quotes_handle(t_lexer *lex);
@@ -52,6 +51,7 @@ char    *merge_str(char *s1, char *s2);
 int   	is_metachar(char ch);
 int	    is_redirectchar(char ch);
 int	    is_catchar(char ch);
+int		string_is_spaces(const char *str);
 
 // expand tokens and build tree
 t_var		*new_tvar(const char *key_and_value);
@@ -65,10 +65,11 @@ t_cmd		*build_tree(t_parser *parser);
 t_cmd		*new_ast(t_parser *parser);
 int			 here_doc_start(t_token *hd_token, t_list *env);
 t_cmd 		*parse_redirect(t_token *token, t_list *env);
-t_list 		*expand_wildcard(char *pattern);
+void		expand_wildcard(t_lexer *lex, char *pattern);
 
 // parse utils
 int			is_redirect(e_token type);
+int			is_token_delimeter(int ch);
 int			is_cmd_delimeter(e_token type);
 void		free_arr(char **arr);
 char		**get_path(char *path_env);

@@ -33,21 +33,18 @@ int	ft_fnmatch(char *pattern, char *filename)
 	return (!*pattern && !*filename);
 }
 
-t_list *expand_wildcard(char *pattern)
+void	expand_wildcard(t_lexer *lex, char *pattern)
 {
-	DIR *cwd;
-	struct dirent *dr;
-	t_list *args;
+	DIR 			*cwd;
+	struct dirent	*dr;
 
 	cwd = opendir(".");
-	args = NULL;
 	while ((dr = readdir(cwd)))
 	{
 		while (!strcmp(dr->d_name, ".") || !strcmp(dr->d_name, ".."))
 			dr = readdir(cwd);
-		if (ft_fnmatch(pattern, dr->d_name))
-			ft_lstadd_back(&args, ft_lstnew(ft_strdup(dr->d_name)));
+		if(ft_fnmatch(pattern, dr->d_name))
+			push_token(&lex->tokens, ft_strdup(dr->d_name), STRING);
 	}
 	closedir(cwd);
-	return (args);
 }

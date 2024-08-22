@@ -1,28 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/16 10:54:08 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/20 16:42:47 by sgoremyk         ###   ########.fr       */
+/*   Created: 2024/08/21 10:14:48 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/21 10:23:10 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
-int	handle_pwd(char **args)
-{
-	char	pwd[PATH_MAX];
+#include "libft.h"
 
-	if (!args)
-		return (EXIT_FAILURE);
-	if (getcwd(pwd, sizeof(pwd)) != NULL)
-		ft_putendl_fd(pwd, STDOUT_FILENO);
-	else
-	{
-		ft_putendl_fd("CWD error", STDERR_FILENO);
-		return (EXIT_FAILURE);
-	}
-	return (EXIT_SUCCESS);
+int	ft_isspace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\r' || c == '\v' || c == '\f');
 }

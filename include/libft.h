@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 17:05:47 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/19 10:49:00 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/21 10:23:25 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int		ft_isascii(int c);
 int		ft_isprint(int c);
 int		ft_toupper(int c);
 int		ft_tolower(int c);
+int		ft_isspace(char c);
 int		ft_atoi(const char *str);
 char	*ft_itoa(int n);
 void	*ft_memset(void *s, int c, size_t n);
