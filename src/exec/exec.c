@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/23 16:58:08 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/23 17:58:06 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,6 +193,7 @@ void	new_child_and_pipe(t_ast *root, t_data *msh)
         	exec_first_ps(((t_ast *)root->left)->right, msh);
 		else
 			exec_first_ps(root->left, msh);
+		exit(0);
     }
 	else if (ps == -1)
 		panic(msh);
