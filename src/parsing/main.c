@@ -6,6 +6,12 @@
 struct timeval start, end;
 extern int g_exit_code;
 
+double get_time()
+{
+	gettimeofday(&end, NULL);
+	return (start.tv_sec - start.tv_sec + 1E-6 * (end.tv_usec - end.tv_usec));
+}
+
 t_data	*new_msh_data(void)
 {
 	t_data *msh;
@@ -106,14 +112,16 @@ int	main(int ac, char **av, char **env)
 	init_signals(0);
 	init_signals(1);
 	remove_echo_ctl();
-	// if (ac > 1)
-	// 	one_arg_exec(msh, av);
 	input = readline(PROMT);
 	while (input)
 	{
+		//gettimeofday(&start, NULL);
 		msh->root = (t_ast *)init_msh_data(msh->env, input);
+		//printf("build tree = %g\n", get_time());
+		//gettimeofday(&start, NULL);
 		if (msh->root)
 			travers_tree((t_ast *)msh->root, msh);
+		//printf("exec tree = %f\n", get_time());
 		free_ast(msh->root);
 		while (msh->child_ps)
 			ft_waitpid(msh);

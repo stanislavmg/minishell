@@ -61,7 +61,7 @@ rm -f ${LOG}/*
 
 echo -e "\n${BOLD}BASE TEST${RESET}\n"
 while IFS= read -r line; do
-    if diff $(eval "$line") $(./minishell "$line") > /dev/null 2>&1; then
+    if diff $(eval "$line") $(echo "$line" | ./minishell) 2> /dev/null; then
         print_line "${NUM}" "[ KO ]" "${line}"
     else
         print_line "${NUM}" "[ OK ]" "${line}"
@@ -74,7 +74,8 @@ echo -e "\n${BOLD}SYNTAX TEST${RESET}\n"
 
 while IFS= read -r line; do
     bash_out=$(bash -c "$line" 2>&1)
-    msh_out=$(./minishell "$line" 2>&1)
+    echo $bash_out
+    msh_out=$(echo "$line" | ./minishell 2>&1)
     bash_trimmed=$(echo "$bash_out" | sed -n "s/.*\(syntax.*\`[^']*'\).*/\1/p")
     msh_trimmed=$(echo "$msh_out" | cut -d ' ' -f2-)
 
@@ -92,7 +93,7 @@ echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
 
 while IFS= read -r line; do
     bash -c "$line" 2> /dev/null > out_bash
-    ./minishell "$line" 2> /dev/null > out_msh
+    echo "$line" | ./minishell 2> /dev/null > out_msh
     if ! diff out_bash out_msh >/dev/null; then
         print_line "${NUM}" "[ KO ]" "${line}"
     else

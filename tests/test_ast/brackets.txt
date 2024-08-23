@@ -8,3 +8,20 @@ echo hello | (wc || cat)
 (echo "This will run" && echo "So will this") || echo "This won't run"
 (echo "First" && false && echo "Second") || (echo "An error occurred" && echo "Error handled")
 (echo "Pipe this" | (tr '[:lower:]' '[:upper:]' | rev)) | tee /dev/null
+env | grep "SHLVL"
+echo oui | cat -e
+echo oui | echo non | echo something | grep oui
+echo oui | echo non | echo something | grep non
+echo oui | echo non | echo something | grep something
+cd .. | echo "something"
+cd .. | pwd
+ifconfig | grep ":"
+ifconfig | grep nothing
+whoami | grep $USER
+export TEST=123 | cat -e | cat -e
+unset TEST | cat -e
+echo test | cat -e | cat -e | cat -e
+whereis ls | cat -e | cat -e > test
+cat /dev/random | head -c 1 | wc -c
+env | sort | grep -v SHLVL | grep -v _=
+export | sort | grep -v SHLVL | grep -v _= | grep -v OLDPWD

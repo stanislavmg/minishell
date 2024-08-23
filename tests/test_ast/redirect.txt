@@ -6,25 +6,3 @@
 (echo "Start"; hostname | grep "minishell"; echo "End") > out
 (echo "Header" > out; cat < input.txt >> out)
 (ls nonexistentfile; echo "Check errors") > out
-env | grep "SHLVL"
-echo oui | cat -e
-echo oui | echo non | echo something | grep oui
-echo oui | echo non | echo something | grep non
-echo oui | echo non | echo something | grep something
-cd .. | echo "something"
-cd .. | pwd
-ifconfig | grep ":"
-ifconfig | grep nothing
-whoami | grep $USER
-cat Makefile | grep "FLAGS"
-cat Makefile | cat -e | cat -e
-cat Makefile | grep "FLAGS" | grep "FLAGS" | cat -e
-export TEST=123 | cat -e | cat -e
-unset TEST | cat -e
-echo test | cat -e | cat -e | cat -e
-whereis ls | cat -e | cat -e > test
-ls -la | grep "."
-cat tests/lorem.txt | grep arcu | cat -e
-cat /dev/random | head -c 100 | wc -c
-env | sort | grep -v SHLVL | grep -v _=
-export | sort | grep -v SHLVL | grep -v _= | grep -v OLDPWD

@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/22 13:17:17 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:54:59 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,6 @@ int		free_cmd(t_exec_cmd *cmd);
 const char	*get_type(int type);
 void		print_tree(t_ast* root);
 void		print_tokens(t_list *tokens);
+double 		get_time();
 
 #endif

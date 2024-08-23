@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/21 12:17:09 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:58:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,34 +72,42 @@ int	is_builtin(const char *cmd)
 		return (0);
 }
 
+void	add_pid(t_data *msh, pid_t pid)
+{
+	pid_t	*new_pid;
+
+	new_pid = (pid_t *)malloc(sizeof(pid_t));
+	if (!pid)
+		panic(msh);
+	*new_pid = pid;
+	ft_lstadd_back(&msh->child_ps, ft_lstnew(new_pid));
+}
+
 void	start_job(t_exec_cmd *cmd, t_data *msh)
 {
-	pid_t	*pid;
+	pid_t	pid;
 	char	**envp;
 
 	envp = NULL;
-	pid = (pid_t *)malloc(sizeof(pid_t));
-	if (!pid)
-		panic(msh);
 	if (is_builtin(cmd->argv[0]))
 		set_last_status(msh->env, handle_command(cmd->argv, msh));
 	else
 	{
 		envp = new_env_arr(msh->env);
-		*pid = fork();
-		if (!*pid)
+		pid = fork();
+		if (!pid)
 			ft_execve(cmd, envp);
-		if (*pid == -1)
-			panic(msh);
+		if (pid == -1)
+		 	panic(msh);
 		free_arr(envp);
-		ft_lstadd_back(&msh->child_ps, ft_lstnew(pid));
+		add_pid(msh, pid);
 	}
 }
 
 void	close_fds_except_std(void)
 {
 	int	fd;
-	int	max = sysconf(_SC_OPEN_MAX); //FIXME need user const
+	int	max = 10000;//sysconf(_SC_OPEN_MAX); //FIXME need user const
 
 	fd = 2;
 	while (++fd < max)
@@ -165,75 +173,73 @@ void	ft_waitpid(t_data *msh)
 	msh->child_ps = t;
 }
 
-int	exec_first_ps(t_data *msh, t_ast *root, int out_pdes)
+void	new_child_and_pipe(t_ast *root, t_data *msh)
 {
-	if (root->type != SEMICOLON)
+    int pdes[2];
+	pid_t ps;
+
+	if (pipe(pdes) == -1)
+			panic(msh);
+	ps = fork();
+    if (ps == 0)
 	{
-		if (dup2(out_pdes, STDOUT_FILENO) == -1)
-			return (1);
-		close(out_pdes);
-		travers_tree(root, msh);
-	}
+		if (root->left->type == SEMICOLON)
+			travers_tree(((t_ast *)root->left)->left, msh);
+        close(pdes[0]); 
+        if (dup2(pdes[1], STDOUT_FILENO) == -1)
+			panic(msh);
+        close(pdes[1]);
+		if (root->left->type == SEMICOLON)
+        	exec_first_ps(((t_ast *)root->left)->right, msh);
+		else
+			exec_first_ps(root->left, msh);
+    }
+	else if (ps == -1)
+		panic(msh);
 	else
 	{
-		travers_tree((t_ast *)root->left, msh);
-		ft_waitpid(msh);
-		if (dup2(out_pdes, STDOUT_FILENO) == -1)
-			return (1);
-		close(out_pdes);
-		travers_tree((t_ast *)root->right, msh);
-	}
-	return (0);
+        close(pdes[1]); 
+        if (dup2(pdes[0], STDIN_FILENO) == -1)
+			panic(msh);
+        close(pdes[0]);
+        exec_first_ps((t_ast *)root->right, msh);
+    }
+	close(pdes[0]);
+	close(pdes[1]);
 }
 
-int	exec_second_ps(t_data *msh, t_ast *root, int in_pdes)
+
+int exec_first_ps(t_ast *root, t_data *msh)
 {
-	if (root->type != SEMICOLON)
-	{
-		if (dup2(in_pdes, STDIN_FILENO) == -1)
-			return (1);
-		close(in_pdes);
-		travers_tree(root, msh);
-	}
+    if (!root)
+        return 0;
+    if (root->type == PIPE) 
+		new_child_and_pipe(root, msh);
+	else if (root->type == COMMAND)
+       	ft_execve((t_exec_cmd *)root, new_env_arr(msh->env));
 	else
-	{
-		travers_tree((t_ast *)root->left, msh);
-		ft_waitpid(msh);
-		if (dup2(in_pdes, STDIN_FILENO) == -1)
-			return (1);
-		close(in_pdes);
-		travers_tree((t_ast *)root->right, msh);
-	}
-	return (0);
+		travers_tree(root, msh);
+    return 0;
 }
 
 int	start_pipeline(t_ast *root, t_data *msh)
 {
-	int	pdes[2];
-	int	saved_stdout;
 	int	saved_stdin;
+	int saved_stdout;
+	pid_t ps;
 
-	if (!root)
-		return (0);
-	saved_stdout = dup(STDOUT_FILENO);
+	ps = fork();
+	if (!ps)
+		exec_first_ps(root, msh);
+	waitpid(ps, NULL, 0);
 	saved_stdin = dup(STDIN_FILENO);
-	if (saved_stdout == -1 || saved_stdin == -1)
-		return (1);
-	if (pipe(pdes) == -1)
-		panic(msh);
-	if (exec_first_ps(msh, (t_ast *)root->left, pdes[1]))
-		panic(msh);
+	saved_stdout = dup(STDOUT_FILENO);
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
 		return (1);
-	close(saved_stdout);
-	if (exec_second_ps(msh, (t_ast *)root->right, pdes[0]))
-		panic(msh);
 	if (dup2(saved_stdin, STDIN_FILENO) == -1)
 		panic(msh);
-	close(saved_stdout);
 	close(saved_stdin);
-	close(pdes[0]);
-	close(pdes[1]);
+	close(saved_stdout);
 	return (0);
 }
 

@@ -9,7 +9,7 @@ SRC     = $(wildcard src/parsing/*) $(wildcard src/env_list/*)\
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -Wall -g -I$(INCLUDE) -fsanitize=address
+CFLAGS  = -g -Wall -I$(INCLUDE)
 
 all: $(NAME)
 

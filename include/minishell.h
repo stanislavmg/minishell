@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:25 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/18 19:28:01 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:47:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <ctype.h>
+
+extern struct timeval start, end;
 
 typedef enum t_token
 {
