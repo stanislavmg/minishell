@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 07:40:39 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:21:23 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/24 08:56:17 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	fill_export_string(char *str, t_list *env)
 
 	i = -1;
 	j = 0;
-	target = (t_env *)env -> content;
+	target = (t_env *)env -> data;
 	s = target -> key;
 	while (s[++i])
 		str[i] = s[i];
@@ -89,7 +89,7 @@ char	**get_exports(t_list *env)
 		return (NULL);
 	while (i < count)
 	{
-		target = (t_env *) env -> content;
+		target = (t_env *) env -> data;
 		if (target->attr & EXPORT)
 		{
 			fill_string(env, target, exports, i);
