@@ -3,32 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/22 16:28:25 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/24 08:36:36 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 extern int g_exit_code;
-
-static int	ft_isnum(char *str)
-{
-	if (!str)
-		return (EXIT_FAILURE);
-	while (ft_isspace(*str))
-		str++;
-	if (*str == '-' || *str == '+')
-		str++;
-	while (*str)
-	{
-		if (!(*str >= '0' && *str <= '9'))
-			return (EXIT_SUCCESS);
-		str++;
-	}
-	return (EXIT_FAILURE);
-}
 
 static long long int	ft_atol(const char *str)
 {
@@ -73,10 +56,40 @@ static int	check_arg(char **args, int argc)
 	return (EXIT_SUCCESS);
 }
 
-int	handle_exit(char **args, t_data *msh)
+static long long int	calc_exit_status(char *arg)
 {
 	long long int	exit_status;
-	int	argc;
+
+	exit_status = ft_atol(arg);
+	if (exit_status > LLONG_MAX || exit_status < LLONG_MIN)
+	{
+		ft_print_error("exit", arg, "numeric argument required");
+		return (255);
+	}
+	while (exit_status >= 256)
+		exit_status %= 256;
+	return (exit_status);
+}
+
+static int	check_and_return_exit(char **args, int argc)
+{
+	long long int	exit_status;
+
+	if (check_arg(args, argc) != 0)
+		return (255);
+	if (args[1])
+	{
+		exit_status = calc_exit_status(args[1]);
+		return (exit_status);
+	}
+	else
+		return (g_exit_code);
+}
+
+int	handle_exit(char **args, t_data *msh)
+{
+	int				argc;
+	int				result;
 
 	if (!args)
 		return (EXIT_FAILURE);
@@ -87,28 +100,8 @@ int	handle_exit(char **args, t_data *msh)
 		return (EXIT_FAILURE);
 	}
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	if (check_arg(args, argc) != 0)
-	{
- 		free_minishell_data(msh);
-		exit(255);
-	}
-	if (args[1])
-	{
-		exit_status = ft_atol(args[1]);
-		if (exit_status > LLONG_MAX || exit_status < LLONG_MIN)
-		{
-			ft_print_error("exit", args[1], "numeric argument required");
-			exit(255);
-		}
-		while (exit_status >= 256)
-			exit_status %= 256;
- 		free_minishell_data(msh);
-		exit(exit_status);
-	}
-	else
-	{
- 		free_minishell_data(msh);
-		exit(g_exit_code);
-	}
+	result = check_and_return_exit(args, argc);
+	free_minishell_data(msh);
+	exit(result);
 	return (EXIT_SUCCESS);
 }

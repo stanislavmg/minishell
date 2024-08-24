@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 07:40:39 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 07:45:03 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/24 08:21:23 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,14 @@ static int	fill_string(t_list *env, t_env *target, char **exports, int i)
 	int	addition_len;
 	int	value_len;
 
-	addition_len = (target -> value == NULL) ? 1 : 4 ;
-	value_len = (target -> value == NULL) ? 0 : ft_strlen(target -> value) ;
+	if (target -> value == NULL)
+		addition_len = 1;
+	else
+		addition_len = 4;
+	if (target -> value == NULL)
+		value_len = 0;
+	else
+		value_len = ft_strlen(target -> value);
 	exports[i] = malloc(sizeof(char) * (ft_strlen(target -> key)
 		+ value_len + addition_len));
 	if (!exports[i])
