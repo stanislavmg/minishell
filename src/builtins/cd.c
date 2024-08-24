@@ -6,11 +6,18 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/20 20:01:35 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/24 08:44:04 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
+
+static void	set_pwd_vals(t_list *env, char *pwd, char *oldpwd)
+{
+	ft_putendl_fd(oldpwd, STDOUT_FILENO);
+	set_env_value(env, "PWD", ft_strdup(oldpwd));
+	set_env_value(env, "OLDPWD", ft_strdup(pwd));
+}
 
 static int	cd_oldpwd(t_list *env)
 {
@@ -27,8 +34,6 @@ static int	cd_oldpwd(t_list *env)
 		free(pwd);
 		return (EXIT_FAILURE);
 	}
-	/* часть кода повторяется в 3 функциях, можно вынести в отдельную 
-	например exit_failure & swap_value*/
 	if (chdir(oldpwd) != 0)
 	{
 		perror("chdir error");
@@ -36,11 +41,7 @@ static int	cd_oldpwd(t_list *env)
 		return (EXIT_FAILURE);
 	}
 	else
-	{
-		ft_putendl_fd(oldpwd, STDOUT_FILENO);
-		set_env_value(env, "PWD", ft_strdup(oldpwd));
-		set_env_value(env, "OLDPWD", ft_strdup(pwd));
-	}
+		set_pwd_vals(env, pwd, oldpwd);
 	free(pwd);
 	return (EXIT_SUCCESS);
 }

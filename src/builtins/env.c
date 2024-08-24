@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 18:38:21 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/24 08:45:36 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,22 @@ int	set_env_value(t_list *env, char *key, char *value)
 		ft_lstadd_back(&env, ft_lstnew(node));
 	}
 	return (EXIT_SUCCESS);
+}
+
+int	ft_env_count(t_list *env, int attr)
+{
+	int		count;
+	t_env	*target;
+
+	count = 0;
+	while (env)
+	{
+		target = (t_env *) env -> data;
+		if (target -> attr & attr)
+			count++;
+		env = env -> next;
+	}
+	return (count);
 }
 
 int	handle_env(char **args, t_list *env)
