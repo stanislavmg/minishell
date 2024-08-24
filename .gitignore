@@ -8,3 +8,5 @@ out
 include/readline
 lib
 share
+t
+perf

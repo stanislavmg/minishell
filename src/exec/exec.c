@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/23 17:58:06 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/24 10:01:14 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,16 +184,15 @@ void	new_child_and_pipe(t_ast *root, t_data *msh)
     if (ps == 0)
 	{
 		if (root->left->type == SEMICOLON)
-			travers_tree(((t_ast *)root->left)->left, msh);
+			travers_tree((t_ast *)((t_ast *)root->left)->left, msh);
         close(pdes[0]); 
         if (dup2(pdes[1], STDOUT_FILENO) == -1)
 			panic(msh);
         close(pdes[1]);
 		if (root->left->type == SEMICOLON)
-        	exec_first_ps(((t_ast *)root->left)->right, msh);
+        	exec_first_ps((t_ast *)((t_ast *)root->left)->right, msh);
 		else
-			exec_first_ps(root->left, msh);
-		exit(0);
+			exec_first_ps((t_ast *)root->left, msh);
     }
 	else if (ps == -1)
 		panic(msh);
@@ -217,7 +216,11 @@ int exec_first_ps(t_ast *root, t_data *msh)
     if (root->type == PIPE) 
 		new_child_and_pipe(root, msh);
 	else if (root->type == COMMAND)
+	{
+		if (is_builtin(((t_exec_cmd *)root)->argv[0]))
+			exit(handle_command(((t_exec_cmd *)root)->argv, msh));
        	ft_execve((t_exec_cmd *)root, new_env_arr(msh->env));
+	}
 	else
 		travers_tree(root, msh);
     return 0;
