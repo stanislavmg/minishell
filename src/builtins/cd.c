@@ -6,18 +6,11 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/25 07:44:16 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/25 07:54:48 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
-
-static void	set_pwd_vals(t_list *env, char *pwd, char *oldpwd)
-{
-	ft_putendl_fd(oldpwd, STDOUT_FILENO);
-	set_env_value(env, "PWD", ft_strdup(oldpwd));
-	set_env_value(env, "OLDPWD", ft_strdup(pwd));
-}
 
 static void	fill_newpath(char *new_path, char *path, char *home)
 {
