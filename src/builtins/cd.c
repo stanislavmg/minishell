@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:44:04 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/25 07:44:16 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,82 +19,50 @@ static void	set_pwd_vals(t_list *env, char *pwd, char *oldpwd)
 	set_env_value(env, "OLDPWD", ft_strdup(pwd));
 }
 
-static int	cd_oldpwd(t_list *env)
+static void	fill_newpath(char *new_path, char *path, char *home)
 {
-	char	*pwd;
-	char	*oldpwd;
-
-	if (!env)
-		return (0);
-	pwd = get_env_value("PWD", env);
-	oldpwd = get_env_value("OLDPWD", env);
-	if (!oldpwd)
+	while (*home)
 	{
-		ft_print_error("cd", "", "OLDPWD not set");
-		free(pwd);
-		return (EXIT_FAILURE);
+		*new_path = *home;
+		home++;
+		new_path++;
 	}
-	if (chdir(oldpwd) != 0)
+	while (*path)
 	{
-		perror("chdir error");
-		free(pwd);
-		return (EXIT_FAILURE);
+		if (*path == '~')
+			path++;
+		else
+		{
+			*new_path = *path;
+			path++;
+			new_path++;
+		}
 	}
-	else
-		set_pwd_vals(env, pwd, oldpwd);
-	free(pwd);
-	return (EXIT_SUCCESS);
+	*new_path = 0;
 }
 
-static int	cd_home(t_list *env)
+static int	cd_tilda(char *path, t_list *env)
 {
+	char	*new_path;
 	char	*home;
-	char	*pwd;
+	int		res;
 
-	pwd = getcwd(NULL, 0);
 	home = get_env_value("HOME", env);
 	if (!home)
 	{
 		ft_print_error("cd", "", "HOME not set");
-		free(pwd);
 		return (EXIT_FAILURE);
 	}
-	if (chdir(home) != 0)
+	new_path = malloc(sizeof(char) * (ft_strlen(home) + ft_strlen(path)));
+	if (!new_path)
 	{
-		perror("minishell: chdir error: ");
-		free(pwd);
+		ft_print_error("cd", "", "malloc error");
 		return (EXIT_FAILURE);
 	}
-	else
-	{
-		set_env_value(env, "OLDPWD", ft_strdup(pwd));
-		set_env_value(env, "PWD", ft_strdup(home));
-	}
-	free(pwd);
-	return (EXIT_SUCCESS);
-}
-
-static int	cd_path(char *path, t_list *env)
-{
-	char	*cwd;
-	char	*pwd;
-
-	cwd = getcwd(NULL, 0);
-	if (chdir(path) != 0)
-	{
-		ft_print_error("cd", path, "No such file or directory");
-		free(cwd);
-		return (EXIT_FAILURE);
-	}
-	else
-	{
-		pwd = getcwd(NULL, 0);
-		set_env_value(env, "OLDPWD", ft_strdup(cwd));
-		set_env_value(env, "PWD", ft_strdup(pwd));
-		free(pwd);
-	}
-	free(cwd);
-	return (EXIT_SUCCESS);
+	fill_newpath(new_path, path, home);
+	res = cd_path(new_path, env);
+	free(new_path);
+	return (res);
 }
 
 int	handle_cd(char **args, t_list *env)
@@ -105,15 +73,12 @@ int	handle_cd(char **args, t_list *env)
 	argc = ft_count_args(args);
 	if (!args || !env || argc == 0)
 		return (EXIT_FAILURE);
-	if (argc > 2)
-	{
-		ft_print_error("cd", "", "Too many arguments");
-		return (EXIT_FAILURE);
-	}
 	if (argc == 1)
 		res = cd_home(env);
 	else if (strcmp(args[1], "-") == 0)
 		res = cd_oldpwd(env);
+	else if (ft_strncmp(args[1], "~", 1) == 0)
+		res = cd_tilda(args[1], env);
 	else
 		res = cd_path(args[1], env);	
 	return (res);

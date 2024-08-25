@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:36:27 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/25 07:44:35 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,10 @@ void	free_minishell_data(t_data *msh);
 int		ft_count_args(char **args);
 int		free_arr_and_return_failure(char **arr);
 int		ft_isnum(char *str);
+
+// cd funcs
+int		cd_path(char *path, t_list *env);
+int		cd_home(t_list *env);
+int		cd_oldpwd(t_list *env);
 
 #endif
