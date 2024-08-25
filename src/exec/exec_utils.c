@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 18:24:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/25 23:31:11 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	exit_failure(char *sender, int error)
 {
 	int	exit_code;
 
-	exit_code = 0;
+	exit_code = EXIT_FAILURE;
 	if (error == CMD_NOT_FOUND)
 	{
 		if (ft_strchr(sender, '/'))
@@ -54,16 +54,26 @@ void	exit_failure(char *sender, int error)
 			print_err(sender, "execve() fail\n");
 		else
 			print_err(sender, NULL);
-		exit_code = EXIT_FAILURE;
 	}
-	if (exit_code)
-		exit(exit_code);
+	exit(exit_code);
+}
+
+static void	kill_child(t_list *ps)
+{
+	while (ps)
+	{
+		kill(*((int *)ps->data), SIGINT);
+		ps = ps->next;
+	}
 }
 
 void	free_minishell_data(t_data *msh)
 {
 	free_ast(msh->root);
 	ft_lstclear(&msh->env, free_env);
+	if (msh->child_ps)
+		kill_child(msh->child_ps);
+	ft_lstclear(&msh->child_ps, free);
 	free(msh);
 }
 
@@ -123,21 +133,33 @@ int	check_file_permission(char *fname, int mode)
 {
 	if (mode == O_RDONLY)
 	{
-		if (access(fname, F_OK))
+		if (access(fname, F_OK) != 0)
 		{
 			print_err(fname, "No such file or directory\n");
 			return (1);
 		}
-		if (access(fname, R_OK))
+		if (access(fname, R_OK) != 0)
 		{
 			print_err(fname, "Permission denied\n");
 			return (1);
 		}
+		return (0);
 	}
-	else if (!access(fname, F_OK) && access(fname, W_OK))
+	if ((mode & O_RDWR) || (mode & O_TRUNC))
 	{
-		print_err(fname, "Permission denied\n");
-		return (1);
+		if (access(fname, F_OK) == 0)
+		{
+			if (access(fname, W_OK) != 0)
+			{
+				print_err(fname, "Permission denied\n");
+				return (1);
+			}
+		}
+		else if (!(mode & O_CREAT))
+		{
+			print_err(fname, "No such file or directory\n");
+			return (1);
+		}
 	}
 	return (0);
 }

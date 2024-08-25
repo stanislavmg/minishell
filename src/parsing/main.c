@@ -34,10 +34,8 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 	tokens = new_token_list(env, input);
 	if (!tokens)
 		return (NULL);
-	//print_tokens(tokens);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
-	//print_tree((t_ast *)ast);
 	if (parser->err)
 	{
 		if (parser->cur_token_pos)
@@ -106,6 +104,8 @@ int	main(int ac, char **av, char **env)
 	t_data		*msh;
 	char 		*input;
 	
+	input = NULL;
+	msh = NULL;
 	msh = new_msh_data();
 	msh->env = new_env_list(env);
 	set_std_val(msh->env);
@@ -115,13 +115,9 @@ int	main(int ac, char **av, char **env)
 	input = readline(PROMT);
 	while (input)
 	{
-		//gettimeofday(&start, NULL);
 		msh->root = (t_ast *)init_msh_data(msh->env, input);
-		//printf("build tree = %g\n", get_time());
-		//gettimeofday(&start, NULL);
 		if (msh->root)
 			travers_tree((t_ast *)msh->root, msh);
-		//printf("exec tree = %f\n", get_time());
 		free_ast(msh->root);
 		while (msh->child_ps)
 			ft_waitpid(msh);

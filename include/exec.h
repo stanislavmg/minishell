@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/23 15:24:11 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/25 18:40:17 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void		free_minishell_data(t_data *msh);
 void		panic(t_data *msh);
 void		ft_waitpid(t_data *msh);
 void		print_err(char *sender, char *msg);
-
-int exec_first_ps(t_ast *root, t_data *msh);
+void		close_fds_except_std(void);
 int			check_file_permission(char *fname, int mode);
 #endif

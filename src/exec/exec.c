@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/24 10:01:14 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/25 22:51:37 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ int	travers_tree(t_ast *root, t_data *msh)
 	else if (root->type == PIPE)
 		start_pipeline(root, msh);
 	else if (root->type == REDIRECT)
-		open_redirect(root, msh);
+	{
+		if (open_redirect(root, msh))
+			return (1);
+	}
 	else if (root->type == SEMICOLON)
 	{
 		travers_tree((t_ast *)root->left, msh);
@@ -104,16 +107,6 @@ void	start_job(t_exec_cmd *cmd, t_data *msh)
 	}
 }
 
-void	close_fds_except_std(void)
-{
-	int	fd;
-	int	max = 10000;//sysconf(_SC_OPEN_MAX); //FIXME need user const
-
-	fd = 2;
-	while (++fd < max)
-		close(fd);
-}
-
 void	check_cmd_permission(t_exec_cmd *cmd)
 {
 	struct stat	file_info;
@@ -142,7 +135,6 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	paths = NULL;
 	if (!cmd || !cmd->argv)
 		exit(EXIT_FAILURE);
-	close_fds_except_std();
 	while (env[i] && strncmp(env[i], "PATH=", 5))
 		i++;
 	paths = get_path(env[i] + 5);
@@ -173,79 +165,102 @@ void	ft_waitpid(t_data *msh)
 	msh->child_ps = t;
 }
 
-void	new_child_and_pipe(t_ast *root, t_data *msh)
+void	open_pipeline(t_data *msh, t_exec_cmd *first)
 {
     int pdes[2];
 	pid_t ps;
-
+	
 	if (pipe(pdes) == -1)
-			panic(msh);
-	ps = fork();
-    if (ps == 0)
-	{
-		if (root->left->type == SEMICOLON)
-			travers_tree((t_ast *)((t_ast *)root->left)->left, msh);
-        close(pdes[0]); 
-        if (dup2(pdes[1], STDOUT_FILENO) == -1)
-			panic(msh);
-        close(pdes[1]);
-		if (root->left->type == SEMICOLON)
-        	exec_first_ps((t_ast *)((t_ast *)root->left)->right, msh);
-		else
-			exec_first_ps((t_ast *)root->left, msh);
-    }
-	else if (ps == -1)
 		panic(msh);
-	else
+	ps = fork();
+	if (ps == -1)
+		panic(msh);
+	else if (ps == 0)
 	{
-        close(pdes[1]); 
-        if (dup2(pdes[0], STDIN_FILENO) == -1)
+		if (dup2(pdes[1], STDOUT_FILENO) == -1)
 			panic(msh);
-        close(pdes[0]);
-        exec_first_ps((t_ast *)root->right, msh);
-    }
+		close(pdes[0]);
+		close(pdes[1]);
+		if (first->type != COMMAND)
+		{
+			travers_tree((t_ast *)first, msh);
+			// while(msh->child_ps)
+			// 	ft_waitpid(msh);
+			exit(get_exit_code());
+		}
+		if (is_builtin(first->argv[0]))
+			exit(handle_command(first->argv, msh));
+		ft_execve(first, new_env_arr(msh->env));
+	}
+	add_pid(msh, ps);
+	if (dup2(pdes[0], STDIN_FILENO) == -1)
+		panic(msh);
 	close(pdes[0]);
 	close(pdes[1]);
 }
 
-
-int exec_first_ps(t_ast *root, t_data *msh)
+void	new_child_and_pipe(t_ast *root, t_data *msh)
 {
-    if (!root)
-        return 0;
-    if (root->type == PIPE) 
-		new_child_and_pipe(root, msh);
-	else if (root->type == COMMAND)
+	if (root == NULL)
+		return ;
+	if (root->type == PIPE)
 	{
-		if (is_builtin(((t_exec_cmd *)root)->argv[0]))
-			exit(handle_command(((t_exec_cmd *)root)->argv, msh));
-       	ft_execve((t_exec_cmd *)root, new_env_arr(msh->env));
+		new_child_and_pipe((t_ast *)root->left, msh);
+		new_child_and_pipe((t_ast *)root->right, msh);
+	}
+	else if (root->type == SEMICOLON)
+	{
+		travers_tree((t_ast *)root->left, msh);
+		open_pipeline(msh, (t_exec_cmd *)root->right);
 	}
 	else
-		travers_tree(root, msh);
-    return 0;
+		open_pipeline(msh, (t_exec_cmd *)root);
+}
+
+void	write_in_stdout()
+{
+	size_t ch;
+	char buf[1024];
+
+	ch = read(STDIN_FILENO, buf, 1024);
+	while (ch > 0)
+	{
+		if (write(STDOUT_FILENO, buf, ch) == -1)
+			return ;
+		ch = read(STDIN_FILENO, buf, 1024);
+	}
+}
+
+int	fd_is_pipe(int fd)
+{
+	struct stat file_info;
+	
+	if (fstat(fd, &file_info) == -1)
+		return (-1);
+	if (S_ISFIFO(file_info.st_mode))
+		return (1);
+	return (0);
 }
 
 int	start_pipeline(t_ast *root, t_data *msh)
 {
-	int	saved_stdin;
-	int saved_stdout;
 	pid_t ps;
 
 	ps = fork();
 	if (!ps)
-		exec_first_ps(root, msh);
+	{
+		new_child_and_pipe(root, msh);
+		while (msh->child_ps)
+			ft_waitpid(msh);
+		if (fd_is_pipe(STDIN_FILENO))
+			write_in_stdout();
+		exit(get_exit_code());
+	}
 	waitpid(ps, NULL, 0);
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
-	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
-		return (1);
-	if (dup2(saved_stdin, STDIN_FILENO) == -1)
-		panic(msh);
-	close(saved_stdin);
-	close(saved_stdout);
-	return (0);
+	set_last_status(msh->env, get_exit_code());
+    return 0;
 }
+
 
 int	open_redirect(t_ast *root, t_data *msh)
 {
@@ -264,23 +279,26 @@ int	open_redirect(t_ast *root, t_data *msh)
 		fd = open(rfile->fname, rfile->mode, 0644);
 	else
 	{
-		set_last_status(msh->env, 1);
-		return (1);
+		close(saved_stdin);
+		close(saved_stdout);
+		set_last_status(msh->env, EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	if (rfile->type == INPUT_TRUNC || rfile->type == HERE_DOC)
 	{
-		if (fd > 0)
-			dup2(fd, STDIN_FILENO);
-		travers_tree((t_ast *)root->left, msh);
-		dup2(saved_stdin, STDIN_FILENO);
+		if (dup2(fd, STDIN_FILENO) == -1)
+			panic(msh);
 	}
 	else
 	{
-		if (fd > 0)
-			dup2(fd, STDOUT_FILENO);
-		travers_tree((t_ast *)root->left, msh);
-		dup2(saved_stdout, STDOUT_FILENO);
+		if (dup2(fd, STDOUT_FILENO) == -1)
+			panic(msh);
 	}
+	travers_tree((t_ast *)root->left, msh);
+	if (dup2(saved_stdin, STDIN_FILENO) == -1)
+		panic(msh);
+	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
+		panic(msh);
 	ft_close(fd);
 	ft_close(saved_stdin);
 	ft_close(saved_stdout);

@@ -7,8 +7,7 @@ SRC     = $(wildcard src/parsing/*) $(wildcard src/env_list/*)\
 
 OBJ     = $(SRC:%.c=%.o)
 OS := $(shell uname)
-CFLAGS  = -g -Wall -I$(INCLUDE)
-
+CFLAGS  = -Wall -I$(INCLUDE)
 
 ifeq ($(OS), Darwin)
     READLINE := ./readline_config.sh
@@ -20,14 +19,14 @@ else
     all: $(NAME)
 endif
 
-$(NAME): $(OBJ) $(MAIN:.c=.o) $(LIB)
+$(NAME): $(OBJ) $(LIB)
 	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
-%.o: %.c $(MAIN)
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIB):
-	 make -C libft all bonus clean && mv libft/$(LIB) .
+	make -C libft all bonus clean && mv libft/$(LIB) .
 
 $(READLINE):
 	bash $(READLINE)
