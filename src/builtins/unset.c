@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:38:41 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 20:09:20 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/27 07:36:27 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,9 @@ int	handle_unset(char **args, t_list *env)
 {
 	int	argc;
 	int	i;
+	int	result;
 
+	result = EXIT_SUCCESS;
 	if (!args || !env)
 		return (EXIT_FAILURE);
 	argc = ft_count_args(args);
@@ -90,7 +92,9 @@ int	handle_unset(char **args, t_list *env)
 	{
 		if (ft_arg_is_correct(args[i]))
 			env_delete(&env, args[i]);
+		else
+			result = EXIT_FAILURE;
 		i++;
 	}
-	return (EXIT_SUCCESS);
+	return (result);
 }

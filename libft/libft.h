@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 17:05:47 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/06 11:16:08 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/27 06:56:46 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 int		ft_open(char *fname, int mode);
 int		ft_close(int fd);
+int		ft_isspace(char c);
 /**************************************************************/
 /**************************************************************/
 t_list	*ft_lstnew(void *data);
