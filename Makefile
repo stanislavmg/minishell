@@ -6,8 +6,8 @@ SRC     = $(wildcard src/parsing/*) $(wildcard src/env_list/*)\
 		  $(wildcard src/builtins/*)
 OBJ     = $(SRC:%.c=%.o)
 OS 		:= $(shell uname)
-CFLAGS  = -Wall -I$(INCLUDE)
-DFLAGS	= -g -fsanitize=undefined -fsanitize=address
+CFLAGS  = -g -Wall -I$(INCLUDE)
+DFLAGS	= -fsanitize=undefined -fsanitize=address
 
 ifeq ($(OS), Darwin)
     READLINE := ./readline_config.sh

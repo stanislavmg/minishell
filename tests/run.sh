@@ -10,7 +10,8 @@ INPUT=brackets.txt
 REDIR=redirect.txt
 SYNTAX=syntax.txt
 NUM=1
-LOG=log/case_
+LOG=log/
+VG="valgrind --leak-check=full --quiet --error-exitcode=42"
 
 function print_line() {
     local number="$1"
@@ -18,20 +19,25 @@ function print_line() {
     local command="$3"
     local color=""
 
-    if [ "${status}" == "[ KO ]" ]; then
-        color=${RED}
-    else
+    if [ "${status}" == "[ OK ]" ]; then
         color=${GREEN}
+    else
+        color=${RED}
     fi
     printf "${color}%-3s %-6s: %s\n${RESET}" "${number}" "${status}" "${command}"
 }
 
-function log_command() {
-  local command="$1"
-  local logfile="$2"
-  {
-    eval "$command"
-  } >> "$logfile" 2>&1
+function check_leaks() {
+    local command="$1"
+    local log_file="$2"
+	local vg=$(${VG} $command)
+    # Run the command with Valgrind and check for leaks
+    if [ $? -eq 42 ]; then
+            print_line "${NUM}" "[ LEAK ]" "$command"
+			echo $vg > $log_file
+    else
+            print_line "${NUM}" "[ OK ]" "$command"
+    fi
 }
 
 mkdir -p "log"
@@ -61,14 +67,14 @@ rm -f ${LOG}/*
 
 echo -e "\n${BOLD}BASE TEST${RESET}\n"
 while IFS= read -r line; do
-    if diff $(eval "$line") $(echo "$line" | ./minishell) 2> /dev/null; then
-        print_line "${NUM}" "[ KO ]" "${line}"
-    else
+    if diff <(eval "$line") <(echo "$line" | ./minishell) &> /dev/null; then
         print_line "${NUM}" "[ OK ]" "${line}"
+    else
+        print_line "${NUM}" "[ KO ]" "${line}"
     fi
+    check_leaks "echo ${line} | ./minishell" "${LOG}/valgrind_${NUM}.log"
     (( NUM++ ))
 done < "$INPUT"
-
 
 echo -e "\n${BOLD}SYNTAX TEST${RESET}\n"
 
@@ -86,6 +92,7 @@ while IFS= read -r line; do
         echo "Bash output: $bash_trimmed"
         echo "Minishell output: $msh_trimmed"
     fi
+    check_leaks "echo ${line} | ./minishell" "${LOG}/valgrind_${NUM}.log"
     (( NUM++ ))
 done < "$SYNTAX"
 
@@ -99,8 +106,9 @@ while IFS= read -r line; do
     else
         print_line "${NUM}" "[ OK ]" "${line}"
     fi
+    check_leaks "echo ${line} | ./minishell" "${LOG}/valgrind_${NUM}.log"
     rm -f out_bash out_msh
     (( NUM++ ))
 done < "$REDIR"
 
-rm -rf  test_main.o output
+rm -rf test_main.o output

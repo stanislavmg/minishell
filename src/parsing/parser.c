@@ -31,6 +31,7 @@ void	add_variable_node(t_list **var_lst, t_token *token)
 	t_var	*new_var;
 
 	new_var = new_tvar(token->word);
+	free(token->word);
 	token->word = NULL;
 	new_lst_node = ft_lstnew(new_var);
 	ft_lstadd_back(var_lst, new_lst_node);

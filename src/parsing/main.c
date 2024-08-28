@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/28 13:45:32 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:20:12 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,18 @@ void one_arg_exec(t_data *msh, char **av)
 	free_ast(msh->root);
 	free(msh);
 	exit(exit_code);
+}
+char *get_pipe_input(void)
+{
+	char buf[4096];
+	size_t ch;
+	char *ret;
+	
+	ret = NULL;
+	ch = read(STDIN_FILENO, buf, 4096);
+	buf[ch] = 0;
+	ret = ft_strdup(buf);
+	return (ret);
 }
 
 int	main(int ac, char **av, char **env)

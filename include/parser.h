@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/26 16:01:11 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:16:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_lexer	*new_lexer(char *input, t_list *env_list);
 t_token	*new_token(char *word, e_token type);
 void	push_token(t_list **token_list, char *new_word, e_token type);
 t_list	*new_token_list(t_list *env, char *input);
-void free_token(void *cur_token_pos);
+void 	free_token(void *cur_token_pos);
 void	add_new_input(t_lexer *lex);
 
 // tokenization
@@ -82,7 +82,7 @@ void		add_variable_node(t_list **var_lst, t_token *token);
 t_cmd 		*parse_cmd(t_list *var, t_list *args, t_list *redir);
 t_cmd		*parse_block(t_parser *parser);
 void		print_msh_err(char *token_name);
-t_parser *new_parser(t_list *tokens, t_list *env);
+t_parser 	*new_parser(t_list *tokens, t_list *env);
 
 // free
 void	free_ast(t_ast *root);
@@ -93,5 +93,5 @@ int		free_cmd(t_exec_cmd *cmd);
 const char	*get_type(int type);
 void		print_tree(t_ast* root);
 void		print_tokens(t_list *tokens);
-
+int	fd_is_pipe(int fd);
 #endif

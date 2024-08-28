@@ -1,4 +1,5 @@
 echo hello | wc
+t=1; t=2; export t; echo $t
 echo hello | (wc || cat)
 (echo hello && echo world) | (cat | cat -e)
 (echo "Hello World")
