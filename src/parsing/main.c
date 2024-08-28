@@ -1,16 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/28 13:45:32 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "exec.h"
 #include "minishell.h"
-#include <time.h>
-#include <sys/time.h>
-
-struct timeval start, end;
 extern int g_exit_code;
-
-double get_time()
-{
-	gettimeofday(&end, NULL);
-	return (start.tv_sec - start.tv_sec + 1E-6 * (end.tv_usec - end.tv_usec));
-}
 
 t_data	*new_msh_data(void)
 {
@@ -34,16 +36,18 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 	tokens = new_token_list(env, input);
 	if (!tokens)
 		return (NULL);
+	//print_tokens(tokens);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
 	if (parser->err)
 	{
 		if (parser->cur_token_pos)
-			print_msh_err(parser->cur_token_pos->data);
+			print_msh_err(((t_token *)parser->cur_token_pos->data)->word);
 		else
-			print_msh_err(ft_lstlast(tokens)->data);
+			print_msh_err("newline");
 		free_ast((t_ast *)ast);
 		ast = NULL;
+		set_last_status(env, 2);
 	}
 	ft_lstclear(&tokens, free_token);
 	free(parser);
@@ -58,8 +62,7 @@ void	set_std_val(t_list *env)
 	
 	if (!env)
 		return ;
-	/* FIXME violation of encapsulation */
-	g_exit_code = 0;
+	set_last_status(env, 0);
 	n = new_env(get_var_name("?=0"), get_var_value("?=0"), HIDDEN);
 	ft_lstadd_back(&env, ft_lstnew(n));
 	shell_lvl = get_env(env, "SHLVL");
@@ -104,6 +107,8 @@ int	main(int ac, char **av, char **env)
 	t_data		*msh;
 	char 		*input;
 	
+	(void)ac;
+	(void)av;
 	input = NULL;
 	msh = NULL;
 	msh = new_msh_data();

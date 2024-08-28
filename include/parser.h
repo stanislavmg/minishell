@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/22 17:54:59 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/26 16:01:11 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ t_exec_cmd	*new_exec_cmd(t_list *args);
 t_cmd		*add_tnode(t_cmd *left_node, t_cmd *right_node, int type);
 t_cmd		*build_tree(t_parser *parser);
 t_cmd		*new_ast(t_parser *parser);
-int			 here_doc_start(t_token *hd_token, t_list *env);
-t_cmd 		*parse_redirect(t_token *token, t_list *env);
+char		*here_doc_start(char *stop_word, t_list *env);
+t_cmd		*parse_redirect(e_token redir_type, char *fname, t_list *env);
 void		expand_wildcard(t_lexer *lex, char *pattern);
 
 // parse utils
@@ -81,7 +81,7 @@ t_redir		*new_redir(e_token redirect_type, char *fname);
 void		add_variable_node(t_list **var_lst, t_token *token);
 t_cmd 		*parse_cmd(t_list *var, t_list *args, t_list *redir);
 t_cmd		*parse_block(t_parser *parser);
-void		print_msh_err(t_token *token);
+void		print_msh_err(char *token_name);
 t_parser *new_parser(t_list *tokens, t_list *env);
 
 // free
@@ -93,6 +93,5 @@ int		free_cmd(t_exec_cmd *cmd);
 const char	*get_type(int type);
 void		print_tree(t_ast* root);
 void		print_tokens(t_list *tokens);
-double 		get_time();
 
 #endif

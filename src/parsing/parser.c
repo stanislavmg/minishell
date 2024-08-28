@@ -13,14 +13,15 @@ t_var	*new_tvar(const char *key_and_value)
 	return (new_var);
 }
 
-t_cmd *parse_redirect(t_token *token, t_list *env)
+t_cmd *parse_redirect(e_token redir_type, char *fname, t_list *env)
 {
 	t_redir *new_node;
 
-	if (token->type == HERE_DOC)
-		here_doc_start(token, env);
-	new_node = new_redir(token->type, token->word);
-	token->word = NULL;
+	new_node = NULL;
+	if (redir_type == HERE_DOC)
+		fname = here_doc_start(fname, env);
+	if (fname)
+		new_node = new_redir(redir_type, fname);
 	return ((t_cmd *)new_node);
 }
 

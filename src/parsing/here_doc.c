@@ -12,17 +12,16 @@ static char	*new_hidden_fname(char *stop_word, t_env *tmp_dir)
 	return (hidden_fname);
 }
 
-int here_doc_start(t_token *hd_token, t_list *env)
+char *here_doc_start(char *stop_word, t_list *env)
 {
 	int		out_fd;
+	char	*new_fname;
 	char	*next_str;
-	char	*stop_word;
 
-	if (!hd_token || hd_token->type != HERE_DOC)
-		return (1);
-	stop_word = hd_token->word;
-	hd_token->word = new_hidden_fname(stop_word, get_env(env, "TMPDIR"));
-	out_fd = ft_open(hd_token->word, O_RDWR | O_CREAT | O_TRUNC);
+	if (!stop_word)
+		return (NULL);
+	new_fname = new_hidden_fname(stop_word, get_env(env, "TMPDIR"));
+	out_fd = ft_open(new_fname, O_RDWR | O_CREAT | O_TRUNC);
 	next_str = readline("> ");
 	while (next_str && strcmp(stop_word, next_str))
 	{
@@ -34,5 +33,5 @@ int here_doc_start(t_token *hd_token, t_list *env)
 	ft_close(out_fd);
 	free(next_str);
 	free(stop_word);
-	return (0);
+	return (new_fname);
 }

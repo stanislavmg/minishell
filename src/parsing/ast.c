@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ast.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/27 16:03:46 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/28 12:24:54 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "parser.h"
 
 t_cmd *new_ast(t_parser *parser)
@@ -16,6 +28,11 @@ t_cmd *new_ast(t_parser *parser)
 	while (parser->cur_token_pos && !parser->err)
 	{
 		type = get_token_type(parser);
+		if (type == PIPE && !parser->cur_token_pos->next)
+		{
+			char *input = readline(PROMT);
+			ft_lstadd_back(&parser->cur_token_pos, new_token_list(parser->env_lst, input));
+		}
 		if (is_redirect(type))
 			type = REDIRECT;
 		if (type == OPEN_BRACKET || type == CLOSED_BRACKET)
@@ -74,10 +91,10 @@ t_cmd	*parse_block(t_parser *parser)
 	return (root);
 }
 
-void	print_msh_err(t_token *token)
+void	print_msh_err(char *token_name)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token `",STDERR_FILENO);
-	ft_putstr_fd(token->word, STDERR_FILENO);
+	ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd(token_name, STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
 }
 
@@ -110,18 +127,36 @@ void remove_duplicate(t_list **redirects)
 	}
 }
 
-void	add_redirection_node(t_list **redir, t_parser *parser)
+int	add_redirection_node(t_list **redir, t_parser *parser)
 {
-	t_cmd *new_redirect;
-	t_token 	*cur_token;
+	t_cmd		*new_redirect;
+	t_token		*cur_token;
+	e_token		redirection_type;
+	char		*file_name;
 
 	if (!parser || !parser->cur_token_pos)
-		return ;
+		return (1);
 	cur_token = parser->cur_token_pos->data;
-	if (cur_token->type == HERE_DOC)
-		remove_duplicate(redir);
-	new_redirect = parse_redirect(cur_token, parser->env_lst);
-	ft_lstadd_front(redir, ft_lstnew(new_redirect));
+	redirection_type = cur_token->type;
+	parser->cur_token_pos = parser->cur_token_pos->next;
+	if (parser->cur_token_pos)
+		cur_token = parser->cur_token_pos->data;
+	else
+		parser->err = ERR_SYNTAX;
+	if (is_cmd_delimeter(cur_token->type) || is_redirect(cur_token->type)
+		|| cur_token->type == OPEN_BRACKET
+		|| cur_token->type == CLOSED_BRACKET)
+		parser->err = ERR_SYNTAX;
+	if (!parser->err)
+	{
+		file_name = cur_token->word;
+		cur_token->word = NULL;
+		if (redirection_type == HERE_DOC)
+			remove_duplicate(redir);
+		new_redirect = parse_redirect(redirection_type, file_name, parser->env_lst);
+		ft_lstadd_front(redir, ft_lstnew(new_redirect));
+	}
+	return (0);
 }
 
 void	add_cmd_arg(t_list **args, t_parser *parser)
@@ -162,7 +197,7 @@ t_cmd *new_cmd_tree(t_parser *parser)
 			add_cmd_arg(&args, parser);
 		if (cur_token->type == OPEN_BRACKET)
 			parser->err = ERR_SYNTAX;
-		else
+		else if (parser->cur_token_pos && !parser->err)
 			parser->cur_token_pos = parser->cur_token_pos->next;
 	}
 	parser->cmd_start = 0;

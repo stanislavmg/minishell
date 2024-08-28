@@ -4,10 +4,10 @@ INCLUDE = include
 SRC     = $(wildcard src/parsing/*) $(wildcard src/env_list/*)\
 		  $(wildcard src/lexer/*)  $(wildcard src/exec/*)\
 		  $(wildcard src/builtins/*)
-
 OBJ     = $(SRC:%.c=%.o)
-OS := $(shell uname)
+OS 		:= $(shell uname)
 CFLAGS  = -Wall -I$(INCLUDE)
+DFLAGS	= -g -fsanitize=undefined -fsanitize=address
 
 ifeq ($(OS), Darwin)
     READLINE := ./readline_config.sh
@@ -38,5 +38,8 @@ fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
+
+debug: CFLAGS += $(DFLAGS)
+debug: all
 
 .PHONY: all clean fclean re

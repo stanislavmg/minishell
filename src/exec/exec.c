@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:53 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/25 22:51:37 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/28 12:40:16 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,7 +245,9 @@ int	fd_is_pipe(int fd)
 int	start_pipeline(t_ast *root, t_data *msh)
 {
 	pid_t ps;
+	int	exit_code;
 
+	exit_code = 0;
 	ps = fork();
 	if (!ps)
 	{
@@ -256,9 +258,9 @@ int	start_pipeline(t_ast *root, t_data *msh)
 			write_in_stdout();
 		exit(get_exit_code());
 	}
-	waitpid(ps, NULL, 0);
-	set_last_status(msh->env, get_exit_code());
-    return 0;
+	waitpid(ps, &exit_code, 0);
+	set_last_status(msh->env, WEXITSTATUS(exit_code));
+    return (0);
 }
 
 
