@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/27 09:03:58 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/28 08:14:17 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@ extern int g_exit_code;
 
 void	check_llong_max(unsigned long long res, int mod, char *str, t_data *msh)
 {	
-	if (res > ((unsigned long long)LLONG_MAX) || (res > ((unsigned long long)LLONG_MAX + 1) && mod == -1))
+	if ((res > (unsigned long long)LLONG_MAX && mod == 1) || (res > ((unsigned long long)LLONG_MIN) && mod == -1))
 	{
 		free_minishell_data(msh);
 		ft_print_error("exit", str, "numeric argument required");
