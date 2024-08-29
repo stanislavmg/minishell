@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:45:36 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/29 07:35:11 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,16 @@ int	set_env_value(t_list *env, char *key, char *value)
 	node = get_env(env, key);
 	if (node)
 	{
-		if ((node->attr & ENV) && value == NULL)
+		if (value == NULL)
 		{
-			node->attr = ENV | EXPORT;
+			node->attr = node->attr | ENV | EXPORT;
 			return (EXIT_SUCCESS);
 		}
 		if (value == node->value)
 			return (EXIT_SUCCESS);
 		free(node->value);
 		node -> value = value;
+		free(key);
 	}
 	else
 	{

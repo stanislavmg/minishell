@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/28 08:14:17 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/29 07:06:11 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@ extern int g_exit_code;
 
 void	check_llong_max(unsigned long long res, int mod, char *str, t_data *msh)
 {	
-	if ((res > (unsigned long long)LLONG_MAX && mod == 1) || (res > ((unsigned long long)LLONG_MIN) && mod == -1))
+	if ((res > (unsigned long long)LLONG_MAX && mod == 1) 
+		|| (res > ((unsigned long long)LLONG_MIN) && mod == -1))
 	{
 		free_minishell_data(msh);
 		ft_print_error("exit", str, "numeric argument required");
@@ -72,11 +73,6 @@ static int	calc_exit_status(char *arg, t_data *msh)
 	int	exit_status;
 
 	exit_status = ft_atol(arg, msh);
-	// if (exit_status > LONG_MAX || exit_status < LONG_MIN)
-	// {
-	// 	ft_print_error("exit", arg, "numeric argument required");
-	// 	return (255);
-	// }
 	exit_status = exit_status % 256;
 	if (exit_status < 0)
 		exit_status += 256;
@@ -109,7 +105,6 @@ int	handle_exit(char **args, t_data *msh)
 	if (!args)
 		return (EXIT_FAILURE);
 	argc = ft_count_args(args);
-	
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	result = check_and_return_exit(args, argc, msh);
 	if (argc > 2)

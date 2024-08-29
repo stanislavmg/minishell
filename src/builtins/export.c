@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/28 23:34:11 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/29 07:06:26 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int	handle_export(char **args, t_list *env)
 	int		ret;
 
 	result = EXIT_SUCCESS;
+	ret = EXIT_SUCCESS;
 	i = 1;
 	if (!args || !env)
 		return (EXIT_FAILURE);
