@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:51:09 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/29 16:56:48 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	handle_command(char **args, t_data *msh)
 {
 	int	result;
 
-	result = 0;
 	if (!args || !msh)
 		return (EXIT_FAILURE);
 	if (strcmp(args[0], "cd") == 0)

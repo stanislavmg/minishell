@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 07:40:39 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:56:17 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/29 17:15:05 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ char	**get_exports(t_list *env)
 		target = (t_env *) env -> data;
 		if (target->attr & EXPORT)
 		{
-			fill_string(env, target, exports, i);
+			if (fill_string(env, target, exports, i) == 1)
+				return (NULL);
 			i++;
 		}
 		env = env -> next;
