@@ -3,12 +3,11 @@ LIB     = libft.a
 INCLUDE = include
 SRC     = $(wildcard src/parsing/*) $(wildcard src/env_list/*)\
 		  $(wildcard src/lexer/*)  $(wildcard src/exec/*)\
-		  $(wildcard src/builtins/*)
+		  $(wildcard src/builtins/*) $(addprefix src/, main.c destructors.c debug.c)
 OBJ     = $(SRC:%.c=%.o)
 OS 		:= $(shell uname)
 CFLAGS  = -g -Wall -I$(INCLUDE)
 DFLAGS	= -fsanitize=undefined -fsanitize=address
-
 ifeq ($(OS), Darwin)
     READLINE := ./readline_config.sh
 endif

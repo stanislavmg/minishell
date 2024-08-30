@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/19 12:38:01 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/29 16:11:58 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define ENV	0x02
 
 
-# include "minishell.h"
+# include "types.h"
 # include <string.h>
 
 int		set_env(t_list *list_env, t_var *new_env, int attr);

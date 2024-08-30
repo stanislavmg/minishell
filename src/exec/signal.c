@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:47:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 17:47:40 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/29 18:02:49 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	remove_echo_ctl(void)
 static void	sig_handle(int signum, siginfo_t *info, void *context)
 {
 	write(1, "\n", 1);
-	//rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }

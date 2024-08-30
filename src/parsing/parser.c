@@ -1,4 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/30 17:40:46 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/30 17:42:05 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
+
+t_redir	*new_redir(e_token redirect_type, char *fname)
+{
+	t_redir	*new_node;
+
+	new_node = (t_redir *)malloc(sizeof(t_redir));
+	new_node->type = redirect_type;
+	new_node->fname = fname;
+	if (OUTPUT_TRUNC == redirect_type)
+		new_node->mode = O_TRUNC | O_CREAT | O_RDWR;
+	else if (OUTPUT_ADD == redirect_type)
+		new_node->mode = O_APPEND | O_CREAT | O_RDWR;
+	else if (INPUT_TRUNC == redirect_type)
+		new_node->mode = O_RDONLY;
+	else
+		new_node->mode = 0;
+	return (new_node);
+}
+
+t_parser	*new_parser(t_list *tokens, t_list *env)
+{
+	t_parser	*parser;
+
+	parser = (t_parser *)ft_calloc(1, sizeof(t_parser));
+	if (!parser)
+		return (NULL);
+	parser->cur_token_pos = tokens;
+	parser->env_lst = env;
+	return (parser);
+}
 
 t_var	*new_tvar(const char *key_and_value)
 {
@@ -13,31 +55,7 @@ t_var	*new_tvar(const char *key_and_value)
 	return (new_var);
 }
 
-t_cmd *parse_redirect(e_token redir_type, char *fname, t_list *env)
-{
-	t_redir *new_node;
-
-	new_node = NULL;
-	if (redir_type == HERE_DOC)
-		fname = here_doc_start(fname, env);
-	if (fname)
-		new_node = new_redir(redir_type, fname);
-	return ((t_cmd *)new_node);
-}
-
-void	add_variable_node(t_list **var_lst, t_token *token)
-{
-	t_list	*new_lst_node;
-	t_var	*new_var;
-
-	new_var = new_tvar(token->word);
-	free(token->word);
-	token->word = NULL;
-	new_lst_node = ft_lstnew(new_var);
-	ft_lstadd_back(var_lst, new_lst_node);
-}
-
-t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
+t_cmd	*add_ast_node(t_cmd *left_node, t_cmd *right_node, int type)
 {
 	t_ast	*root;
 
@@ -48,11 +66,4 @@ t_cmd	*add_tnode(t_cmd *left_node, t_cmd *right_node, int type)
 	root->right = right_node;
 	root->type = type;
 	return ((t_cmd *)root);
-}
-
-e_token get_token_type(t_parser *parser)
-{
-	if (!parser || !parser->cur_token_pos)
-		return (0);
-	return (((t_token *)parser->cur_token_pos->data)->type);
 }

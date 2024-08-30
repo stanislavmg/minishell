@@ -6,12 +6,12 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/28 23:20:12 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/29 16:11:58 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-#include "minishell.h"
+#include "types.h"
 extern int g_exit_code;
 
 t_data	*new_msh_data(void)
@@ -47,7 +47,7 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 			print_msh_err("newline");
 		free_ast((t_ast *)ast);
 		ast = NULL;
-		set_last_status(env, 2);
+		set_exit_code(env, 2);
 	}
 	ft_lstclear(&tokens, free_token);
 	free(parser);
@@ -62,7 +62,7 @@ void	set_std_val(t_list *env)
 	
 	if (!env)
 		return ;
-	set_last_status(env, 0);
+	set_exit_code(env, 0);
 	n = new_env(get_var_name("?=0"), get_var_value("?=0"), HIDDEN);
 	ft_lstadd_back(&env, ft_lstnew(n));
 	shell_lvl = get_env(env, "SHLVL");
@@ -83,35 +83,6 @@ void	set_std_val(t_list *env)
 		shell_lvl->value = ft_itoa(tmp_value);
 	}
 	/* OLDPWDRESET */
-}
-
-void one_arg_exec(t_data *msh, char **av)
-{
-	char 		*input;
-	int			exit_code;
-	
-	exit_code = 0;
-	input = ft_strdup(av[1]);
-	msh->root = (t_ast *)init_msh_data(msh->env, input);
-	if (msh->root)
-		travers_tree((t_ast *)msh->root, msh);
-	exit_code = get_exit_code();
-	ft_lstclear(&msh->env, free_env);
-	free_ast(msh->root);
-	free(msh);
-	exit(exit_code);
-}
-char *get_pipe_input(void)
-{
-	char buf[4096];
-	size_t ch;
-	char *ret;
-	
-	ret = NULL;
-	ch = read(STDIN_FILENO, buf, 4096);
-	buf[ch] = 0;
-	ret = ft_strdup(buf);
-	return (ret);
 }
 
 int	main(int ac, char **av, char **env)

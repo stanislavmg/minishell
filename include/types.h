@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   types.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHEL_H
-#define MINISHEL_H
+#ifndef TYPES_H
+#define TYPES_H 
 
 # define PROMT	"minishell$> "
 #include "libft.h"
@@ -21,8 +21,6 @@
 #include <fcntl.h>
 #include <string.h>
 #include <ctype.h>
-
-extern struct timeval start, end;
 
 typedef enum t_token
 {
@@ -95,9 +93,7 @@ typedef struct s_token
 typedef struct s_parser
 {
   t_list      *cur_token_pos;
-  t_ast       *cmd_tree;
   t_list      *env_lst;
-  char        **paths;
   int         cmd_start;
   int         brackets_count;
   int         err;

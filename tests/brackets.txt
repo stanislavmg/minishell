@@ -26,3 +26,73 @@ whereis ls | cat -e | cat -e > test
 cat /dev/random | head -c 1 | wc -c
 env | sort | grep -v SHLVL | grep -v _=
 export | sort | grep -v SHLVL | grep -v _= | grep -v OLDPWD
+echo ""hello" 'world' $USER \t"
+echo "$USER"hello""
+echo "$USER''""$USER"
+echo "string''""' '$USER"
+echo "'string'''"   "''string"
+echo ""string"''""\c"
+echo "\c$USER"
+echo "$USER\c"
+echo "Hello "$USER in $PWD""
+echo "\u\s\e\r\"
+echo ""str \\ \$USER \"""
+echo "hello$USE" world""
+echo "test=USER=109; $test"
+echo hello 1 2 3 >"out""4" 5 6 7
+echo
+echo echo
+eCho 
+eChO
+eCHO
+ECHO
+echo $
+echo "$"
+echo '$'
+echo nenie_iri
+echo nenie iri
+echo 'nenie_iri'
+echo "nenie_iri"
+echo -n
+echo -n nenie_iri
+echo -nn nenie_iri
+echo -n -n -n nenie_iri
+echo "-n" nenie_iri
+echo -n"-n" nenie_iri
+echo "-nnnn" nenie_iri
+echo "-n -n -n"-n nenie_iri
+echo "-n -n" nenie_iri
+echo "-n '-n'" nenie_iri
+echo $USER
+echo "$USER"
+echo '$USER'
+echo "'$USER'"
+echo " '$USER' "
+echo nenie_iri"$USER"
+echo nenie_iri"'$USER'" ' $USER '
+echo "nenie_iri"   "$USER"    "$USER"
+echo '              $USER          '
+echo               nenie_iri "$USER"            "$USER"nenie_iri
+echo ''''''''''$USER''''''''''
+echo """"""""$USER""""""""
+echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
+echo $USER '' $USER $USER '' $USER '' $USER -n $USER
+echo ' \' ' \'
+echo "$USER""$USER""$USER"
+echo nenie"$USER"iri
+echo '$USER' "$USER" "nenie \' iri"
+echo $USER " "
+echo "$USER""Users/$USER/file""'$USER'"'$USER'
+echo "$USER$USER$USER"
+echo '$USER'"$USER"'$USER'
+echo '"$USER"''$USER'"""$USER"
+echo " $USER  "'$PWD'
+echo $USER=4
+echo $?
+echo $USER213
+echo "$USER=12$USER"
+echo $PWD
+echo $PWD/file
+echo "$PWD/file"
+echo "nenie_iri" "nenie_iri$USER" ... "$USER"
+echo test      tout

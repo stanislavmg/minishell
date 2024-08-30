@@ -1,32 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*   exit_code.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/30 17:39:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 17:40:58 by sgoremyk         ###   ########.fr       */
+/*   Created: 2024/08/29 15:59:19 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/29 17:59:10 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
+#include "exec.h"
 
-t_cmd	*build_tree_fromlist(t_list *nodes, e_token type)
+int	g_exit_code;
+
+int	get_exit_code(void)
 {
-	t_cmd	*root;
+	return (g_exit_code);
+}
 
-	if (!nodes)
-		return (NULL);
-	root = NULL;
-	root = nodes->data;
-	nodes->data = NULL;
-	nodes = nodes->next;
-	while (nodes)
-	{
-		root = add_ast_node(root, nodes->data, type);
-		nodes->data = NULL;
-		nodes = nodes->next;
-	}
-	return (root);
+void	set_exit_code(t_list *list_env, int new_value)
+{
+	t_env	*last_status;
+
+	g_exit_code = new_value;
+	last_status = NULL;
+	if (!list_env)
+		return ;
+	last_status = get_env(list_env, "?");
+	if (!last_status)
+		return ;
+	free(last_status->value);
+	last_status->value = ft_itoa(new_value);
 }

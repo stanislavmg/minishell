@@ -1,24 +1,24 @@
 #include "parser.h"
 
-int	free_cmd(t_exec_cmd *cmd)
+void	free_minishell_data(t_data *msh)
 {
-	if (!cmd)
-		return (0);
-	free_arr(cmd->argv);
-	free(cmd->path);
-	return (0);
+	if (msh)
+	{
+		free_ast(msh->root);
+		ft_lstclear(&msh->env, free_env);
+		kill_child(msh->child_ps);
+		ft_lstclear(&msh->child_ps, free);
+		free(msh);
+	}
 }
 
-void	free_arr(char **arr)
+void	kill_child(t_list *ps)
 {
-	int	i;
-
-	i = -1;
-	if (!arr)
-		return ;
-	while (arr[++i])
-		free(arr[i]);
-	free(arr);
+	while (ps)
+	{
+		kill(*((int *)ps->data), SIGINT);
+		ps = ps->next;
+	}
 }
 
 void	free_ast(t_ast *root)
@@ -43,4 +43,25 @@ void	free_ast(t_ast *root)
 	if (root->type != COMMAND && root->type != VARIABLE	&& !is_redirect(root->type))
 		free_ast((t_ast *)root->right);
 	free(root);
+}
+
+int	free_cmd(t_exec_cmd *cmd)
+{
+	if (!cmd)
+		return (0);
+	free_arr(cmd->argv);
+	free(cmd->path);
+	return (0);
+}
+
+void	free_arr(char **arr)
+{
+	int	i;
+
+	i = -1;
+	if (!arr)
+		return ;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
 }

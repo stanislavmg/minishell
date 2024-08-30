@@ -74,55 +74,52 @@ fi
 rm -f ${LOG}/*
 
 echo -e "\n${BOLD}BASE TEST${RESET}\n"
-# while IFS= read -r line; do
-#     if diff $(eval "$line") $(echo "$line" | ./minishell) 2> /dev/null; then
-#         print_line "${NUM}" "[ KO ]" "${line}"
-#     else
-#         print_line "${NUM}" "[ OK ]" "${line}"
-#     fi
-#     check_leaks "echo ${line} | ./minishell" "${LOG}/valgrind_${NUM}.log"
-#     (( NUM++ ))
-# done < "$INPUT"
-
-function run_all_tests_in_one_process() {
-    local input_file="$1"
-    local valgrind_log="$2"
-    local expected_output_file="expected_output.txt"
-    local minishell_output_file="minishell_output.txt"
-
-    # Prepare expected outputs by evaluating all lines with the system shell
-    while IFS= read -r line; do
-        eval "$line" 2> /dev/null
-    done < "$input_file" > "$expected_output_file"
-
-    # Run all commands through minishell in one process
-    $VG ./minishell < "$input_file" > "$minishell_output_file" 2> "$valgrind_log"
-    sed -i '/minishell\$>/d' $minishell_output_file
-    # Compare outputs line by line
-    local line_num=1
-    while IFS= read -r expected_line && IFS= read -r minishell_line <&3; do
-        if [ "$expected_line" = "$minishell_line" ]; then
-            print_line "$line_num" "[ OK ]" "Test case $line_num"
-        else
-            print_line "$line_num" "[ KO ]" "Test case $line_num"
-            echo "Expected: $expected_line"
-            echo "Got: $minishell_line"
-        fi
-        (( line_num++ ))
-    done < "$expected_output_file" 3< "$minishell_output_file"
-
-    # Check for leaks reported by Valgrind
-    if grep -q "definitely lost: 0 bytes" "$valgrind_log"; then
-        echo -e "${GREEN}No leaks detected.${RESET}"
+while IFS= read -r line; do
+    if diff $(eval "$line") $(echo "$line" | ./minishell) 2> /dev/null; then
+        print_line "${NUM}" "[ KO ]" "${line}"
     else
-        echo -e "${RED}Memory leaks detected. Check $valgrind_log for details.${RESET}"
+        print_line "${NUM}" "[ OK ]" "${line}"
     fi
+    (( NUM++ ))
+done < "$INPUT"
 
-    # Cleanup temporary files
-//    rm -f "$expected_output_file" "$minishell_output_file"
-}
+# function run_all_tests_in_one_process() {
+#     local input_file="$1"
+#     local valgrind_log="$2"
+#     local expected_output_file="expected_output.txt"
+#     local minishell_output_file="minishell_output.txt"
 
-run_all_tests_in_one_process "$INPUT" "${LOG}/valgrind_batch.log"
+#     # Prepare expected outputs by evaluating all lines with the system shell
+#     while IFS= read -r line; do
+#         eval "$line" 2> /dev/null
+#     done < "$input_file" > "$expected_output_file"
+
+#     # Run all commands through minishell in one process
+#     $VG ./minishell < "$input_file" > "$minishell_output_file" 2> "$valgrind_log"
+#     sed -i '/minishell\$>/d' $minishell_output_file
+#     # Compare outputs line by line
+#     local line_num=1
+#     while IFS= read -r expected_line && IFS= read -r minishell_line <&3; do
+#         if [ "$expected_line" = "$minishell_line" ]; then
+#             print_line "$line_num" "[ OK ]" "Test case $line_num"
+#         else
+#             print_line "$line_num" "[ KO ]" "Test case $line_num"
+#             echo "Expected: $expected_line"
+#             echo "Got: $minishell_line"
+#         fi
+#         (( line_num++ ))
+#     done < "$expected_output_file" 3< "$minishell_output_file"
+
+#     # Check for leaks reported by Valgrind
+#     if grep -q "definitely lost: 0 bytes" "$valgrind_log"; then
+#         echo -e "${GREEN}No leaks detected.${RESET}"
+#     else
+#         echo -e "${RED}Memory leaks detected. Check $valgrind_log for details.${RESET}"
+#     fi
+
+#     # Cleanup temporary files
+#     rm -f "$expected_output_file" "$minishell_output_file"
+# }
 
 echo -e "\n${BOLD}SYNTAX TEST${RESET}\n"
 
@@ -140,7 +137,6 @@ while IFS= read -r line; do
         echo "Bash output: $bash_trimmed"
         echo "Minishell output: $msh_trimmed"
     fi
-#    check_leaks "echo ${line} | ./minishell" "${LOG}/valgrind_${NUM}.log
     (( NUM++ ))
 done < "$SYNTAX"
 
@@ -154,7 +150,6 @@ while IFS= read -r line; do
     else
         print_line "${NUM}" "[ OK ]" "${line}"
     fi
-
     rm -f out_bash out_msh
     (( NUM++ ))
 done < "$REDIR"

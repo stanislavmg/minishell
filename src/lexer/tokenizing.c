@@ -129,11 +129,9 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 {
 	int		len;
 	char	*new_word;
-	t_list	*last_token;
 	
 	if (!lex || !value)
 		return (1);
-	last_token = NULL;
 	len = ft_strlen(value);
 	lex->str_pos += len;
 	new_word = get_word(value, len);

@@ -1,8 +1,20 @@
-# include "parser.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/30 17:38:45 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/30 17:40:16 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "parser.h"
 
 static char	*new_hidden_fname(char *stop_word, t_env *tmp_dir)
 {
-	char *hidden_fname;
+	char	*hidden_fname;
 
 	hidden_fname = NULL;
 	if (tmp_dir && tmp_dir->value)
@@ -12,7 +24,7 @@ static char	*new_hidden_fname(char *stop_word, t_env *tmp_dir)
 	return (hidden_fname);
 }
 
-char *here_doc_start(char *stop_word, t_list *env)
+char	*here_doc_start(char *stop_word, t_list *env)
 {
 	int		out_fd;
 	char	*new_fname;

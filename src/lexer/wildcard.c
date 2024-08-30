@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "types.h"
 #include "parser.h"
 
 int	ft_fnmatch(char *pattern, char *filename)

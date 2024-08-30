@@ -6,7 +6,7 @@
 #    By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/01 17:05:52 by sgoremyk          #+#    #+#              #
-#    Updated: 2024/08/25 22:35:24 by sgoremyk         ###   ########.fr        #
+#    Updated: 2024/08/29 16:14:57 by sgoremyk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS	=	ft_isalpha.c	ft_strlcpy.c	ft_strtrim.c\
 			ft_isdigit.c	ft_strlen.c		ft_split.c\
 			ft_isalnum.c	ft_strlcat.c	ft_strmapi.c\
 			ft_isascii.c	ft_strncmp.c	ft_striteri.c\
-			ft_isprint.c	ft_strchr.c	ft_putchar_fd.c\
+			ft_isprint.c	ft_strchr.c		ft_putchar_fd.c\
 			ft_toupper.c	ft_strrchr.c	ft_putstr_fd.c\
 			ft_tolower.c	ft_memchr.c		ft_putendl_fd.c\
 			ft_atoi.c		ft_memcmp.c		ft_putnbr_fd.c\
@@ -35,7 +35,7 @@ OBJ		=	$(SRCS:%.c=%.o)
 OBJ_B	=	$(SRCS_B:%.c=%.o)
 
 CC		=	clang
-CFLAGS	=	-Wall -Wextra -Werror
+CFLAGS	=	-Wall -Wextra -Werror -I../include
 
 .PHONY	:	all clean fclean re bonus
 

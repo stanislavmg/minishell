@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/30 17:40:36 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/30 17:41:09 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
 
 char	**get_path(char *path_env)
@@ -65,7 +77,7 @@ t_exec_cmd	*new_exec_cmd(t_list *args)
 	return (new_cmd);
 }
 
-char **add_field_argv(t_list *args)
+char	**add_field_argv(t_list *args)
 {
 	char	**argv;
 	int		argc;
