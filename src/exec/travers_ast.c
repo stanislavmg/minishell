@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:03:07 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 15:29:11 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/30 23:54:37 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	travers_tree(t_ast *root, t_data *msh)
 	else if (root->type == PIPE)
 		initialize_pipeline(root, msh);
 	else if (root->type == REDIRECT)
-		open_redirect(root, root->right, msh);
+		open_redirect(root, (t_redir *)root->right, msh);
 	return (0);
 }
 

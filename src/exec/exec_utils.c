@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 18:25:20 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/30 23:51:16 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 extern int	g_exit_code;
 static int	check_input_file(const char *fname);
 
-void	print_err(char *sender, char *msg)
+void	print_err(const char *sender, const char *msg)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(sender, STDERR_FILENO);
@@ -26,7 +26,7 @@ void	print_err(char *sender, char *msg)
 		perror("minishell: ");
 }
 
-void	exit_failure(char *sender, int error)
+void	exit_failure(const char *sender, int error)
 {
 	int	exit_code;
 

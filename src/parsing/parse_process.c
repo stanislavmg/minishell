@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 16:46:24 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 17:41:44 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 02:15:34 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,9 @@ t_cmd	*build_tree(t_parser *parser)
 		parser->err = ERR_SYNTAX;
 	else if (type == OPEN_BRACKET)
 	{
+		parser->brackets_count++;
+		if (parser->brackets_count > 255)
+			parser->err = ERR_BRACKECTS;
 		parser->cur_token_pos = parser->cur_token_pos->next;
 		root = parse_block(parser);
 	}

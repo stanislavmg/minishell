@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 12:26:49 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/30 23:52:29 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int			is_logic_operator(e_token type);
 void		panic(t_data *msh);
 void		free_minishell_data(t_data *msh);
 void		ft_waitpid(t_data *msh);
-void		exit_failure(char *msg, int error);
-void		print_err(char *sender, char *msg);
+void		exit_failure(const char *msg, int error);
+void		print_err(const char *sender, const char *msg);
 void		record_pid(t_data *msh, pid_t pid);
 
 void	check_cmd_permission(t_exec_cmd *cmd);

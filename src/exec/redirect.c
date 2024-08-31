@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 15:28:15 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 18:15:30 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/30 23:54:17 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	open_redirect(t_ast *root, t_redir *rfile, t_data *msh)
 		return (1);
 	}
 	set_exit_code(msh->env, EXIT_SUCCESS);
-	travers_tree(root->left, msh);
+	travers_tree((t_ast *)root->left, msh);
 	close(fd);
 	if (reset_stdstream(saved_stdin, saved_stdout))
 		panic(msh);
