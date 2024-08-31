@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lex_quotes.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/31 16:30:46 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/31 16:30:47 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
 
 char	*string_handle(t_lexer *lex)
@@ -13,7 +25,7 @@ char	*string_handle(t_lexer *lex)
 		i++;
 	new_word = get_word(lex->str_pos, i);
 	lex->str_pos += i;
-	if (ft_strchr(new_word, '*')) // FIXME if *lex->str_pos == 0
+	if (ft_strchr(new_word, '*'))
 	{
 		expand_wildcard(lex, new_word);
 		free(new_word);

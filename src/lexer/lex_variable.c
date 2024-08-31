@@ -1,32 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lex_variable.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/31 16:30:58 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/31 16:52:29 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
-char	*variable_handle(t_lexer *lex)
+
+static int	is_var_delimeter(int ch)
 {
+	return (ch == '\\' || ch == '/' || ch == '=' || ch == '?'
+		|| is_token_delimeter(ch) || is_catchar(ch));
+}
+
+static char	*new_var_name(t_lexer *lex)
+{
+	char	*var_name;
 	int		i;
-	char	*new_word;
-	t_env	*var;
 
 	i = 0;
-	var = NULL;
-	new_word = NULL;
-	lex->str_pos++;
+	var_name = NULL;
 	if (*lex->str_pos == '?')
 	{
-		new_word = ft_strdup("?");
+		var_name = ft_strdup("?");
 		i = 1;
 	}
 	else
 	{
-		while (!is_var_delimeter(lex->str_pos[i])
-			&& !is_token_delimeter(lex->str_pos[i])
-			&& !is_catchar(lex->str_pos[i]))
+		while (!is_var_delimeter(lex->str_pos[i]))
 			i++;
 		if (i == 0)
-			new_word = get_word("$", 1);
+			var_name = get_word("$", 1);
 		else
-			new_word = get_word(lex->str_pos, i);
+			var_name = get_word(lex->str_pos, i);
 	}
 	lex->str_pos += i;
-	if (i)
+	return (var_name);
+}
+
+char	*variable_handle(t_lexer *lex)
+{
+	char	*new_word;
+	t_env	*var;
+
+	var = NULL;
+	lex->str_pos++;
+	new_word = new_var_name(lex);
+	if (ft_strcmp(new_word, "$"))
 	{
 		var = get_env(lex->env, new_word);
 		free(new_word);

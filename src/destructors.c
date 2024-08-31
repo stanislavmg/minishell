@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   destructors.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/31 17:06:08 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/31 17:08:37 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
 
 void	free_minishell_data(t_data *msh)
@@ -25,7 +37,8 @@ void	free_ast(t_ast *root)
 {
 	if (!root)
 		return ;
-	if (root->type != COMMAND && root->type != VARIABLE	&& !is_redirect(root->type))
+	if (root->type != COMMAND && root->type != VARIABLE
+		&& !is_redirect(root->type))
 		free_ast((t_ast *)root->left);
 	else if (root->type == COMMAND)
 		free_cmd((t_exec_cmd *)root);
@@ -40,7 +53,8 @@ void	free_ast(t_ast *root)
 			unlink(((t_redir *)root)->fname);
 		free(((t_redir *)root)->fname);
 	}
-	if (root->type != COMMAND && root->type != VARIABLE	&& !is_redirect(root->type))
+	if (root->type != COMMAND && root->type != VARIABLE
+		&& !is_redirect(root->type))
 		free_ast((t_ast *)root->right);
 	free(root);
 }

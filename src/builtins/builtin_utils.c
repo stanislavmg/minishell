@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
 /*   Updated: 2024/08/31 18:53:07 by amikhush         ###   ########.fr       */
@@ -35,18 +35,6 @@ int	handle_command(char **args, t_data *msh)
 	else
 		return (0);
 	return (result);
-}
-
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (1);
-	while (s1[i] == s2[i] && s1[i] && s2[i])
-		i++;
-	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));
 }
 
 void	ft_print_error(char *command, char *str, char *error)

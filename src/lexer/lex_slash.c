@@ -1,13 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lex_slash.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/31 16:30:52 by sgoremyk          #+#    #+#             */
+/*   Updated: 2024/08/31 17:03:15 by sgoremyk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
-char	*get_hd_stop_word(t_lexer *lex)
+
+static int	is_screening_ch(int ch)
+{
+	return (ch == '`' || ch == '\"' || ch == '$' || ch == '\\');
+}
+
+char	*get_hd_stop_word(t_lexer *lex, char *stop_word)
 {
 	int		i;
-	char	*stop_word;
 	char	qoutes;
 
 	i = 0;
 	qoutes = 0;
-	stop_word = NULL;
 	while (ft_isspace(*lex->str_pos))
 		lex->str_pos++;
 	if (*lex->str_pos == '\'' || *lex->str_pos == '\"')
@@ -26,7 +42,7 @@ char	*get_hd_stop_word(t_lexer *lex)
 		lex->str_pos++;
 	if (*lex->str_pos && !ft_isspace(*lex->str_pos)
 		&& !is_metachar(*lex->str_pos))
-		stop_word = merge_str(stop_word, get_hd_stop_word(lex));
+		stop_word = merge_str(stop_word, get_hd_stop_word(lex, NULL));
 	return (stop_word);
 }
 
