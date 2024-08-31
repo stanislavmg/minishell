@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:02 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 14:58:33 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 11:16:49 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define INVALID_ARG_FOR_EXIT 128	// Invalid argument to exit
 # define FT_SIGINT	130 			// Ctrl+C
 
+# define  ERR_BRACKETS	93
 # define  ERR_MEM    	94
 # define  ERR_TOKEN   	95
 # define  ERR_QUOTE   	96

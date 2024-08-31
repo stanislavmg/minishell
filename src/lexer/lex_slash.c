@@ -1,4 +1,4 @@
-
+#include "parser.h"
 char	*get_hd_stop_word(t_lexer *lex)
 {
 	int		i;

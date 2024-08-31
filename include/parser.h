@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 18:12:31 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 11:19:23 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,10 @@ void		print_msh_err(char *token_name);
 t_parser 	*new_parser(t_list *tokens, t_list *env);
 t_cmd	*new_cmd_tree(t_parser *parser);
 int	is_token_delimeter(int ch);
+int	is_screening_ch(int ch);
+int	is_var_delimeter(int ch);
+char	*get_hd_stop_word(t_lexer *lex);
+
 // free
 void	free_ast(t_ast *root);
 void	free_arr(char **arr);
