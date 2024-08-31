@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 17:15:54 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 20:00:16 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,13 @@ void	set_std_val(t_list *env)
 	}
 }
 
-int	main(inchar **env)
+int	main(int ac, char **av, char **env)
 {
 	t_data	*msh;
 	char	*input;
 
+	(void)ac;
+	(void)av;
 	input = NULL;
 	msh = NULL;
 	msh = new_msh_data();
