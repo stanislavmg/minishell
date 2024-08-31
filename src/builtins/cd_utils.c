@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 07:38:04 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 07:17:09 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:20:52 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,12 @@
 
 static void	set_pwd_vals(t_list *env, char *pwd, char *oldpwd)
 {
+	char	*tmp;
+
+	tmp = ft_strdup(pwd);
 	ft_putendl_fd(oldpwd, STDOUT_FILENO);
 	set_env_value(env, ft_strdup("PWD"), ft_strdup(oldpwd));
-	set_env_value(env, ft_strdup("OLDPWD"), ft_strdup(pwd));
+	set_env_value(env, ft_strdup("OLDPWD"), tmp);
 }
 
 int	cd_oldpwd(t_list *env)
@@ -31,18 +34,15 @@ int	cd_oldpwd(t_list *env)
 	if (!oldpwd)
 	{
 		ft_print_error("cd", "", "OLDPWD not set");
-		free(pwd);
 		return (EXIT_FAILURE);
 	}
 	if (chdir(oldpwd) != 0)
 	{
 		perror("chdir error");
-		free(pwd);
 		return (EXIT_FAILURE);
 	}
 	else
 		set_pwd_vals(env, pwd, oldpwd);
-	free(pwd);
 	return (EXIT_SUCCESS);
 }
 
