@@ -3,20 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/29 16:11:58 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 17:15:54 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "types.h"
-extern int g_exit_code;
+
+extern int	g_exit_code;
 
 t_data	*new_msh_data(void)
 {
-	t_data *msh;
+	t_data	*msh;
 
 	msh = (t_data *)ft_calloc(1, sizeof(t_data));
 	if (!msh)
@@ -29,14 +30,13 @@ t_data	*new_msh_data(void)
 
 t_cmd	*init_msh_data(t_list *env, char *input)
 {
-	t_list 		*tokens;
+	t_list		*tokens;
 	t_parser	*parser;
 	t_cmd		*ast;
 
 	tokens = new_token_list(env, input);
 	if (!tokens)
 		return (NULL);
-	//print_tokens(tokens);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
 	if (parser->err)
@@ -59,7 +59,7 @@ void	set_std_val(t_list *env)
 	t_env	*n;
 	t_env	*shell_lvl;
 	int		tmp_value;
-	
+
 	if (!env)
 		return ;
 	set_exit_code(env, 0);
@@ -82,16 +82,13 @@ void	set_std_val(t_list *env)
 		free(shell_lvl->value);
 		shell_lvl->value = ft_itoa(tmp_value);
 	}
-	/* OLDPWDRESET */
 }
 
-int	main(int ac, char **av, char **env)
+int	main(inchar **env)
 {
-	t_data		*msh;
-	char 		*input;
-	
-	(void)ac;
-	(void)av;
+	t_data	*msh;
+	char	*input;
+
 	input = NULL;
 	msh = NULL;
 	msh = new_msh_data();

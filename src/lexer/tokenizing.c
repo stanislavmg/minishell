@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 00:20:26 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 00:47:57 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 17:03:31 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ char	*redirect_handle(t_lexer *lex)
 
 char	*metachar_handle(t_lexer *lex)
 {
-	if (is_redirectchar(*lex->str_pos))
+	if (*lex->str_pos == '<' || *lex->str_pos == '>')
 		redirect_handle(lex);
 	else if (!strncmp(lex->str_pos, "||", 2))
 		default_handle(lex, "||", OR);
@@ -103,10 +103,9 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 	push_token(&lex->tokens, new_word, type);
 	if (type == HERE_DOC)
 	{
-		new_word = get_hd_stop_word(lex);
+		new_word = get_hd_stop_word(lex, NULL);
 		if (new_word)
 			push_token(&lex->tokens, new_word, STRING);
 	}
 	return (0);
 }
-

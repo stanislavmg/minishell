@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:31:43 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 18:09:11 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 17:15:16 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ t_cmd	*new_cmd_tree(t_parser *parser)
 			push_arg(&args, parser);
 		if (cur_token->type == OPEN_BRACKET)
 			parser->err = ERR_SYNTAX;
-		else if (parser->cur_token_pos && !parser->err)
-			parser->cur_token_pos = parser->cur_token_pos->next;
+		parser->cur_token_pos = parser->cur_token_pos->next;
+		// else if (parser->cur_token_pos && !parser->err)
+		// 	parser->cur_token_pos = parser->cur_token_pos->next;
 		type = get_token_type(parser);
 	}
 	parser->cmd_start = 0;
@@ -75,15 +76,14 @@ void	push_redirect(t_list **redir, t_parser *parser)
 	if (is_cmd_delimeter(cur_token->type) || is_redirect(cur_token->type)
 		|| cur_token->type == OPEN_BRACKET || cur_token->type == CLOSED_BRACKET)
 		parser->err = ERR_SYNTAX;
-	if (!parser->err)
-	{
-		file_name = cur_token->word;
-		cur_token->word = NULL;
-		if (redir_type == HERE_DOC)
-			remove_duplicate(redir);
-		new_redirect = parse_redirect(redir_type, file_name, parser->env_lst);
-		ft_lstadd_front(redir, ft_lstnew(new_redirect));
-	}
+	if (parser->err)
+		return ;
+	file_name = cur_token->word;
+	cur_token->word = NULL;
+	if (redir_type == HERE_DOC)
+		remove_duplicate(redir);
+	new_redirect = parse_redirect(redir_type, file_name, parser->env_lst);
+	ft_lstadd_front(redir, ft_lstnew(new_redirect));
 }
 
 void	push_arg(t_list **args, t_parser *parser)

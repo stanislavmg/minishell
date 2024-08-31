@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 11:19:23 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 17:04:34 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ size_t	ft_strncpy(char *d, const char *s, size_t n);
 char    *get_word(const char *s, size_t n);
 char    *merge_str(char *s1, char *s2);
 int   	is_metachar(char ch);
-int	    is_redirectchar(char ch);
 int	    is_catchar(char ch);
 int		string_is_spaces(const char *str);
 
@@ -85,10 +84,8 @@ t_cmd		*parse_block(t_parser *parser);
 void		print_msh_err(char *token_name);
 t_parser 	*new_parser(t_list *tokens, t_list *env);
 t_cmd	*new_cmd_tree(t_parser *parser);
-int	is_token_delimeter(int ch);
-int	is_screening_ch(int ch);
-int	is_var_delimeter(int ch);
-char	*get_hd_stop_word(t_lexer *lex);
+int	    is_token_delimeter(int ch);
+char	*get_hd_stop_word(t_lexer *lex, char *stop_word);
 
 // free
 void	free_ast(t_ast *root);
