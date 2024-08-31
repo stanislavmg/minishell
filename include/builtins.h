@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 06:58:51 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 09:47:44 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		handle_cd(char **args, t_list *env);
 int		handle_env(char **args, t_list *env);
 int		handle_pwd(char **args);
 int		handle_export(char **args, t_list *env);
-int		handele_echo(char **args);
+int		handle_echo(char **args);
 int		handle_unset(char **args, t_list *env);
 int		handle_exit(char **args, t_data *msh);
 

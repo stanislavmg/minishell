@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 06:58:29 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 09:47:29 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void	check_llong_max(unsigned long long res, int mod, char *str, t_data *msh)
 	if ((res > (unsigned long long)LLONG_MAX && mod == 1) 
 		|| (res > ((unsigned long long)LLONG_MIN) && mod == -1))
 	{
-		free_minishell_data(msh);
 		ft_print_error("exit", str, "numeric argument required");
+		free_minishell_data(msh);
 		exit(255);	
 	}		
 }

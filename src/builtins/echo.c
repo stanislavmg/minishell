@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 07:16:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/28 13:33:55 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 09:47:58 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-int	handele_echo(char **args)
+int	handle_echo(char **args)
 {
 	int	flag;
 	int	i;

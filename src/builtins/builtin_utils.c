@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/29 16:56:48 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 09:47:51 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	handle_command(char **args, t_data *msh)
 	else if (strcmp(args[0], "export") == 0)	
 		result = handle_export(args, msh->env);
 	else if (strcmp(args[0], "echo") == 0)	
-		result = handele_echo(args);
+		result = handle_echo(args);
 	else if (strcmp(args[0], "unset") == 0)	
 		result = handle_unset(args, msh->env);
 	else if (strcmp(args[0], "exit") == 0)	
