@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/25 07:54:48 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:53:29 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,6 @@ int	handle_cd(char **args, t_list *env)
 	else if (ft_strncmp(args[1], "~", 1) == 0)
 		res = cd_tilda(args[1], env);
 	else
-		res = cd_path(args[1], env);	
+		res = cd_path(args[1], env);
 	return (res);
 }

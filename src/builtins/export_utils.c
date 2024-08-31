@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 07:45:21 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:18:42 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:59:25 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	concat_value(t_env *node, char *value, char *new_key)
 	if (ft_strlen(value) == 0)
 		return (EXIT_SUCCESS);
 	new_value = (char *)malloc(sizeof(char) * (node_value_len
-		+ ft_strlen(value) + 1));
+			+ ft_strlen(value) + 1));
 	if (!new_value)
 	{
 		free(new_key);

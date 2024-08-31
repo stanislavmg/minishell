@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:38:41 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/29 17:33:54 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 19:01:42 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	env_delete(t_list **env, char *key)
 				*env = tmp;
 		}
 		prev = *env;
-		*env = (*env) -> next;
+		*env = (*env)->next;
 	}
 	*env = head;
 }
