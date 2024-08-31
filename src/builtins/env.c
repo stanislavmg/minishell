@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 07:15:41 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 15:23:05 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,14 @@ int	set_env_value(t_list *env, char *key, char *value)
 	node = get_env(env, key);
 	if (node)
 	{
+		free(key);
+		node->attr = node->attr | ENV | EXPORT;
 		if (value == NULL)
-		{
-			node->attr = node->attr | ENV | EXPORT;
 			return (EXIT_SUCCESS);
-		}
 		if (value == node->value)
 			return (EXIT_SUCCESS);
 		free(node->value);
 		node -> value = value;
-		free(key);
 	}
 	else
 	{
@@ -75,7 +73,7 @@ int	handle_env(char **args, t_list *env)
 		target = (t_env *)env -> data;
 		if (target -> attr & ENV)
 		{
-			if (target -> value != NULL && ft_strlen(target -> value) > 0)
+			if (target -> value != NULL)
 			{
 				ft_putstr_fd(target -> key, STDOUT_FILENO);
 				ft_putstr_fd("=", STDOUT_FILENO);
