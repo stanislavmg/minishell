@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 10:54:08 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/20 16:42:47 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 07:19:32 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
+
 int	handle_pwd(char **args)
 {
 	char	pwd[PATH_MAX];

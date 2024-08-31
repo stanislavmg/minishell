@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/25 07:44:35 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 06:58:51 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,9 @@ int		ft_isnum(char *str);
 int		cd_path(char *path, t_list *env);
 int		cd_home(t_list *env);
 int		cd_oldpwd(t_list *env);
+
+// exit funcs
+int		calc_exit_status(char *arg, t_data *msh);
+int		ft_atol(char *str, t_data *msh);
 
 #endif
