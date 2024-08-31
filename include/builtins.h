@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 09:47:44 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 19:29:16 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int		ft_env_count(t_list *env, int attr);
 
 // export funcs
 char	**sort_exports(char **exports);
-char	**get_exports(t_list *env);
+char	**get_exports(t_list *env, int i);
 int		concat_env_value(t_list *env, char *key, char *value);
 int		concat_value(t_env *node, char *value, char *new_key);
 

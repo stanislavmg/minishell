@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 11:10:30 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 18:58:03 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 19:29:31 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ static void	print_export_list(t_list *env)
 	int		i;
 
 	i = 0;
-	exports = get_exports(env);
+	exports = get_exports(env, i);
+	i = 0;
 	if (!exports)
 	{
 		ft_print_error("export", "", "malloc error");

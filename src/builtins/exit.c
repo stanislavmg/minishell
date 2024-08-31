@@ -6,13 +6,13 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 18:57:33 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 19:22:16 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-extern int g_exit_code;
+extern int	g_exit_code;
 
 void	check_llong_max(unsigned long long res, int mod, char *str, t_data *msh)
 {
