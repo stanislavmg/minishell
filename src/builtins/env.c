@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:34:31 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/30 12:24:22 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/08/31 07:15:41 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	set_env_value(t_list *env, char *key, char *value)
 			return (EXIT_SUCCESS);
 		free(node->value);
 		node -> value = value;
-		//free(key);
+		free(key);
 	}
 	else
 	{

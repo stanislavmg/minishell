@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:10:50 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/29 07:06:11 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 06:58:29 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	check_llong_max(unsigned long long res, int mod, char *str, t_data *msh)
 	}		
 }
 
-static int	ft_atol(char *str, t_data *msh)
+int	ft_atol(char *str, t_data *msh)
 {
 	int					mod;
 	unsigned long long	res;
@@ -66,17 +66,6 @@ static int	check_arg(char **args, int argc)
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
-}
-
-static int	calc_exit_status(char *arg, t_data *msh)
-{
-	int	exit_status;
-
-	exit_status = ft_atol(arg, msh);
-	exit_status = exit_status % 256;
-	if (exit_status < 0)
-		exit_status += 256;
-	return (exit_status);
 }
 
 static int	check_and_return_exit(char **args, int argc, t_data *msh)

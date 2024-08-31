@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 07:38:04 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/25 07:54:51 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 07:17:09 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 static void	set_pwd_vals(t_list *env, char *pwd, char *oldpwd)
 {
 	ft_putendl_fd(oldpwd, STDOUT_FILENO);
-	set_env_value(env, "PWD", ft_strdup(oldpwd));
-	set_env_value(env, "OLDPWD", ft_strdup(pwd));
+	set_env_value(env, ft_strdup("PWD"), ft_strdup(oldpwd));
+	set_env_value(env, ft_strdup("OLDPWD"), ft_strdup(pwd));
 }
 
 int	cd_oldpwd(t_list *env)
@@ -67,8 +67,8 @@ int	cd_home(t_list *env)
 	}
 	else
 	{
-		set_env_value(env, "OLDPWD", ft_strdup(pwd));
-		set_env_value(env, "PWD", ft_strdup(home));
+		set_env_value(env, ft_strdup("OLDPWD"), ft_strdup(pwd));
+		set_env_value(env, ft_strdup("PWD"), ft_strdup(home));
 	}
 	free(pwd);
 	return (EXIT_SUCCESS);
@@ -89,8 +89,8 @@ int	cd_path(char *path, t_list *env)
 	else
 	{
 		pwd = getcwd(NULL, 0);
-		set_env_value(env, "OLDPWD", ft_strdup(cwd));
-		set_env_value(env, "PWD", ft_strdup(pwd));
+		set_env_value(env, ft_strdup("OLDPWD"), ft_strdup(cwd));
+		set_env_value(env, ft_strdup("PWD"), ft_strdup(pwd));
 		free(pwd);
 	}
 	free(cwd);

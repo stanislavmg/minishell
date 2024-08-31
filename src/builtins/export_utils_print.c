@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 07:40:39 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/29 17:15:05 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 06:52:10 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,19 +82,21 @@ char	**get_exports(t_list *env)
 	int		i;
 	t_env	*target;
 
-	i = 0;
+	i = -1;
 	count = ft_env_count(env, EXPORT);
 	exports = malloc(sizeof(char *) * (count + 1));
 	if (!exports)
 		return (NULL);
-	while (i < count)
+	while (++i < count)
 	{
 		target = (t_env *) env -> data;
 		if (target->attr & EXPORT)
 		{
 			if (fill_string(env, target, exports, i) == 1)
+			{
+				free(exports);
 				return (NULL);
-			i++;
+			}
 		}
 		env = env -> next;
 	}

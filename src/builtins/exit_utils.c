@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 08:32:24 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:36:16 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/08/31 06:57:35 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,15 @@ int	ft_isnum(char *str)
 		str++;
 	}
 	return (EXIT_FAILURE);
+}
+
+int	calc_exit_status(char *arg, t_data *msh)
+{
+	int	exit_status;
+
+	exit_status = ft_atol(arg, msh);
+	exit_status = exit_status % 256;
+	if (exit_status < 0)
+		exit_status += 256;
+	return (exit_status);
 }
