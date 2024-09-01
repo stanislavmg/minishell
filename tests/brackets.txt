@@ -9,7 +9,6 @@ echo hello | (wc || cat)
 (echo "This will run" && echo "So will this") || echo "This won't run"
 (echo "First" && false && echo "Second") || (echo "An error occurred" && echo "Error handled")
 (echo "Pipe this" | (tr '[:lower:]' '[:upper:]' | rev)) | tee /dev/null
-env | grep "SHLVL"
 echo oui | cat -e
 echo oui | echo non | echo something | grep oui
 echo oui | echo non | echo something | grep non
@@ -35,7 +34,7 @@ echo ""string"''""\c"
 echo "\c$USER"
 echo "$USER\c"
 echo "Hello "$USER in $PWD""
-echo "\u\s\e\r\"
+echo "\u\s\e\r"
 echo ""str \\ \$USER \"""
 echo "hello$USE" world""
 echo "test=USER=109; $test"
@@ -49,30 +48,30 @@ ECHO
 echo $
 echo "$"
 echo '$'
-echo nenie_iri
+echo school_42
 echo nenie iri
-echo 'nenie_iri'
-echo "nenie_iri"
+echo 'school_42'
+echo "school_42"
 echo -n
-echo -n nenie_iri
-echo -nn nenie_iri
-echo -n -n -n nenie_iri
-echo "-n" nenie_iri
-echo -n"-n" nenie_iri
-echo "-nnnn" nenie_iri
-echo "-n -n -n"-n nenie_iri
-echo "-n -n" nenie_iri
-echo "-n '-n'" nenie_iri
+echo -n school_42
+echo -nn school_42
+echo -n -n -n school_42
+echo "-n" school_42
+echo -n"-n" school_42
+echo "-nnnn" school_42
+echo "-n -n -n"-n school_42
+echo "-n -n" school_42
+echo "-n '-n'" school_42
 echo $USER
 echo "$USER"
 echo '$USER'
 echo "'$USER'"
 echo " '$USER' "
-echo nenie_iri"$USER"
-echo nenie_iri"'$USER'" ' $USER '
-echo "nenie_iri"   "$USER"    "$USER"
+echo school_42"$USER"
+echo school_42"'$USER'" ' $USER '
+echo "school_42"   "$USER"    "$USER"
 echo '              $USER          '
-echo               nenie_iri "$USER"            "$USER"nenie_iri
+echo               school_42 "$USER"            "$USER"school_42
 echo ''''''''''$USER''''''''''
 echo """"""""$USER""""""""
 echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
@@ -94,5 +93,6 @@ echo "$USER=12$USER"
 echo $PWD
 echo $PWD/file
 echo "$PWD/file"
-echo "nenie_iri" "nenie_iri$USER" ... "$USER"
+echo "school_42" "school_42$USER" ... "$USER"
 echo test      tout
+echo -n -n -nnnn -nnnnm

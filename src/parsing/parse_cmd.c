@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:31:43 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 11:48:46 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 17:44:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static t_cmd	*impl_new_cmd_tree(t_parser *parser,
 			push_variable(&var, cur_token);
 		else if (is_redirect(cur_token->type))
 			push_redirect(&redir, parser);
-		else if (cur_token->type == STRING)
+		else if (cur_token->type == ARG)
 			push_arg(&av, parser);
 		if (cur_token->type == OPEN_BRACKET)
 			parser->err = ERR_SYNTAX;

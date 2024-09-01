@@ -6,7 +6,7 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:19:44 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 17:13:38 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 	tokens = new_token_list(env, input);
 	if (!tokens)
 		return (NULL);
+	//print_tokens(tokens);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
+	//print_tree(ast);
 	if (parser->err)
 	{
 		if (parser->cur_token_pos)

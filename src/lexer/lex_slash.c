@@ -6,7 +6,7 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:52 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 17:03:15 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 17:02:30 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*slash_handle(t_lexer *lex)
 		if (*lex->str_pos)
 			lex->str_pos++;
 	}
-	if (is_catchar(*lex->str_pos))
+	if (!ft_isspace(*lex->str_pos) && !is_metachar(*lex->str_pos))
 		new_word = merge_str(new_word, scan_token(lex));
 	return (new_word);
 }

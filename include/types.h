@@ -21,7 +21,7 @@ typedef enum token
   COMMAND,
   REDIRECT,
   IO_FILE,
-  STRING,
+  ARG,
   VARIABLE,
   INPUT_TRUNC,
   ASSIGNMENT,

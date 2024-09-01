@@ -6,7 +6,7 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:30:26 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 16:25:35 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,8 @@ t_parser	*new_parser(t_list *tokens, t_list *env);
 t_var	    *new_tvar(const char *key_and_value);
 t_cmd	    *add_ast_node(t_cmd *left_node, t_cmd *right_node, int type);
 
+/* debug */
+const char *get_type(int type);
+void	print_tokens(t_list *tokens);
+void print_tree(t_ast* root);
 #endif

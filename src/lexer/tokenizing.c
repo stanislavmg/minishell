@@ -6,7 +6,7 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 00:20:26 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:31:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 17:44:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	start_tokenization(t_lexer *lex)
 	{
 		new_word = scan_token(lex);
 		if (new_word)
-			push_token(&lex->tokens, new_word, STRING);
+			push_token(&lex->tokens, new_word, ARG);
 	}
 	if (!string_is_spaces(lex->input))
 		add_history(lex->input);
@@ -105,7 +105,7 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 	{
 		new_word = get_hd_stop_word(lex, NULL);
 		if (new_word)
-			push_token(&lex->tokens, new_word, STRING);
+			push_token(&lex->tokens, new_word, ARG);
 	}
 	return (0);
 }

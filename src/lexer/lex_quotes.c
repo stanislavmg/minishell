@@ -6,7 +6,7 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:46 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 16:30:47 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 17:13:14 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*string_handle(t_lexer *lex)
 		free(new_word);
 		return (NULL);
 	}
-	if (is_catchar(*lex->str_pos))
+	if (!ft_isspace(*lex->str_pos) && !is_metachar(*lex->str_pos))
 		new_word = merge_str(new_word, scan_token(lex));
 	return (new_word);
 }
@@ -58,7 +58,7 @@ char	*double_quotes_handle(t_lexer *lex)
 		lex->in_qoutes = 0;
 		lex->str_pos++;
 	}
-	if (is_catchar(*lex->str_pos) || !ft_isspace(*lex->str_pos))
+	if (!ft_isspace(*lex->str_pos) && !is_metachar(*lex->str_pos))
 		new_word = merge_str(new_word, scan_token(lex));
 	if (lex->in_qoutes)
 		lex->err = ERR_QUOTE;
@@ -84,7 +84,7 @@ char	*single_quotes_handle(t_lexer *lex)
 	new_word = get_word(lex->str_pos, i);
 	lex->str_pos += i + 1;
 	lex->in_qoutes = 0;
-	if (is_catchar(*lex->str_pos) || !ft_isspace(*lex->str_pos))
+	if (!ft_isspace(*lex->str_pos) && !is_metachar(*lex->str_pos))
 		new_word = merge_str(new_word, scan_token(lex));
 	return (new_word);
 }

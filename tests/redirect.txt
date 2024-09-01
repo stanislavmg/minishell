@@ -1,4 +1,4 @@
-(hostname; echo "Hello, World!") > out
+(hostname; echo "Hello, World") > out
 (grep "minishell" < input.txt > out)
 (echo "Test"; hostname) > out
 (cat < input.txt; echo "Additional line") > out

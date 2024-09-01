@@ -4,12 +4,13 @@ GREEN='\033[0;32m'
 RESET='\033[0m'
 BOLD='\033[1m'
 
-DIR=../../
+DIR=../
 MSH=./minishell
 INPUT=brackets.txt 
 REDIR=redirect.txt
 SYNTAX=syntax.txt
-NUM=1
+TOTAL=1
+SUCCESS=0
 LOG=log/
 VG="valgrind --leak-check=full --quiet --error-exitcode=42"
 
@@ -39,12 +40,11 @@ function check_leaks() {
     local command="$1"
     local log_file="$2"
 	local vg=$(${VG} $command)
-    # Run the command with Valgrind and check for leaks
     if [ $? -eq 42 ]; then
-            print_line "${NUM}" "[ LEAK ]" "$command"
+            print_line "${TOTAL}" "[ LEAK ]" "$command"
 			echo $vg > $log_file
     else
-            print_line "${NUM}" "[ OK ]" "$command"
+            print_line "${TOTAL}" "[ OK ]" "$command"
     fi
 }
 
@@ -75,83 +75,53 @@ rm -f ${LOG}/*
 
 echo -e "\n${BOLD}BASE TEST${RESET}\n"
 while IFS= read -r line; do
-    if diff $(eval "$line") $(echo "$line" | ./minishell) 2> /dev/null; then
-        print_line "${NUM}" "[ KO ]" "${line}"
+    eval "$line" > b_out
+    echo "$line" | ./minishell > m_out
+    if ! diff b_out m_out > /dev/null; then
+        print_line "${TOTAL}" "[ KO ]" "${line}"
+        echo "msh out:"; cat m_out
+        echo "bash out:"; cat b_out
     else
-        print_line "${NUM}" "[ OK ]" "${line}"
+        print_line "${TOTAL}" "[ OK ]" "${line}"
+        (( SUCCESS++ ))
     fi
-    (( NUM++ ))
+    (( TOTAL++ ))
 done < "$INPUT"
 
-# function run_all_tests_in_one_process() {
-#     local input_file="$1"
-#     local valgrind_log="$2"
-#     local expected_output_file="expected_output.txt"
-#     local minishell_output_file="minishell_output.txt"
+# echo -e "\n${BOLD}SYNTAX TEST${RESET}\n"
 
-#     # Prepare expected outputs by evaluating all lines with the system shell
-#     while IFS= read -r line; do
-#         eval "$line" 2> /dev/null
-#     done < "$input_file" > "$expected_output_file"
+# while IFS= read -r line; do
+#     bash_out=$(bash -c "$line" 2>&1)
+#     echo $bash_out
+#     msh_out=$(echo "$line" | ./minishell 2>&1)
+#     bash_trimmed=$(echo "$bash_out" | sed -n "s/.*\(syntax.*\`[^']*'\).*/\1/p")
+#     msh_trimmed=$(echo "$msh_out" | cut -d ' ' -f2-)
 
-#     # Run all commands through minishell in one process
-#     $VG ./minishell < "$input_file" > "$minishell_output_file" 2> "$valgrind_log"
-#     sed -i '/minishell\$>/d' $minishell_output_file
-#     # Compare outputs line by line
-#     local line_num=1
-#     while IFS= read -r expected_line && IFS= read -r minishell_line <&3; do
-#         if [ "$expected_line" = "$minishell_line" ]; then
-#             print_line "$line_num" "[ OK ]" "Test case $line_num"
-#         else
-#             print_line "$line_num" "[ KO ]" "Test case $line_num"
-#             echo "Expected: $expected_line"
-#             echo "Got: $minishell_line"
-#         fi
-#         (( line_num++ ))
-#     done < "$expected_output_file" 3< "$minishell_output_file"
-
-#     # Check for leaks reported by Valgrind
-#     if grep -q "definitely lost: 0 bytes" "$valgrind_log"; then
-#         echo -e "${GREEN}No leaks detected.${RESET}"
+#     if [ "$bash_trimmed" = "$msh_trimmed" ]; then
+#         print_line "${TOTAL}" "[ OK ]" "${line}"
 #     else
-#         echo -e "${RED}Memory leaks detected. Check $valgrind_log for details.${RESET}"
+#         print_line "${TOTAL}" "[ KO ]" "${line}"
+#         echo "Bash output: $bash_trimmed"
+#         echo "Minishell output: $msh_trimmed"
 #     fi
-
-#     # Cleanup temporary files
-#     rm -f "$expected_output_file" "$minishell_output_file"
-# }
-
-echo -e "\n${BOLD}SYNTAX TEST${RESET}\n"
-
-while IFS= read -r line; do
-    bash_out=$(bash -c "$line" 2>&1)
-    echo $bash_out
-    msh_out=$(echo "$line" | ./minishell 2>&1)
-    bash_trimmed=$(echo "$bash_out" | sed -n "s/.*\(syntax.*\`[^']*'\).*/\1/p")
-    msh_trimmed=$(echo "$msh_out" | cut -d ' ' -f2-)
-
-    if [ "$bash_trimmed" = "$msh_trimmed" ]; then
-        print_line "${NUM}" "[ OK ]" "${line}"
-    else
-        print_line "${NUM}" "[ KO ]" "${line}"
-        echo "Bash output: $bash_trimmed"
-        echo "Minishell output: $msh_trimmed"
-    fi
-    (( NUM++ ))
-done < "$SYNTAX"
+#     (( TOTAL++ ))
+# done < "$SYNTAX"
 
 echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
 
 while IFS= read -r line; do
-    bash -c "$line" 2> /dev/null > out_bash
-    echo "$line" | ./minishell 2> /dev/null > out_msh
-    if ! diff out_bash out_msh >/dev/null; then
-        print_line "${NUM}" "[ KO ]" "${line}"
+    bash -c "$line" > b_out
+    echo "$line" | ./minishell > m_out
+    if ! diff b_out m_out > /dev/null; then
+        print_line "${TOTAL}" "[ KO ]" "${line}"
+        echo "msh out:"; cat m_out
+        echo "bash out:"; cat b_out
     else
-        print_line "${NUM}" "[ OK ]" "${line}"
+        print_line "${TOTAL}" "[ OK ]" "${line}"
+        (( SUCCESS++ ))
     fi
     rm -f out_bash out_msh
-    (( NUM++ ))
+    (( TOTAL++ ))
 done < "$REDIR"
-
-rm -rf  test_main.o output
+echo "Passed ${SUCCESS}/${TOTAL}"
+rm -rf output m_out b_out out4

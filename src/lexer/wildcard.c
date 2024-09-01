@@ -6,7 +6,7 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 00:01:26 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:24:08 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 17:44:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	expand_wildcard(t_lexer *lex, char *pattern)
 		while (!ft_strcmp(dr->d_name, ".") || !ft_strcmp(dr->d_name, ".."))
 			dr = readdir(cwd);
 		if (ft_fnmatch(pattern, dr->d_name, NULL, NULL))
-			push_token(&lex->tokens, ft_strdup(dr->d_name), STRING);
+			push_token(&lex->tokens, ft_strdup(dr->d_name), ARG);
 		dr = readdir(cwd);
 	}
 	closedir(cwd);

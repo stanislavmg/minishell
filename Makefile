@@ -17,7 +17,7 @@ ENV_LST =	list_init.c list_utils.c
 SRC     =	$(addprefix src/parsing/, $(PARSING))\
 			$(addprefix src/env_list/, $(ENV_LST))\
 			$(addprefix src/lexer/, $(LEXER))  $(addprefix src/exec/, $(EXEC))\
-			$(addprefix src/builtins/, $(BUILTINS)) $(addprefix src/, main.c destructors.c)
+			$(addprefix src/builtins/, $(BUILTINS)) $(addprefix src/, main.c destructors.c debug.c)
 
 OBJ     = $(SRC:%.c=%.o)
 
