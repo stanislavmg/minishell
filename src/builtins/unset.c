@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:38:41 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 19:01:42 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/01 14:38:54 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ void	env_delete(t_list **env, char *key)
 	t_list	*prev;
 	t_list	*head;
 
-	head = *env;
-	if (!key)
+	if (!env || !*env || !key)
 		return ;
+	head = *env;
 	prev = NULL;
 	while (*env)
 	{
@@ -37,10 +37,12 @@ void	env_delete(t_list **env, char *key)
 		{
 			tmp = (*env)->next;
 			free_node(node);
+			free(*env);
 			if (prev)
 				prev->next = tmp;
 			else
-				*env = tmp;
+				head = tmp;
+			*env = tmp;
 		}
 		prev = *env;
 		*env = (*env)->next;
