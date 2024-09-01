@@ -3,51 +3,50 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 07:38:41 by amikhush          #+#    #+#             */
-/*   Updated: 2024/09/01 15:33:18 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 16:01:55 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-static void	free_node(t_env *node)
+static void	free_node(void *node)
 {
-	free(node->key);
-	free(node->value);
-	free(node);
+	t_env *env;
+
+	env = (t_env *)node;
+	free(env->key);
+	free(env->value);
+	free(env);
 }
 
 void	env_delete(t_list **env, char *key)
 {
-	t_env	*node;
+	t_env	*var;
 	t_list	*tmp;
 	t_list	*prev;
-	t_list	*head;
 
-	if (!env || !*env || !key)
+	if (!env || !key)
 		return ;
-	head = *env;
+	tmp = *env;
 	prev = NULL;
-	while (*env)
+	while (tmp)
 	{
-		node = (t_env *)(*env)->data;
-		if (ft_strcmp(node->key, key) == 0)
+		var = tmp->data;
+		if (ft_strcmp(var->key, key) == 0)
 		{
-			tmp = (*env)->next;
-			free_node(node);
-			free(*env);
-			if (prev)
-				prev->next = tmp;
+			if (!prev)
+				*env = tmp->next;
 			else
-				head = tmp;
-			*env = tmp;
+				prev->next = tmp->next;
+			ft_lstdelone(tmp, free_node);
+			return ;
 		}
-		prev = *env;
-		*env = (*env)->next;
+		prev = tmp;
+		tmp = tmp->next;
 	}
-	*env = head;
 }
 
 static int	ft_arg_is_correct(char *str)
@@ -77,7 +76,7 @@ static int	ft_arg_is_correct(char *str)
 	return (1);
 }
 
-int	handle_unset(char **args, t_list *env)
+int	handle_unset(char **args, t_list **env)
 {
 	int	argc;
 	int	i;
@@ -93,7 +92,7 @@ int	handle_unset(char **args, t_list *env)
 	while (args[i])
 	{
 		if (ft_arg_is_correct(args[i]))
-			env_delete(&env, args[i]);
+			env_delete(env, args[i]);
 		else
 			result = EXIT_FAILURE;
 		i++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/09/01 15:29:34 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:59:49 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	handle_command(char **args, t_data *msh)
 	else if (ft_strcmp(args[0], "echo") == 0)
 		result = handle_echo(args);
 	else if (ft_strcmp(args[0], "unset") == 0)
-		result = handle_unset(args, msh->env);
+		result = handle_unset(args, &msh->env);
 	else if (ft_strcmp(args[0], "exit") == 0)
 		result = handle_exit(args, msh);
 	else
