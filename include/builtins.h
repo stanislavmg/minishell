@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 19:29:16 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:32:46 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,14 @@
 # define CONTROL_C 130
 # define CONTROL_D 131
 # define WRONG_CODE 255
+# define CWD_RETRIEVING_ERROR "error retrieving current directory: getcwd: \
+cannot access parent directories: No such file or directory"
 
 // builtin commands
 int		handle_command(char **args, t_data *msh);
 int		handle_cd(char **args, t_list *env);
 int		handle_env(char **args, t_list *env);
-int		handle_pwd(char **args);
+int		handle_pwd(char **args, t_list *env);
 int		handle_export(char **args, t_list *env);
 int		handle_echo(char **args);
 int		handle_unset(char **args, t_list *env);

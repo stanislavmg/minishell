@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 07:38:04 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 18:55:32 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:37:08 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,10 @@ int	cd_oldpwd(t_list *env)
 	}
 	if (chdir(oldpwd) != 0)
 	{
-		perror("chdir error");
+		ft_print_error("cd", oldpwd, "No such file or directory");
 		return (EXIT_FAILURE);
 	}
-	else
-		set_pwd_vals(env, pwd, oldpwd);
+	set_pwd_vals(env, pwd, oldpwd);
 	return (EXIT_SUCCESS);
 }
 
@@ -61,16 +60,12 @@ int	cd_home(t_list *env)
 	}
 	if (chdir(home) != 0)
 	{
-		perror("minishell: chdir error: ");
+		ft_print_error("cd", home, "No such file or directory");
 		free(pwd);
 		return (EXIT_FAILURE);
 	}
-	else
-	{
-		set_env_value(env, ft_strdup("OLDPWD"), ft_strdup(pwd));
-		set_env_value(env, ft_strdup("PWD"), ft_strdup(home));
-	}
-	free(pwd);
+	set_env_value(env, ft_strdup("OLDPWD"), pwd);
+	set_env_value(env, ft_strdup("PWD"), ft_strdup(home));
 	return (EXIT_SUCCESS);
 }
 
@@ -80,19 +75,24 @@ int	cd_path(char *path, t_list *env)
 	char	*pwd;
 
 	cwd = getcwd(NULL, 0);
+	if (cwd)
+		set_env_value(env, ft_strdup("OLDPWD"), cwd);
+	else
+	{
+		ft_print_error("cd", "", CWD_RETRIEVING_ERROR);
+		return (EXIT_SUCCESS);
+	}
 	if (chdir(path) != 0)
 	{
 		ft_print_error("cd", path, "No such file or directory");
-		free(cwd);
 		return (EXIT_FAILURE);
 	}
-	else
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
 	{
-		pwd = getcwd(NULL, 0);
-		set_env_value(env, ft_strdup("OLDPWD"), ft_strdup(cwd));
-		set_env_value(env, ft_strdup("PWD"), ft_strdup(pwd));
-		free(pwd);
+		ft_print_error("cd", "", CWD_RETRIEVING_ERROR);
+		return (EXIT_SUCCESS);
 	}
-	free(cwd);
+	set_env_value(env, ft_strdup("PWD"), pwd);
 	return (EXIT_SUCCESS);
 }

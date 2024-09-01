@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 18:53:07 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:33:07 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	handle_command(char **args, t_data *msh)
 	else if (strcmp(args[0], "env") == 0)
 		result = handle_env(args, msh->env);
 	else if (strcmp(args[0], "pwd") == 0)
-		result = handle_pwd(args);
+		result = handle_pwd(args, msh->env);
 	else if (strcmp(args[0], "export") == 0)
 		result = handle_export(args, msh->env);
 	else if (strcmp(args[0], "echo") == 0)
