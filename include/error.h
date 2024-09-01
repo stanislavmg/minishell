@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:02 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 11:16:49 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:56:06 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 # define ERROR_H
 
 # define PERM_DENIED	126
-# define CMD_NOT_FOUND	127			// zsh: command not found: cmd_name
+# define CMD_NOT_FOUND	127
 # define ERR_IS_DIR		129
 
-# define INVALID_ARG_FOR_EXIT 128	// Invalid argument to exit
-# define FT_SIGINT	130 			// Ctrl+C
+# define INVALID_ARG_FOR_EXIT 128	
+# define FT_SIGINT	130
 
 # define  ERR_BRACKETS	93
 # define  ERR_MEM    	94

@@ -27,7 +27,7 @@ DFLAGS	= -fsanitize=undefined -fsanitize=address
 
 READLINE := ./readline_config.sh
 
-all: $(READLINE) $(NAME)
+all: $(NAME)
 
 $(NAME): $(OBJ) $(LIB)
 	$(CC) $(CFLAGS) -o $@ $^ -lreadline
@@ -38,11 +38,11 @@ $(NAME): $(OBJ) $(LIB)
 $(LIB):
 	make -C libft all bonus clean && mv libft/$(LIB) .
 
-$(READLINE):
-	bash $(READLINE)
-
 clean:
 	$(RM) $(OBJ)
+
+configure:
+	bash $(READLINE)
 
 fclean: clean
 	$(RM) $(NAME)
@@ -53,4 +53,4 @@ debug: CFLAGS += $(DFLAGS)
 
 debug: all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re configure debug

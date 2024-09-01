@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 20:00:16 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:16:18 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,27 +54,33 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 	return (ast);
 }
 
+int	is_contain_alpha(const char *str)
+{
+	while (*str)
+	{
+		if (ft_isalpha(*str))
+			return (1);
+		str++;
+	}
+	return (0);
+}
+
 void	set_std_val(t_list *env)
 {
-	t_env	*n;
 	t_env	*shell_lvl;
 	int		tmp_value;
 
 	if (!env)
 		return ;
 	set_exit_code(env, 0);
-	n = new_env(get_var_name("?=0"), get_var_value("?=0"), HIDDEN);
-	ft_lstadd_back(&env, ft_lstnew(n));
+	set_env_value(env, ft_strdup("?"), ft_strdup("0"));
+	get_env(env, "?")->attr = HIDDEN;
 	shell_lvl = get_env(env, "SHLVL");
-	if (!shell_lvl)
-	{
-		n = new_env(get_var_name("SHLVL=0"), get_var_value("SHLVL=1"), ENV | EXPORT);
-		ft_lstadd_back(&env, ft_lstnew(n));
-	}
-	else if (!*shell_lvl->value)
+	if (!shell_lvl || !*shell_lvl->value || is_contain_alpha(shell_lvl->value))
 	{
 		free(shell_lvl->value);
-		shell_lvl->value = ft_strdup("1");
+		shell_lvl->value = NULL;
+		set_env_value(env, ft_strdup("SHLVL"), ft_strdup("1"));
 	}
 	else
 	{
@@ -82,6 +88,9 @@ void	set_std_val(t_list *env)
 		free(shell_lvl->value);
 		shell_lvl->value = ft_itoa(tmp_value);
 	}
+	init_signals(0);
+	init_signals(1);
+	remove_echo_ctl();
 }
 
 int	main(int ac, char **av, char **env)
@@ -91,14 +100,9 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	input = NULL;
-	msh = NULL;
 	msh = new_msh_data();
 	msh->env = new_env_list(env);
 	set_std_val(msh->env);
-	init_signals(0);
-	init_signals(1);
-	remove_echo_ctl();
 	input = readline(PROMT);
 	while (input)
 	{

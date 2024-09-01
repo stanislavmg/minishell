@@ -22,7 +22,13 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef enum t_token
+typedef enum ast
+{
+
+} e_ast;
+
+
+typedef enum token
 {
   END,
   COMMAND,
@@ -30,8 +36,6 @@ typedef enum t_token
   IO_FILE,
   STRING,
   VARIABLE,
-  WILDCARD,
-  ASSIGNMENT,
   INPUT_TRUNC,
   OUTPUT_ADD,
   OUTPUT_TRUNC,

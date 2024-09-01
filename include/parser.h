@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 17:04:34 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 13:34:57 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "env.h"
-# include "error.h"
 # include "types.h"
+# include "env.h"
+# include "lexer.h"
+# include "error.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <stdio.h>
@@ -24,33 +25,6 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-
-// lexer methods
-t_lexer	*new_lexer(char *input, t_list *env_list);
-t_token	*new_token(char *word, e_token type);
-void	push_token(t_list **token_list, char *new_word, e_token type);
-t_list	*new_token_list(t_list *env, char *input);
-void 	free_token(void *cur_token_pos);
-
-// tokenization
-void	start_tokenization(t_lexer *lex);
-char	*scan_token(t_lexer *lex);
-char	*metachar_handle(t_lexer *lex);
-char	*string_handle(t_lexer *lex);
-char	*redirect_handle(t_lexer *lex);
-char	*variable_handle(t_lexer *lex);
-char	*slash_handle(t_lexer *lex);
-char	*single_quotes_handle(t_lexer *lex);
-char	*double_quotes_handle(t_lexer *lex);
-int	  	default_handle(t_lexer *lex, const char *value, e_token type);
-
-// string utils
-size_t	ft_strncpy(char *d, const char *s, size_t n);
-char    *get_word(const char *s, size_t n);
-char    *merge_str(char *s1, char *s2);
-int   	is_metachar(char ch);
-int	    is_catchar(char ch);
-int		string_is_spaces(const char *str);
 
 // expand tokens and build tree
 t_var		*new_tvar(const char *key_and_value);
@@ -86,7 +60,8 @@ t_parser 	*new_parser(t_list *tokens, t_list *env);
 t_cmd	*new_cmd_tree(t_parser *parser);
 int	    is_token_delimeter(int ch);
 char	*get_hd_stop_word(t_lexer *lex, char *stop_word);
-
+void	add_new_input(t_lexer *lex);
+int	read_new_input(t_parser *parser);
 // free
 void	free_ast(t_ast *root);
 void	free_arr(char **arr);

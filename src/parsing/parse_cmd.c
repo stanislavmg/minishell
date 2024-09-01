@@ -3,26 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:31:43 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 17:15:16 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:48:46 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_cmd	*new_cmd_tree(t_parser *parser)
+static t_cmd	*impl_new_cmd_tree(t_parser *parser,
+									t_list *av,
+									t_list *var,
+									t_list *redir)
 {
 	e_token	type;
-	t_list	*args;
-	t_list	*var;
-	t_list	*redir;
 	t_token	*cur_token;
 
-	var = NULL;
-	args = NULL;
-	redir = NULL;
 	type = get_token_type(parser);
 	while (parser->cur_token_pos && !parser->err
 		&& !is_cmd_delimeter(type) && type != CLOSED_BRACKET)
@@ -32,17 +29,21 @@ t_cmd	*new_cmd_tree(t_parser *parser)
 			push_variable(&var, cur_token);
 		else if (is_redirect(cur_token->type))
 			push_redirect(&redir, parser);
-		else if (cur_token->type == STRING || cur_token->type == WILDCARD)
-			push_arg(&args, parser);
+		else if (cur_token->type == STRING)
+			push_arg(&av, parser);
 		if (cur_token->type == OPEN_BRACKET)
 			parser->err = ERR_SYNTAX;
-		parser->cur_token_pos = parser->cur_token_pos->next;
-		// else if (parser->cur_token_pos && !parser->err)
-		// 	parser->cur_token_pos = parser->cur_token_pos->next;
+		else if (parser->cur_token_pos && !parser->err)
+			parser->cur_token_pos = parser->cur_token_pos->next;
 		type = get_token_type(parser);
 	}
 	parser->cmd_start = 0;
-	return (parse_cmd(var, args, redir));
+	return (parse_cmd(var, av, redir));
+}
+
+t_cmd	*new_cmd_tree(t_parser *parser)
+{
+	return (impl_new_cmd_tree(parser, NULL, NULL, NULL));
 }
 
 void	push_variable(t_list **var_lst, t_token *token)
@@ -99,32 +100,4 @@ void	push_arg(t_list **args, t_parser *parser)
 	new_node = ft_lstnew(cur_token->word);
 	ft_lstadd_back(args, new_node);
 	cur_token->word = NULL;
-}
-
-t_cmd	*parse_cmd(t_list *var, t_list *args, t_list *redir)
-{
-	t_cmd	*root;
-
-	root = NULL;
-	if (var)
-	{
-		root = build_tree_fromlist(var, ASSIGNMENT);
-		ft_lstclear(&var, free);
-	}
-	if (args)
-	{
-		if (root)
-			root = add_ast_node(root, (t_cmd *)new_exec_cmd(args), SEMICOLON);
-		else
-			root = (t_cmd *)new_exec_cmd(args);
-		ft_lstclear(&args, free);
-	}
-	if (redir)
-	{
-		if (root)
-			ft_lstadd_front(&redir, ft_lstnew(root));
-		root = build_tree_fromlist(redir, REDIRECT);
-		ft_lstclear(&redir, free);
-	}
-	return (root);
 }

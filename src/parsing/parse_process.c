@@ -6,29 +6,11 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 16:46:24 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 11:17:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:17:09 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-
-int	read_new_input(t_parser *parser)
-{
-	char	*input;
-	t_list	*new_lst;
-
-	input = readline("> ");
-	if (!input)
-		return (1);
-	new_lst = new_token_list(parser->env_lst, input);
-	if (!new_lst)
-	{
-		free(input);
-		return (1);
-	}
-	ft_lstadd_back(&parser->cur_token_pos, new_lst);
-	return (0);
-}
 
 t_cmd	*new_ast(t_parser *parser)
 {
@@ -113,6 +95,8 @@ t_cmd	*parse_line(t_parser *parser)
 {
 	t_cmd	*root;
 
+	if (!parser)
+		return (NULL);
 	root = NULL;
 	if (is_cmd_delimeter(get_token_type(parser))
 		|| OPEN_BRACKET == get_token_type(parser))
@@ -129,6 +113,8 @@ t_cmd	*parse_redirect(e_token redir_type, char *fname, t_list *env)
 	t_redir	*new_node;
 
 	new_node = NULL;
+	if (!fname || !env)
+		return (NULL);
 	if (redir_type == HERE_DOC)
 		fname = here_doc_start(fname, env);
 	if (fname)

@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:49 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 23:51:16 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:51:28 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,34 +54,10 @@ void	exit_failure(const char *sender, int error)
 
 void	panic(t_data *msh)
 {
+	kill_child(msh->child_ps);
 	free_minishell_data(msh);
 	perror("minishell: ");
 	exit(EXIT_FAILURE);
-}
-
-char	**new_env_arr(t_list *list_env)
-{
-	int		i;
-	t_env	*var;
-	int		size;
-	char	**envp;
-	char	*t;
-
-	envp = NULL;
-	i = 0;
-	size = ft_lstsize(list_env);
-	envp = (char **)malloc(sizeof(char *) * (size + 1));
-	while (i < size)
-	{
-		var = list_env->data;
-		t = ft_strjoin(var->key, "=");
-		envp[i] = ft_strjoin(t, var->value);
-		free(t);
-		list_env = list_env->next;
-		i++;
-	}
-	envp[i] = NULL;
-	return (envp);
 }
 
 int	check_file_permission(char *fname, int mode)
