@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 04:49:46 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 17:38:41 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:24:04 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_env	*get_env(t_list *list_env, char *key)
 	while (list_env)
 	{
 		target = (t_env *)list_env->data;
-		if (strcmp(target->key, key) == 0)
+		if (ft_strcmp(target->key, key) == 0)
 			return (target);
 		list_env = list_env->next;
 	}

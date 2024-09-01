@@ -6,31 +6,20 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:06:08 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 17:08:37 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:35:15 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "exec.h"
 
-void	free_minishell_data(t_data *msh)
+int	free_cmd(t_exec_cmd *cmd)
 {
-	if (msh)
-	{
-		free_ast(msh->root);
-		ft_lstclear(&msh->env, free_env);
-		kill_child(msh->child_ps);
-		ft_lstclear(&msh->child_ps, free);
-		free(msh);
-	}
-}
-
-void	kill_child(t_list *ps)
-{
-	while (ps)
-	{
-		kill(*((int *)ps->data), SIGINT);
-		ps = ps->next;
-	}
+	if (!cmd)
+		return (0);
+	free_array(cmd->argv);
+	free(cmd->path);
+	return (0);
 }
 
 void	free_ast(t_ast *root)
@@ -59,23 +48,25 @@ void	free_ast(t_ast *root)
 	free(root);
 }
 
-int	free_cmd(t_exec_cmd *cmd)
+void	free_minishell_data(t_data *msh)
 {
-	if (!cmd)
-		return (0);
-	free_arr(cmd->argv);
-	free(cmd->path);
-	return (0);
+	if (msh)
+	{
+		free_ast(msh->root);
+		ft_lstclear(&msh->env, free_env);
+		kill_child(msh->child_ps);
+		ft_lstclear(&msh->child_ps, free);
+		free(msh);
+	}
 }
 
-void	free_arr(char **arr)
+void	kill_child(t_list *ps)
 {
-	int	i;
-
-	i = -1;
-	if (!arr)
-		return ;
-	while (arr[++i])
-		free(arr[i]);
-	free(arr);
+	while (ps)
+	{
+		kill(*((int *)ps->data), SIGINT);
+		ps = ps->next;
+	}
 }
+
+

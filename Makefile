@@ -51,6 +51,6 @@ re: fclean all
 
 debug: CFLAGS += $(DFLAGS)
 
-debug: all
+debug: fclean all
 
 .PHONY: all clean fclean re configure debug

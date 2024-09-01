@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   array_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 08:48:21 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/24 08:51:50 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:28:37 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,11 @@ void	free_array(char **arr)
 {
 	int	i;
 
-	i = 0;
-	while (arr[i])
-	{
+	i = -1;
+	if (!arr)
+		return ;
+	while (arr[++i])
 		free(arr[i]);
-		i++;
-	}
 	free(arr);
 }
 

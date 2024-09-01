@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:27:33 by amikhush          #+#    #+#             */
-/*   Updated: 2024/08/31 18:53:29 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:24:02 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	handle_cd(char **args, t_list *env)
 		return (EXIT_FAILURE);
 	if (argc == 1)
 		res = cd_home(env);
-	else if (strcmp(args[1], "-") == 0)
+	else if (ft_strcmp(args[1], "-") == 0)
 		res = cd_oldpwd(env);
 	else if (ft_strncmp(args[1], "~", 1) == 0)
 		res = cd_tilda(args[1], env);

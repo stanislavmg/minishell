@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:41 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/29 18:05:02 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:31:25 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 	paths = NULL;
 	if (!cmd || !cmd->argv)
 		exit(EXIT_FAILURE);
-	while (env[i] && strncmp(env[i], "PATH=", 5))
+	while (env[i] && ft_strncmp(env[i], "PATH=", 5))
 		i++;
 	paths = get_path(env[i] + 5);
 	cmd->path = parsing_path(paths, cmd->argv[0]);
-	free_arr(paths);
+	free_array(paths);
 	check_cmd_permission(cmd);
 	execve(cmd->path, cmd->argv, env);
 	exit_failure(cmd->argv[0], ERR_EXECVE);

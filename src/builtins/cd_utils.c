@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 07:38:04 by amikhush          #+#    #+#             */
-/*   Updated: 2024/09/01 14:48:49 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 14:54:18 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,19 +75,12 @@ int	cd_path(char *path, t_list *env)
 	char	*pwd;
 
 	cwd = getcwd(NULL, 0);
-<<<<<<< HEAD
 	if (cwd)
 		set_env_value(env, ft_strdup("OLDPWD"), cwd);
 	else
 	{
 		ft_print_error("cd", "", CWD_RETRIEVING_ERROR);
 		return (EXIT_SUCCESS);
-=======
-	if (!cwd)
-	{
-		perror("minishell: ");
-		return (1);
->>>>>>> d00b845 (FIX: normi, replace lexer func in lexer.h)
 	}
 	if (chdir(path) != 0)
 	{

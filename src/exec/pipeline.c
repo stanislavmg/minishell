@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:37 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 15:26:52 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:36:05 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ int	initialize_pipeline(t_ast *root, t_data *msh)
 		setup_pipeline(root, msh);
 		while (msh->child_ps)
 			ft_waitpid(msh);
-		if (fd_is_pipe(STDIN_FILENO))
-			output_to_stdout();
+		output_to_stdout();
 		exit(get_exit_code());
 	}
 	waitpid(ps, &exit_code, 0);

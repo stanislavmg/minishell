@@ -11,22 +11,9 @@
 /* ************************************************************************** */
 
 #ifndef TYPES_H
-#define TYPES_H 
+# define TYPES_H 
 
-# define PROMT	"minishell$> "
-#include "libft.h"
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <string.h>
-#include <ctype.h>
-
-typedef enum ast
-{
-
-} e_ast;
-
+typedef struct s_list t_list;
 
 typedef enum token
 {
@@ -37,6 +24,7 @@ typedef enum token
   STRING,
   VARIABLE,
   INPUT_TRUNC,
+  ASSIGNMENT,
   OUTPUT_ADD,
   OUTPUT_TRUNC,
   AND,

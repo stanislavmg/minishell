@@ -6,7 +6,7 @@
 /*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 00:20:26 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 17:03:31 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:31:27 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,15 @@ char	*scan_token(t_lexer *lex)
 		lex->str_pos++;
 	if (!*lex->str_pos)
 		return (NULL);
-	if (!strncmp(lex->str_pos, "\"", 1))
+	if (!ft_strncmp(lex->str_pos, "\"", 1))
 		new_word = double_quotes_handle(lex);
 	else if (is_metachar(*lex->str_pos))
 		metachar_handle(lex);
-	else if (!strncmp(lex->str_pos, "\'", 1))
+	else if (!ft_strncmp(lex->str_pos, "\'", 1))
 		new_word = single_quotes_handle(lex);
-	else if (!strncmp(lex->str_pos, "\\", 1))
+	else if (!ft_strncmp(lex->str_pos, "\\", 1))
 		new_word = slash_handle(lex);
-	else if (!strncmp(lex->str_pos, "$", 1))
+	else if (!ft_strncmp(lex->str_pos, "$", 1))
 		new_word = variable_handle(lex);
 	else
 		new_word = string_handle(lex);
@@ -58,13 +58,13 @@ char	*scan_token(t_lexer *lex)
 
 char	*redirect_handle(t_lexer *lex)
 {
-	if (!strncmp(lex->str_pos, "<<", 2))
+	if (!ft_strncmp(lex->str_pos, "<<", 2))
 		default_handle(lex, "<<", HERE_DOC);
-	else if (!strncmp(lex->str_pos, "<", 1))
+	else if (!ft_strncmp(lex->str_pos, "<", 1))
 		default_handle(lex, "<", INPUT_TRUNC);
-	else if (!strncmp(lex->str_pos, ">>", 2))
+	else if (!ft_strncmp(lex->str_pos, ">>", 2))
 		default_handle(lex, ">>", OUTPUT_ADD);
-	else if (!strncmp(lex->str_pos, ">", 1))
+	else if (!ft_strncmp(lex->str_pos, ">", 1))
 		default_handle(lex, ">", OUTPUT_TRUNC);
 	return (NULL);
 }
@@ -73,17 +73,17 @@ char	*metachar_handle(t_lexer *lex)
 {
 	if (*lex->str_pos == '<' || *lex->str_pos == '>')
 		redirect_handle(lex);
-	else if (!strncmp(lex->str_pos, "||", 2))
+	else if (!ft_strncmp(lex->str_pos, "||", 2))
 		default_handle(lex, "||", OR);
-	else if (!strncmp(lex->str_pos, "|", 1))
+	else if (!ft_strncmp(lex->str_pos, "|", 1))
 		default_handle(lex, "|", PIPE);
-	else if (!strncmp(lex->str_pos, "&&", 2))
+	else if (!ft_strncmp(lex->str_pos, "&&", 2))
 		default_handle(lex, "&&", AND);
-	else if (!strncmp(lex->str_pos, ";", 1))
+	else if (!ft_strncmp(lex->str_pos, ";", 1))
 		default_handle(lex, ";", SEMICOLON);
-	else if (!strncmp(lex->str_pos, "(", 1))
+	else if (!ft_strncmp(lex->str_pos, "(", 1))
 		default_handle(lex, "(", OPEN_BRACKET);
-	else if (!strncmp(lex->str_pos, ")", 1))
+	else if (!ft_strncmp(lex->str_pos, ")", 1))
 		default_handle(lex, ")", CLOSED_BRACKET);
 	else
 		lex->err = ERR_TOKEN;

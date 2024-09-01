@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 10:30:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/09/01 11:55:47 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:21:18 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define ENV	0x02
 
 # include "types.h"
-# include <string.h>
+# include "libft.h"
 
 int		set_env(t_list *list_env, t_var *new_env, int attr);
 t_env	*get_env(t_list *list_env, char *key);

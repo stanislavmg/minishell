@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 23:52:29 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:32:21 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void		ft_waitpid(t_data *msh);
 void		exit_failure(const char *msg, int error);
 void		print_err(const char *sender, const char *msg);
 void		record_pid(t_data *msh, pid_t pid);
+void    	kill_child(t_list *ps);
+void    	free_ast(t_ast *root);
 
-void	check_cmd_permission(t_exec_cmd *cmd);
+void	    check_cmd_permission(t_exec_cmd *cmd);
 #endif

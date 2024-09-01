@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:40:36 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 17:41:09 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:27:58 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	**get_path(char *path_env)
 			tmp = ft_strjoin(path[i], "/");
 			if (!tmp)
 			{
-				free_arr(path);
+				free_array(path);
 				return (NULL);
 			}
 			free(path[i]);

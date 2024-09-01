@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 09:48:35 by amikhush          #+#    #+#             */
-/*   Updated: 2024/09/01 11:33:07 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:29:34 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,19 @@ int	handle_command(char **args, t_data *msh)
 
 	if (!args || !msh)
 		return (EXIT_FAILURE);
-	if (strcmp(args[0], "cd") == 0)
+	if (ft_strcmp(args[0], "cd") == 0)
 		result = handle_cd(args, msh->env);
-	else if (strcmp(args[0], "env") == 0)
+	else if (ft_strcmp(args[0], "env") == 0)
 		result = handle_env(args, msh->env);
-	else if (strcmp(args[0], "pwd") == 0)
+	else if (ft_strcmp(args[0], "pwd") == 0)
 		result = handle_pwd(args, msh->env);
-	else if (strcmp(args[0], "export") == 0)
+	else if (ft_strcmp(args[0], "export") == 0)
 		result = handle_export(args, msh->env);
-	else if (strcmp(args[0], "echo") == 0)
+	else if (ft_strcmp(args[0], "echo") == 0)
 		result = handle_echo(args);
-	else if (strcmp(args[0], "unset") == 0)
+	else if (ft_strcmp(args[0], "unset") == 0)
 		result = handle_unset(args, msh->env);
-	else if (strcmp(args[0], "exit") == 0)
+	else if (ft_strcmp(args[0], "exit") == 0)
 		result = handle_exit(args, msh);
 	else
 		return (0);

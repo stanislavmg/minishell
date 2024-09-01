@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   travers_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:03:07 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 23:54:37 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:27:58 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	start_job(t_exec_cmd *cmd, t_data *msh)
 			ft_execve(cmd, envp);
 		if (pid == -1)
 			panic(msh);
-		free_arr(envp);
+		free_array(envp);
 		record_pid(msh, pid);
 	}
 }
