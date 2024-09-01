@@ -3,14 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 07:16:45 by amikhush          #+#    #+#             */
-/*   Updated: 2024/09/01 15:32:44 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/01 17:47:28 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
+
+static int	string_of_n(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i++] != '-')
+		return (0);
+	while (str[i])
+	{
+		if (str[i++] != 'n')
+			return (0);
+	}
+	return (1);
+}
 
 int	handle_echo(char **args)
 {
@@ -21,7 +36,7 @@ int	handle_echo(char **args)
 	flag = 0;
 	if (!args)
 		return (EXIT_FAILURE);
-	while (args[i] && !ft_strcmp(args[i], "-n") && i++)
+	while (args[i] && string_of_n(args[i]) && i++)
 		flag = 1;
 	while (args[i])
 	{
