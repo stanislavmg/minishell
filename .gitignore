@@ -10,3 +10,5 @@ lib
 share
 t
 perf
+.o
+.so
