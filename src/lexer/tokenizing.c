@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 00:20:26 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 17:44:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/06 11:23:01 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ void	start_tokenization(t_lexer *lex)
 	}
 	if (!string_is_spaces(lex->input))
 		add_history(lex->input);
+	if (lex->err == ERR_QUOTE)
+	{
+		print_msh_err("unclosed quote");
+		ft_lstclear(&lex->tokens, free_token);
+	}
 	free(lex->input);
 }
 

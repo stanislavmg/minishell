@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:42 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 17:38:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/03 15:06:12 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	set_env(t_list *list_env, t_var *var, int attr)
 		var->key = NULL;
 		var->value = NULL;
 	}
-	else if (target->value == var->value)
+	else if (target && target->value == var->value)
 		return (0);
 	else
 	{

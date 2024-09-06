@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 16:46:24 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 11:17:09 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/06 16:08:50 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ t_cmd	*new_ast(t_parser *parser)
 			read_new_input(parser);
 		if (is_redirect(type))
 			type = REDIRECT;
-		if (type == OPEN_BRACKET || type == CLOSED_BRACKET)
+		if (type == OPEN_BRACKET || type == CLOSED_BRACKET || type == ARG)
 			parser->err = ERR_SYNTAX;
-		else if (is_cmd_delimeter(type))
+		if (is_cmd_delimeter(type))
 			parser->cur_token_pos = parser->cur_token_pos->next;
 		root = add_ast_node(root, build_tree(parser), type);
 	}
@@ -85,7 +85,10 @@ t_cmd	*parse_block(t_parser *parser)
 		type = get_token_type(parser);
 	}
 	if (CLOSED_BRACKET == type)
+	{
 		parser->cur_token_pos = parser->cur_token_pos->next;
+		parser->brackets_count--;
+	}
 	else
 		parser->err = ERR_SYNTAX;
 	return (root);

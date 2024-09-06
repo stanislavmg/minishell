@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:37 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:36:05 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/06 16:57:04 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,25 @@
 int	initialize_pipeline(t_ast *root, t_data *msh)
 {
 	pid_t	ps;
-	int		exit_code;
 
-	exit_code = 0;
+	if (!root || !msh)
+		return (1);
 	ps = fork();
 	if (!ps)
 	{
 		setup_pipeline(root, msh);
-		while (msh->child_ps)
-			ft_waitpid(msh);
 		output_to_stdout();
+		ft_waitpid(msh);
 		exit(get_exit_code());
 	}
-	waitpid(ps, &exit_code, 0);
-	set_exit_code(msh->env, WEXITSTATUS(exit_code));
+	record_pid(msh, ps);
+	ft_waitpid(msh);
 	return (0);
 }
 
 void	setup_pipeline(t_ast *root, t_data *msh)
 {
-	if (root == NULL)
+	if (!root || !msh)
 		return ;
 	if (root->type == PIPE)
 	{
@@ -59,6 +58,7 @@ void	run_child_ps(int *pdes, t_exec_cmd *cmd, t_data *msh)
 	if (cmd->type != COMMAND)
 	{
 		travers_tree((t_ast *)cmd, msh);
+		ft_waitpid(msh);
 		exit(get_exit_code());
 	}
 	if (is_builtin(cmd->argv[0]))
@@ -78,8 +78,7 @@ void	create_pipeline(t_data *msh, t_exec_cmd *first)
 		panic(msh);
 	else if (ps == 0)
 		run_child_ps(pdes, first, msh);
-	else
-		record_pid(msh, ps);
+	record_pid(msh, ps);
 	if (dup2(pdes[0], STDIN_FILENO) == -1)
 		panic(msh);
 	close(pdes[0]);

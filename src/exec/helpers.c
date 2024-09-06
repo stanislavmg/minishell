@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:32 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:35:46 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/03 11:53:24 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,46 @@ int	is_logic_operator(e_token type)
 	return (type == OR || type == AND || type == SEMICOLON);
 }
 
+static int	count_export_vars(t_list *env)
+{
+	int	size;
+	t_env	*var;
+
+	size = 0;
+	while (env)
+	{
+		var = (t_env *)env->data;
+		if (var->attr & EXPORT)
+			size++;
+		env = env->next;
+	}
+	return (size);
+}
+
 char	**new_env_arr(t_list *list_env)
 {
 	int		i;
-	t_env	*var;
-	int		size;
-	char	**envp;
 	char	*t;
+	t_env	*var;
+	char	**envp;
 
-	envp = NULL;
+	if (!list_env)
+		return (NULL);
 	i = 0;
-	size = ft_lstsize(list_env);
-	envp = (char **)malloc(sizeof(char *) * (size + 1));
-	while (i < size)
+	envp = (char **)malloc(sizeof(char *) * (count_export_vars(list_env) + 1));
+	if (!envp)
+		return (NULL);
+	while (list_env)
 	{
 		var = list_env->data;
-		t = ft_strjoin(var->key, "=");
-		envp[i] = ft_strjoin(t, var->value);
-		free(t);
-		list_env = list_env->next;
-		i++;
+		if (var->attr & EXPORT)
+		{
+			t = ft_strjoin(var->key, "=");
+			envp[i] = ft_strjoin(t, var->value);
+			free(t);
+			i++;
+		}
+			list_env = list_env->next;
 	}
 	envp[i] = NULL;
 	return (envp);

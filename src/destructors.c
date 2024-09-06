@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   destructors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:06:08 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:35:15 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:35:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "exec.h"
+extern int g_exit_code; 
 
 int	free_cmd(t_exec_cmd *cmd)
 {
@@ -62,11 +63,14 @@ void	free_minishell_data(t_data *msh)
 
 void	kill_child(t_list *ps)
 {
+	int	status;
+
+	status = 0;
 	while (ps)
 	{
 		kill(*((int *)ps->data), SIGINT);
+		waitpid(*(int *)ps->data, &status, 0);
+		g_exit_code = WEXITSTATUS(status);
 		ps = ps->next;
 	}
 }
-
-

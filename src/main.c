@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 17:13:38 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/06 16:53:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,31 +90,33 @@ void	set_std_val(t_list *env)
 		free(shell_lvl->value);
 		shell_lvl->value = ft_itoa(tmp_value);
 	}
-	init_signals(0);
-	init_signals(1);
-	remove_echo_ctl();
 }
-
+void set_signals_interactive(void);
+void set_signals_noninteractive(void);
 int	main(int ac, char **av, char **env)
 {
 	t_data	*msh;
 	char	*input;
 
-	(void)ac;
 	(void)av;
+	if (ac > 1)
+		return (1);
 	msh = new_msh_data();
 	msh->env = new_env_list(env);
 	set_std_val(msh->env);
-	input = readline(PROMT);
-	while (input)
+	setup_termios();
+	while (1)
 	{
+		set_signals_interactive();
+		input = readline(PROMT);
+		set_signals_noninteractive();
+		if (!input)
+			break ;
 		msh->root = (t_ast *)init_msh_data(msh->env, input);
 		if (msh->root)
 			travers_tree((t_ast *)msh->root, msh);
+		ft_waitpid(msh);
 		free_ast(msh->root);
-		while (msh->child_ps)
-			ft_waitpid(msh);
-		input = readline(PROMT);
 	}
 	ft_lstclear(&msh->env, free_env);
 	free(input);

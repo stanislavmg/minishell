@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_slash.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:52 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 17:02:30 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/06 10:25:27 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ char	*slash_handle(t_lexer *lex)
 			new_word = ft_strdup("\\");
 		new_word = merge_str(new_word, double_quotes_handle(lex));
 	}
+	else if(!*lex->str_pos)
+		new_word = get_word("\\", 1);
 	else
 	{
 		new_word = get_word(lex->str_pos, 1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:41 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:31:25 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/04 16:35:34by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,24 @@ void	ft_waitpid(t_data *msh)
 
 	if (!msh || !msh->child_ps)
 		return ;
-	t = msh->child_ps->next;
-	waitpid((*(pid_t *)msh->child_ps->data), &status, 0);
-	set_exit_code(msh->env, WEXITSTATUS(status));
-	ft_lstdelone(msh->child_ps, free);
-	msh->child_ps = t;
+	while (msh->child_ps)
+	{
+		t = msh->child_ps->next;
+		waitpid((*(pid_t *)msh->child_ps->data), &status, 0);
+		// if (waitpid((*(pid_t *)msh->child_ps->data), &status, 0) == -1)
+		// {
+		// 	printf("waitpid error\n");
+		// 	continue ;
+		// }
+		if (WIFEXITED(status))
+			set_exit_code(msh->env, WEXITSTATUS(status));
+		else if (WIFSIGNALED(status))
+			set_exit_code(msh->env, WTERMSIG(status));
+		else
+			set_exit_code(msh->env, status);
+		ft_lstdelone(msh->child_ps, free);
+		msh->child_ps = t;
+	}
 }
 
 int	ft_execve(t_exec_cmd *cmd, char **env)

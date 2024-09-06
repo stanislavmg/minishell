@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 16:47:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/31 22:40:28 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/03 11:39:43 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,5 @@ int	ft_atoi(const char *str)
 		res += str[i] - '0';
 		i++;
 	}
-	res *= sign
-	return ((int)sign);
+	return (res * sign);
 }

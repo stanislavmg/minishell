@@ -22,8 +22,8 @@ const char *get_type(int type)
 		return ("IO_FILE");
 	else if (REDIRECT == type)
 		return ("REDIRECT");
-	else if (STRING == type)
-		return ("STRING");
+	else if (ARG == type)
+		return ("ARG");
 	else if (COMMAND == type)
 		return ("COMMAND");
 	else if(OR == type)

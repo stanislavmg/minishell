@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:32:21 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/05 17:23:45 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 # include <errno.h>
 # include <sys/stat.h>
 
-void	init_signals(int i);
-void	remove_echo_ctl(void);
+void	init_signals(void);
+void	setup_termios(void);
 
 /* pipeline */
 int			initialize_pipeline(t_ast *root, t_data *msh);
@@ -40,6 +40,7 @@ void		set_exit_code(t_list *list_env, int new_value);
 
 /* travers tree and execution command */
 int			travers_tree(t_ast *root,  t_data *msh);
+void		logic_node_handle(t_ast *root, t_data *msh);
 void		start_job(t_exec_cmd *cmd, t_data *msh);
 char		**new_env_arr(t_list *list_env);
 int			ft_execve(t_exec_cmd *cmd, char **env);
@@ -56,6 +57,8 @@ void		print_err(const char *sender, const char *msg);
 void		record_pid(t_data *msh, pid_t pid);
 void    	kill_child(t_list *ps);
 void    	free_ast(t_ast *root);
+
+void		sig_default(void);
 
 void	    check_cmd_permission(t_exec_cmd *cmd);
 #endif

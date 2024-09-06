@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:02 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:20:25 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:08:22 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # define PERM_DENIED	126
 # define CMD_NOT_FOUND	127
 # define ERR_IS_DIR		129
-# define PROMT	"minishell$> "
+# define PROMT	"minishell$ "
 
 # define INVALID_ARG_FOR_EXIT 128	
 # define FT_SIGINT	130

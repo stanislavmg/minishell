@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:15:55 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/20 10:15:25 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/06 11:23:58 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_list	*new_token_list(t_list *env, char *input)
 
 	if (!input)
 		return (NULL);
+	cmd_tokens = NULL;
 	lex = new_lexer(input, env);
 	if (!lex)
 		return (NULL);

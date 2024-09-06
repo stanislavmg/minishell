@@ -6,13 +6,13 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 15:59:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/29 17:59:10 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/06 16:14:09 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	g_exit_code;
+int	g_exit_code = 0;
 
 int	get_exit_code(void)
 {

@@ -6,6 +6,7 @@ INCLUDE = include
 
 BUILTINS =	array_utils.c builtin_utils.c cd.c cd_utils.c echo.c env.c exit.c exit_utils.c export.c\
 			export_utils.c export_utils_print.c pwd.c unset.c
+
 EXEC =		exec_utils.c exit_code.c helpers.c pipeline.c process_utils.c redirect.c signal.c travers_ast.c
 
 LEXER = 	lex_quotes.c lex_slash.c lex_variable.c lexer_utils.c string.c token.c tokenizing.c wildcard.c
@@ -21,16 +22,16 @@ SRC     =	$(addprefix src/parsing/, $(PARSING))\
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -g -Wall -I$(INCLUDE)
+CFLAGS  = -g -Wall -I$(INCLUDE) -Ireadline
 
 DFLAGS	= -fsanitize=undefined -fsanitize=address
 
-READLINE := ./readline_config.sh
+READLINE = ./readline_config.sh
 
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $^ -lreadline
+	$(CC) $(CFLAGS) -o $@ $^ -lreadline -L./readline/shlib
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
