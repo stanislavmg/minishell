@@ -75,7 +75,7 @@ rm -f ${LOG}/*
 
 echo -e "\n${BOLD}BASE TEST${RESET}\n"
 while IFS= read -r line; do
-    eval "$line" > b_out
+    echo "$line" | bash > b_out
     echo "$line" | ./minishell > m_out
     if ! diff b_out m_out > /dev/null; then
         print_line "${TOTAL}" "[ KO ]" "${line}"
@@ -110,7 +110,7 @@ done < "$INPUT"
 echo -e "\n${BOLD}REDIRECT TEST${RESET}\n"
 
 while IFS= read -r line; do
-    bash -c "$line" > b_out
+    echo "$line" | bash > b_out
     echo "$line" | ./minishell > m_out
     if ! diff b_out m_out > /dev/null; then
         print_line "${TOTAL}" "[ KO ]" "${line}"

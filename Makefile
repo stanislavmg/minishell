@@ -22,7 +22,7 @@ SRC     =	$(addprefix src/parsing/, $(PARSING))\
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -g -Wall -I$(INCLUDE) -Ireadline
+CFLAGS  = -g -Wall -I$(INCLUDE) -Ireadline-8.2
 
 DFLAGS	= -fsanitize=undefined -fsanitize=address
 
@@ -31,7 +31,7 @@ READLINE = ./readline_config.sh
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $^ -lreadline -L./readline/shlib
+	$(CC) $(CFLAGS) -o $@ $^ -lreadline -L./readline-8.2/shlib
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
