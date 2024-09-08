@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:39:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 11:48:59 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/08 18:28:10 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ int	read_new_input(t_parser *parser)
 	if (!input)
 		return (1);
 	new_lst = new_token_list(parser->env_lst, input);
-	if (!new_lst)
-	{
-		free(input);
-		return (1);
-	}
+	// if (!new_lst)
+	// {
+	// 	free(input);
+	// 	return (1);
+	// }
 	ft_lstadd_back(&parser->cur_token_pos, new_lst);
 	return (0);
 }

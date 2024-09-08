@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:01:04 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 17:05:06 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/08 18:34:47 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ char	*get_word(const char *s, size_t n)
 {
 	char	*new_word;
 
-	if (!s || !n)
+	if (!s)
 		return (NULL);
 	new_word = (char *)malloc(n + 1);
 	if (!new_word)

@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/06 16:53:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/08 16:58:10 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,10 @@ void	set_std_val(t_list *env)
 		shell_lvl->value = ft_itoa(tmp_value);
 	}
 }
+
 void set_signals_interactive(void);
 void set_signals_noninteractive(void);
+
 int	main(int ac, char **av, char **env)
 {
 	t_data	*msh;
@@ -110,6 +112,8 @@ int	main(int ac, char **av, char **env)
 		set_signals_interactive();
 		input = readline(PROMT);
 		set_signals_noninteractive();
+		if (get_exit_code() == FT_SIGINT)
+			set_exit_code(msh->env, FT_SIGINT);
 		if (!input)
 			break ;
 		msh->root = (t_ast *)init_msh_data(msh->env, input);

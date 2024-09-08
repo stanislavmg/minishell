@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:40:36 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 15:27:58 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/08 18:45:19 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	**get_path(char *path_env)
 	char	*tmp;
 	int		i;
 
+	if (!path_env)
+		return (NULL);
 	i = -1;
 	path = ft_split(path_env, ':');
 	if (!path)
@@ -45,7 +47,7 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	char	*cmd_path;
 
 	i = 0;
-	if (!path_env || !*path_env || !cmd_name)
+	if (!path_env || !*path_env || !cmd_name || !*cmd_name)
 		return (NULL);
 	cmd_path = (char *)malloc(sizeof(char) * ft_strlen(cmd_name) + 1);
 	if (!cmd_path)
@@ -53,7 +55,7 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	ft_strlcpy(cmd_path, cmd_name, ft_strlen(cmd_name) + 1);
 	while (path_env[i])
 	{
-		if (!access(cmd_path, F_OK | X_OK))
+		if (!access(cmd_path, (F_OK | X_OK)))
 			return (cmd_path);
 		free(cmd_path);
 		cmd_path = ft_strjoin(path_env[i], cmd_name);

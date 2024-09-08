@@ -34,17 +34,10 @@ void	ft_waitpid(t_data *msh)
 	{
 		t = msh->child_ps->next;
 		waitpid((*(pid_t *)msh->child_ps->data), &status, 0);
-		// if (waitpid((*(pid_t *)msh->child_ps->data), &status, 0) == -1)
-		// {
-		// 	printf("waitpid error\n");
-		// 	continue ;
-		// }
-		if (WIFEXITED(status))
-			set_exit_code(msh->env, WEXITSTATUS(status));
-		else if (WIFSIGNALED(status))
-			set_exit_code(msh->env, WTERMSIG(status));
+		if (get_exit_code() == FT_SIGINT)
+			set_exit_code(msh->env, FT_SIGINT); //WTERMSIG(status)
 		else
-			set_exit_code(msh->env, status);
+			set_exit_code(msh->env, WEXITSTATUS(status));
 		ft_lstdelone(msh->child_ps, free);
 		msh->child_ps = t;
 	}
@@ -61,7 +54,10 @@ int	ft_execve(t_exec_cmd *cmd, char **env)
 		exit(EXIT_FAILURE);
 	while (env[i] && ft_strncmp(env[i], "PATH=", 5))
 		i++;
-	paths = get_path(env[i] + 5);
+	if (env[i])
+		paths = get_path(env[i] + 5);
+	else
+		paths = NULL;
 	cmd->path = parsing_path(paths, cmd->argv[0]);
 	free_array(paths);
 	check_cmd_permission(cmd);
