@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   destructors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:06:08 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/05 18:35:51 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 21:01:25 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "exec.h"
-extern int g_exit_code; 
+
+extern int	g_exit_code;
 
 int	free_cmd(t_exec_cmd *cmd)
 {

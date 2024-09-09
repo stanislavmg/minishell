@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   init_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:40:36 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 19:00:00 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 20:58:52 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
 void		exit_failure(const char *msg, int error);
 
 char	**get_path(char *path_env)
@@ -42,6 +43,31 @@ char	**get_path(char *path_env)
 	return (path);
 }
 
+int	check_path(char *cmd_path, char *cmd_name)
+{
+	int	err;
+
+	err = 0;
+	if (!access(cmd_path, F_OK))
+	{
+		if (access(cmd_path, X_OK))
+		{
+			if (ft_strchr(cmd_name, '/'))
+				err = PERM_DENIED;
+			else
+				err = CMD_NOT_FOUND;
+		}
+		else
+			return (1);
+	}
+	if (err)
+	{
+		free(cmd_path);
+		exit_failure(cmd_name, err);
+	}
+	return (0);
+}
+
 char	*parsing_path(char **path_env, char *cmd_name)
 {
 	int		i;
@@ -56,20 +82,8 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	ft_strlcpy(cmd_path, cmd_name, ft_strlen(cmd_name) + 1);
 	while (path_env[i])
 	{
-		/* need fix */
-		if (!access(cmd_path, F_OK))
-		{
-			if (access(cmd_path, X_OK))
-			{
-				free(cmd_path);
-				if (ft_strchr(cmd_name, '/'))
-					exit_failure(cmd_name, PERM_DENIED);
-				else
-					return (NULL);
-			}
-			else
-				return (cmd_path);
-		}
+		if (check_path(cmd_path, cmd_name))
+			return (cmd_path);
 		free(cmd_path);
 		cmd_path = ft_strjoin(path_env[i], cmd_name);
 		if (!cmd_path)

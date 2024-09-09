@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:47:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 12:34:16 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 21:00:07 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "libft.h"
 #include "error.h"
 
-extern int g_exit_code;
+extern int	g_exit_code;
 
 static void	redisplay_promt(int sig)
 {

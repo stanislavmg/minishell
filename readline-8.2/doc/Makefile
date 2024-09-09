@@ -22,7 +22,7 @@ topdir = ..
 srcdir = .
 
 
-prefix = /Users/nalivkin/Desktop/minishell/src
+prefix = /Users/sgoremyk/Desktop/minishell
 
 datarootdir = ${prefix}/share
 
@@ -46,10 +46,10 @@ DESTDIR =
 SHELL = /bin/sh
 RM = rm -f
 
-INSTALL = /opt/homebrew/bin/ginstall -c
+INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 
-BUILD_DIR = /Users/nalivkin/Desktop/minishell/src/readline-8.2
+BUILD_DIR = /Users/sgoremyk/Desktop/minishell/readline-8.2
 TEXINPUTDIR = $(srcdir)
 
 MAKEINFO    = LANGUAGE= makeinfo

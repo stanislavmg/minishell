@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_variable.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:58 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 17:23:43 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 20:59:11 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*new_var_name(char *str)
 	int		i;
 
 	i = 0;
-	if (!str )
+	if (!str)
 		return (NULL);
 	var_name = NULL;
 	if (*str == '?')

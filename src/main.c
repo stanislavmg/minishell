@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 18:09:51 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 21:08:15 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,8 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 	tokens = new_token_list(env, input);
 	if (!tokens)
 		return (NULL);
-	//print_tokens(tokens);
 	parser = new_parser(tokens, env);
 	ast = new_ast(parser);
-	//print_tree(ast);
 	if (parser->err)
 	{
 		if (parser->cur_token_pos)
@@ -54,17 +52,6 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 	ft_lstclear(&tokens, free_token);
 	free(parser);
 	return (ast);
-}
-
-int	is_contain_alpha(const char *str)
-{
-	while (*str)
-	{
-		if (ft_isalpha(*str))
-			return (1);
-		str++;
-	}
-	return (0);
 }
 
 void	set_std_val(t_list *env)
@@ -93,6 +80,19 @@ void	set_std_val(t_list *env)
 		free(shell_lvl->value);
 		shell_lvl->value = ft_itoa(tmp_value);
 	}
+	setup_termios();
+}
+
+static char	*read_input(t_data *msh)
+{
+	char	*input;
+
+	set_redisplay_behavior();
+	input = readline(PROMT);
+	if (g_exit_code)
+		set_exit_code(msh->env, EXIT_FAILURE);
+	set_interrupt_behavior();
+	return (input);
 }
 
 int	main(int ac, char **av, char **env)
@@ -106,15 +106,10 @@ int	main(int ac, char **av, char **env)
 	msh = new_msh_data();
 	msh->env = new_env_list(env);
 	set_std_val(msh->env);
-	setup_termios();
 	while (1)
 	{
-		set_redisplay_behavior();
-		input = readline(PROMT);
-		if (g_exit_code)
-			set_exit_code(msh->env, g_exit_code);
-		set_interrupt_behavior();
-		if (!input)
+		input = read_input(msh);
+		if (input)
 			break ;
 		msh->root = (t_ast *)init_msh_data(msh->env, input);
 		if (msh->root)

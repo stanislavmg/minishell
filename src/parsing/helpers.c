@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 16:31:30 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 17:40:01 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 21:04:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+int	is_contain_alpha(const char *str)
+{
+	while (*str)
+	{
+		if (ft_isalpha(*str))
+			return (1);
+		str++;
+	}
+	return (0);
+}
 
 void	print_msh_err(char *token_name)
 {

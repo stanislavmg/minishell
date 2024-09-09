@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:32 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/03 11:53:24 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 21:00:46 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	is_logic_operator(e_token type)
 
 static int	count_export_vars(t_list *env)
 {
-	int	size;
+	int		size;
 	t_env	*var;
 
 	size = 0;

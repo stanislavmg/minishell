@@ -31,7 +31,7 @@ READLINE = ./readline_config.sh
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $^ -lreadline -L./readline-8.2/shlib
+	$(CC) $(CFLAGS) -o $@ $^ -lreadline -L./lib
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

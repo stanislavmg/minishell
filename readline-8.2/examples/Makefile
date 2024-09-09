@@ -21,7 +21,7 @@ RL_LIBRARY_VERSION = 8.2
 SHELL = /bin/sh
 RM = rm -f
 
-prefix = /Users/nalivkin/Desktop/minishell/src
+prefix = /Users/sgoremyk/Desktop/minishell
 exec_prefix = ${prefix}
 
 datarootdir = ${prefix}/share
@@ -32,10 +32,10 @@ datadir = ${datarootdir}
 
 top_srcdir = ..
 #BUILD_DIR = .
-BUILD_DIR = /Users/nalivkin/Desktop/minishell/src/readline-8.2
+BUILD_DIR = /Users/sgoremyk/Desktop/minishell/readline-8.2
 installdir = $(datadir)/readline
 
-INSTALL = /opt/homebrew/bin/ginstall -c
+INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 

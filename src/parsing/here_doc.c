@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:38:45 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 17:00:58 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 20:59:33 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
 static char	*new_hidden_fname(char *stop_word, t_env *tmp_dir);
-char	*new_var_name(char *str);
-int		is_var_delimeter(int ch);
+char		*new_var_name(char *str);
+int			is_var_delimeter(int ch);
 
 char	*expand_variable(char **input, char *str, t_list *env)
 {
@@ -40,7 +40,7 @@ void	write_variable(char *input, t_list *env, int fd)
 	var_value = NULL;
 	while (*input)
 	{
-		start_var = ft_strchr(input, '$');	
+		start_var = ft_strchr(input, '$');
 		if (!start_var)
 		{
 			write(fd, input, ft_strlen(input));

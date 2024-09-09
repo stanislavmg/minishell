@@ -31,9 +31,9 @@ PACKAGE_TARNAME = readline
 srcdir = .
 
 top_srcdir = .
-BUILD_DIR = /Users/nalivkin/Desktop/minishell/src/readline-8.2
+BUILD_DIR = /Users/sgoremyk/Desktop/minishell/readline-8.2
 
-INSTALL = /opt/homebrew/bin/ginstall -c
+INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 
@@ -48,7 +48,7 @@ MV = mv
 
 SHELL = /bin/sh
 
-prefix = /Users/nalivkin/Desktop/minishell/src
+prefix = /Users/sgoremyk/Desktop/minishell
 exec_prefix = ${prefix}
 
 datarootdir = ${prefix}/share
