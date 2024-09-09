@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/05 17:23:45 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 11:44:37 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ void		record_pid(t_data *msh, pid_t pid);
 void    	kill_child(t_list *ps);
 void    	free_ast(t_ast *root);
 
-void		sig_default(void);
+/* init signals and terminal setup*/
+void	set_interrupt_behavior(void);
+void	set_redisplay_behavior(void);
+void	setup_termios(void);
 
 void	    check_cmd_permission(t_exec_cmd *cmd);
 #endif

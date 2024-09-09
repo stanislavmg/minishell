@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/08 16:58:10 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 12:33:36 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,6 @@ void	set_std_val(t_list *env)
 	}
 }
 
-void set_signals_interactive(void);
-void set_signals_noninteractive(void);
-
 int	main(int ac, char **av, char **env)
 {
 	t_data	*msh;
@@ -109,11 +106,11 @@ int	main(int ac, char **av, char **env)
 	setup_termios();
 	while (1)
 	{
-		set_signals_interactive();
+		set_redisplay_behavior();
 		input = readline(PROMT);
-		set_signals_noninteractive();
-		if (get_exit_code() == FT_SIGINT)
-			set_exit_code(msh->env, FT_SIGINT);
+		if (g_exit_code)
+			set_exit_code(msh->env, g_exit_code);
+		set_interrupt_behavior();
 		if (!input)
 			break ;
 		msh->root = (t_ast *)init_msh_data(msh->env, input);

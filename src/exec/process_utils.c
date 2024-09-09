@@ -34,8 +34,8 @@ void	ft_waitpid(t_data *msh)
 	{
 		t = msh->child_ps->next;
 		waitpid((*(pid_t *)msh->child_ps->data), &status, 0);
-		if (get_exit_code() == FT_SIGINT)
-			set_exit_code(msh->env, FT_SIGINT); //WTERMSIG(status)
+		if (WIFSIGNALED(status))
+			set_exit_code(msh->env, FT_SIGINT);
 		else
 			set_exit_code(msh->env, WEXITSTATUS(status));
 		ft_lstdelone(msh->child_ps, free);
