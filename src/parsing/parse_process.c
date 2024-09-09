@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 16:46:24 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/06 16:08:50 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 18:16:35 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_cmd	*parse_block(t_parser *parser)
 		root = add_ast_node(root, build_tree(parser), type);
 		type = get_token_type(parser);
 	}
-	if (CLOSED_BRACKET == type)
+	if (CLOSED_BRACKET == type && !parser->err)
 	{
 		parser->cur_token_pos = parser->cur_token_pos->next;
 		parser->brackets_count--;
@@ -118,8 +118,8 @@ t_cmd	*parse_redirect(e_token redir_type, char *fname, t_list *env)
 	new_node = NULL;
 	if (!fname || !env)
 		return (NULL);
-	if (redir_type == HERE_DOC)
-		fname = here_doc_start(fname, env);
+	if (redir_type == HERE_DOC || redir_type == EXPAND_HERE_DOC)
+		fname = here_doc_start(fname, env, redir_type);
 	if (fname)
 		new_node = new_redir(redir_type, fname);
 	return ((t_cmd *)new_node);

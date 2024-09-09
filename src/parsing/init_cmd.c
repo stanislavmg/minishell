@@ -6,11 +6,12 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:40:36 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/08 18:45:19 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 19:00:00 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+void		exit_failure(const char *msg, int error);
 
 char	**get_path(char *path_env)
 {
@@ -55,8 +56,20 @@ char	*parsing_path(char **path_env, char *cmd_name)
 	ft_strlcpy(cmd_path, cmd_name, ft_strlen(cmd_name) + 1);
 	while (path_env[i])
 	{
-		if (!access(cmd_path, (F_OK | X_OK)))
-			return (cmd_path);
+		/* need fix */
+		if (!access(cmd_path, F_OK))
+		{
+			if (access(cmd_path, X_OK))
+			{
+				free(cmd_path);
+				if (ft_strchr(cmd_name, '/'))
+					exit_failure(cmd_name, PERM_DENIED);
+				else
+					return (NULL);
+			}
+			else
+				return (cmd_path);
+		}
 		free(cmd_path);
 		cmd_path = ft_strjoin(path_env[i], cmd_name);
 		if (!cmd_path)

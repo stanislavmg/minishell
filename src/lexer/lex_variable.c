@@ -3,43 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   lex_variable.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:58 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 17:00:03 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 17:23:43 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static int	is_var_delimeter(int ch)
+int	is_var_delimeter(int ch)
 {
-	return (ch == '\\' || ch == '/' || ch == '=' || ch == '?'
+	return (ch == 0 || ch == '\\' || ch == '/' || ch == '=' || ch == '?'
 		|| is_token_delimeter(ch) || is_catchar(ch));
 }
 
-static char	*new_var_name(t_lexer *lex)
+char	*new_var_name(char *str)
 {
 	char	*var_name;
 	int		i;
 
 	i = 0;
+	if (!str )
+		return (NULL);
 	var_name = NULL;
-	if (*lex->str_pos == '?')
-	{
+	if (*str == '?')
 		var_name = ft_strdup("?");
-		i = 1;
-	}
 	else
 	{
-		while (!is_var_delimeter(lex->str_pos[i]))
+		while (!is_var_delimeter(str[i]))
 			i++;
 		if (i == 0)
 			var_name = get_word("$", 1);
 		else
-			var_name = get_word(lex->str_pos, i);
+			var_name = get_word(str, i);
 	}
-	lex->str_pos += i;
 	return (var_name);
 }
 
@@ -50,7 +48,9 @@ char	*variable_handle(t_lexer *lex)
 
 	var = NULL;
 	lex->str_pos++;
-	new_word = new_var_name(lex);
+	new_word = new_var_name(lex->str_pos);
+	if (*lex->str_pos && *new_word == *lex->str_pos)
+		lex->str_pos += ft_strlen(new_word);
 	if (ft_strcmp(new_word, "$"))
 	{
 		var = get_env(lex->env, new_word);

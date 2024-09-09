@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 16:49:24 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/02/01 16:49:26 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 18:03:03 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void	putnbr(int pos, int n, char *str)
 {
 	unsigned int	num;
 
-	num = 0;
 	if (n < 0)
 		num = n * -1;
 	else

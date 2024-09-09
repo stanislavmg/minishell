@@ -32,6 +32,7 @@ typedef enum token
   OR,
   SEMICOLON,
   HERE_DOC,
+  EXPAND_HERE_DOC,
   OPEN_BRACKET,
   CLOSED_BRACKET
 } e_token;

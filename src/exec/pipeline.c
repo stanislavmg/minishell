@@ -15,19 +15,22 @@
 int	initialize_pipeline(t_ast *root, t_data *msh)
 {
 	pid_t	ps;
+	int		status;
 
 	if (!root || !msh)
 		return (1);
+	status = 0;
 	ps = fork();
 	if (!ps)
 	{
+		msh->child_ps = NULL;
 		setup_pipeline(root, msh);
 		output_to_stdout();
 		ft_waitpid(msh);
 		exit(get_exit_code());
 	}
-	record_pid(msh, ps);
-	ft_waitpid(msh);
+	waitpid(ps, &status, 0);
+	set_exit_code(msh->env, WEXITSTATUS(status));
 	return (0);
 }
 
@@ -51,6 +54,7 @@ void	setup_pipeline(t_ast *root, t_data *msh)
 
 void	run_child_ps(int *pdes, t_exec_cmd *cmd, t_data *msh)
 {
+	msh->child_ps = NULL;
 	if (dup2(pdes[1], STDOUT_FILENO) == -1)
 		panic(msh);
 	close(pdes[0]);

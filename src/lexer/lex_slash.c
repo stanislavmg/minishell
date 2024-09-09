@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:52 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/06 10:25:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 17:35:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static int	is_screening_ch(int ch)
 	return (ch == '`' || ch == '\"' || ch == '$' || ch == '\\');
 }
 
+// cat << ''"\ #
 char	*get_hd_stop_word(t_lexer *lex, char *stop_word)
 {
 	int		i;

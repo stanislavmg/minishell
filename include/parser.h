@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:31 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/05 17:00:48 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 14:37:47 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@
 # include <dirent.h>
 
 /* here document and helpers */
+char		*new_var_name(char *str);
+int			is_var_delimeter(int ch);
 void	    print_msh_err(char *token_name);
 e_token	    get_token_type(t_parser *parser);
-char	    *here_doc_start(char *stop_word, t_list *env);
+char		*here_doc_start(char *stop_word, t_list *env, e_token mode);
 void	    remove_duplicate(t_list **redirects);
 void    	free_array(char **arr);
 

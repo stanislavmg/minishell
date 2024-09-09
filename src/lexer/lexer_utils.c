@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:00:03 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 16:45:41 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 16:19:13 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	is_cmd_delimeter(e_token type)
 int	is_redirect(e_token type)
 {
 	return (HERE_DOC == type || INPUT_TRUNC == type
-		|| OUTPUT_ADD == type || OUTPUT_TRUNC == type);
+		|| OUTPUT_ADD == type || OUTPUT_TRUNC == type
+		|| EXPAND_HERE_DOC == type);
 }
 
 int	is_metachar(char ch)

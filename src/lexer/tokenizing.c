@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 00:20:26 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/06 11:23:01 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 16:17:12 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,12 +105,18 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 	len = ft_strlen(value);
 	lex->str_pos += len;
 	new_word = get_word(value, len);
-	push_token(&lex->tokens, new_word, type);
 	if (type == HERE_DOC)
-	{
+	{	
+		while (ft_isspace(*lex->str_pos))
+			lex->str_pos++;
+		if (*lex->str_pos == '\'' || *lex->str_pos == '\"')
+			type = EXPAND_HERE_DOC;
+		push_token(&lex->tokens, new_word, type);
 		new_word = get_hd_stop_word(lex, NULL);
 		if (new_word)
 			push_token(&lex->tokens, new_word, ARG);
 	}
+	else
+		push_token(&lex->tokens, new_word, type);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 12:33:36 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/09 18:09:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,11 @@ void	set_std_val(t_list *env)
 	shell_lvl = get_env(env, "SHLVL");
 	if (!shell_lvl || !*shell_lvl->value || is_contain_alpha(shell_lvl->value))
 	{
-		free(shell_lvl->value);
-		shell_lvl->value = NULL;
+		if (shell_lvl)
+		{
+			free(shell_lvl->value);
+			shell_lvl->value = NULL;
+		}
 		set_env_value(env, ft_strdup("SHLVL"), ft_strdup("1"));
 	}
 	else

@@ -30,6 +30,7 @@ void	ft_waitpid(t_data *msh)
 
 	if (!msh || !msh->child_ps)
 		return ;
+	status = 0;
 	while (msh->child_ps)
 	{
 		t = msh->child_ps->next;
