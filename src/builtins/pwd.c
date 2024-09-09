@@ -6,7 +6,7 @@
 /*   By: amikhush <<marvin@42.fr>>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 10:54:08 by amikhush          #+#    #+#             */
-/*   Updated: 2024/09/01 11:33:24 by amikhush         ###   ########.fr       */
+/*   Updated: 2024/09/09 18:46:16 by amikhush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	handle_pwd(char **args, t_list *env)
 		{
 			ft_print_error("cd", "", CWD_RETRIEVING_ERROR);
 			return (EXIT_SUCCESS);
-		}	
+		}
 	}
 	return (EXIT_SUCCESS);
 }
