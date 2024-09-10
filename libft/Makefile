@@ -6,7 +6,7 @@
 #    By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/01 17:05:52 by sgoremyk          #+#    #+#              #
-#    Updated: 2024/08/31 16:49:54 by sgoremyk         ###   ########.fr        #
+#    Updated: 2024/09/10 21:05:31 by sgoremyk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ SRCS_B	=	ft_lstclear.c	ft_lstnew.c		ft_lstadd_front.c\
 			ft_lstsize.c	ft_lstiter.c	ft_lstadd_back.c\
 			ft_lstlast.c	ft_lstmap.c		ft_lstdelone.c
 
-HEADER	=	libft.h
+HEADER	=	../include/libft.h
 OBJ		=	$(SRCS:%.c=%.o)
 OBJ_B	=	$(SRCS_B:%.c=%.o)
 
@@ -45,15 +45,15 @@ $(NAME)	:	$(OBJ)
 	ar rcs $(NAME) $(OBJ)
 
 %.o		:	%.c $(HEADER)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 bonus	:	$(OBJ) $(OBJ_B)
 	ar rcs $(NAME) $(OBJ) $(OBJ_B)
 
 clean	:
-	@rm -f $(OBJ) $(OBJ_B)
+	rm -f $(OBJ) $(OBJ_B)
 
 fclean	:	clean
-	@rm -f $(NAME)
+	rm -f $(NAME)
 
 re		:	fclean all

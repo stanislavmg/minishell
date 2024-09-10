@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 15:28:15 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 12:52:57 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 20:48:18 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ int	open_redirect(t_ast *root, t_redir *rfile, t_data *msh)
 		return (1);
 	}
 	set_exit_code(msh->env, EXIT_SUCCESS);
-	travers_tree((t_ast *)root->left, msh);
+	if (root)
+		travers_tree((t_ast *)root->left, msh);
 	close(fd);
 	if (reset_stdstream(saved_stdin, saved_stdout))
 		panic(msh);
@@ -50,12 +51,18 @@ static int	swap_sdtstream(char *file_name, int mode)
 	if (mode == O_RDONLY)
 	{
 		if (dup2(fd, STDIN_FILENO) == -1)
+		{
+			close(fd);
 			return (-1);
+		}
 	}
 	else
 	{
 		if (dup2(fd, STDOUT_FILENO) == -1)
+		{
+			close(fd);
 			return (-1);
+		}
 	}
 	return (fd);
 }
@@ -66,7 +73,7 @@ static int	reset_stdstream(int saved_stdin, int saved_stdout)
 		return (1);
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1)
 		return (1);
-	ft_close(saved_stdin);
-	ft_close(saved_stdout);
+	close(saved_stdin);
+	close(saved_stdout);
 	return (0);
 }

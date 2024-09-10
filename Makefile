@@ -1,10 +1,10 @@
-NAME    = minishell
+NAME =		minishell
 
-LIBFT    = libft.a
+LIBFT = 	libft.a
 
-INCLUDE = include
+INCLUDE = 	include
 
-PREFIX	= $(PWD)
+PREFIX = 	$(PWD)
 
 BUILTINS =	array_utils.c builtin_utils.c cd.c cd_utils.c echo.c env.c exit.c exit_utils.c export.c\
 			export_utils.c export_utils_print.c pwd.c unset.c
@@ -24,9 +24,9 @@ SRC     =	$(addprefix src/builtins/, $(BUILTINS))\
 			$(addprefix src/env_list/, $(ENV_LST))\
 			$(addprefix src/, main.c destructors.c)
 
-OBJ     = $(SRC:%.c=%.o)
+OBJ = 		$(SRC:%.c=%.o)
 
-CFLAGS  = -g -Wall -Wextra -Werror -I$(INCLUDE) 
+CFLAGS =	-Wall -Wextra -Werror -I$(INCLUDE) 
 
 all: $(NAME)
 
@@ -46,7 +46,7 @@ configure:
 clean:
 	$(RM) $(OBJ)
 	$(MAKE) -C libft clean
-	$(MAKE) -C readline* clean
+	$(MAKE) -C readline*/ clean
 
 fclean: clean
 	$(RM) $(NAME) $(LIBFT)

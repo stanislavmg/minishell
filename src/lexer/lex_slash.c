@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_slash.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:52 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/10 12:59:22 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 20:55:01 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ static char	*get_str(t_lexer *lex)
 	char	*res;
 	char	del;
 	int		i;
-	
+
 	i = 0;
 	res = NULL;
 	del = *lex->str_pos;
 	lex->str_pos++;
-	while(lex->str_pos[i] && lex->str_pos[i] != del)
+	while (lex->str_pos[i] && lex->str_pos[i] != del)
 		i++;
 	if (lex->str_pos[i] != del)
 	{
@@ -52,7 +52,8 @@ char	*get_hd_stop_word(t_lexer *lex, char *stop)
 		stop = get_str(lex);
 	else
 	{
-		while (!is_token_delimeter(lex->str_pos[i]))
+		while (!is_token_delimeter(lex->str_pos[i])
+			&& lex->str_pos[i] != '\'' && lex->str_pos[i] != '\"')
 			i++;
 		if (i)
 			stop = get_word(lex->str_pos, i);

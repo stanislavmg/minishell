@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/10 15:40:58 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 20:54:36 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	set_std_val(t_list *env)
 static char	*read_input(t_data *msh)
 {
 	char	*input;
-	
+
 	set_redisplay_behavior();
 	input = readline(PROMT);
 	if (g_exit_code != ft_atoi(get_env_value("?", msh->env)))
