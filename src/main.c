@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:08:15 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 15:40:58 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ t_cmd	*init_msh_data(t_list *env, char *input)
 		ast = NULL;
 		set_exit_code(env, 2);
 	}
-	ft_lstclear(&tokens, free_token);
+	ft_lstclear(&tokens, fret_token);
 	free(parser);
 	return (ast);
 }
@@ -86,11 +86,11 @@ void	set_std_val(t_list *env)
 static char	*read_input(t_data *msh)
 {
 	char	*input;
-
+	
 	set_redisplay_behavior();
 	input = readline(PROMT);
-	if (g_exit_code)
-		set_exit_code(msh->env, EXIT_FAILURE);
+	if (g_exit_code != ft_atoi(get_env_value("?", msh->env)))
+		set_exit_code(msh->env, g_exit_code);
 	set_interrupt_behavior();
 	return (input);
 }
@@ -109,7 +109,7 @@ int	main(int ac, char **av, char **env)
 	while (1)
 	{
 		input = read_input(msh);
-		if (input)
+		if (!input)
 			break ;
 		msh->root = (t_ast *)init_msh_data(msh->env, input);
 		if (msh->root)

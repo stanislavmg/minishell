@@ -6,19 +6,19 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:00:03 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 16:19:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:45:31 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-int	is_cmd_delimeter(e_token type)
+int	is_cmd_delimeter(t_token_type type)
 {
 	return (AND == type || PIPE == type
 		|| OR == type || SEMICOLON == type);
 }
 
-int	is_redirect(e_token type)
+int	is_redirect(t_token_type type)
 {
 	return (HERE_DOC == type || INPUT_TRUNC == type
 		|| OUTPUT_ADD == type || OUTPUT_TRUNC == type

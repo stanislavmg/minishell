@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 16:46:24 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 18:16:35 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:58:04 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 t_cmd	*new_ast(t_parser *parser)
 {
-	t_cmd		*root;
-	e_token		type;
+	t_cmd			*root;
+	t_token_type	type;
 
 	root = NULL;
 	if (!parser)
@@ -43,8 +43,8 @@ t_cmd	*new_ast(t_parser *parser)
 
 t_cmd	*build_tree(t_parser *parser)
 {
-	t_cmd	*root;
-	e_token	type;
+	t_cmd			*root;
+	t_token_type	type;
 
 	root = NULL;
 	if (!parser || !parser->cur_token_pos)
@@ -67,8 +67,8 @@ t_cmd	*build_tree(t_parser *parser)
 
 t_cmd	*parse_block(t_parser *parser)
 {
-	t_cmd	*root;
-	e_token	type;
+	t_cmd			*root;
+	t_token_type	type;
 
 	root = NULL;
 	if (!parser || !parser->cur_token_pos
@@ -111,16 +111,16 @@ t_cmd	*parse_line(t_parser *parser)
 	return (root);
 }
 
-t_cmd	*parse_redirect(e_token redir_type, char *fname, t_list *env)
+t_cmd	*parse_redirect(t_token_type redir, char *fname, t_list *env)
 {
 	t_redir	*new_node;
 
 	new_node = NULL;
 	if (!fname || !env)
 		return (NULL);
-	if (redir_type == HERE_DOC || redir_type == EXPAND_HERE_DOC)
-		fname = here_doc_start(fname, env, redir_type);
+	if (redir == HERE_DOC || redir == EXPAND_HERE_DOC)
+		fname = here_doc_start(fname, env, redir);
 	if (fname)
-		new_node = new_redir(redir_type, fname);
+		new_node = new_redir(redir, fname);
 	return ((t_cmd *)new_node);
 }

@@ -1,8 +1,10 @@
 NAME    = minishell
 
-LIB     = libft.a
+LIBFT    = libft.a
 
 INCLUDE = include
+
+PREFIX	= $(PWD)
 
 BUILTINS =	array_utils.c builtin_utils.c cd.c cd_utils.c echo.c env.c exit.c exit_utils.c export.c\
 			export_utils.c export_utils_print.c pwd.c unset.c
@@ -15,43 +17,40 @@ PARSING =	ast.c helpers.c here_doc.c init_cmd.c parse_cmd.c parse_process.c pars
 
 ENV_LST =	list_init.c list_utils.c
 
-SRC     =	$(addprefix src/parsing/, $(PARSING))\
+SRC     =	$(addprefix src/builtins/, $(BUILTINS))\
+			$(addprefix src/exec/, $(EXEC))\
+			$(addprefix src/lexer/, $(LEXER))\
+			$(addprefix src/parsing/, $(PARSING))\
 			$(addprefix src/env_list/, $(ENV_LST))\
-			$(addprefix src/lexer/, $(LEXER))  $(addprefix src/exec/, $(EXEC))\
-			$(addprefix src/builtins/, $(BUILTINS)) $(addprefix src/, main.c destructors.c debug.c)
+			$(addprefix src/, main.c destructors.c)
 
 OBJ     = $(SRC:%.c=%.o)
 
-CFLAGS  = -g -Wall -I$(INCLUDE) -Ireadline-8.2
-
-DFLAGS	= -fsanitize=undefined -fsanitize=address
-
-READLINE = ./readline_config.sh
+CFLAGS  = -g -Wall -Wextra -Werror -I$(INCLUDE) 
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIB)
+$(NAME): $(OBJ) $(LIBFT) 
 	$(CC) $(CFLAGS) -o $@ $^ -lreadline -L./lib
 
-%.o: %.c
+%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIB):
-	make -C libft all bonus clean && mv libft/$(LIB) .
+$(LIBFT):
+	make -C libft all bonus clean && mv libft/$(LIBFT) .
+
+configure:
+	cd ./readline*/ && ./configure --prefix="$(PREFIX)"
+	make -C readline*/ all install
 
 clean:
 	$(RM) $(OBJ)
-
-configure:
-	bash $(READLINE)
+	$(MAKE) -C libft clean
+	$(MAKE) -C readline* clean
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) $(LIBFT)
 
 re: fclean all
 
-debug: CFLAGS += $(DFLAGS)
-
-debug: fclean all
-
-.PHONY: all clean fclean re configure debug
+.PHONY: all configure clean fclean re 

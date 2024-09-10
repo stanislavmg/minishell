@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:31:43 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/01 17:44:13 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 11:00:01 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static t_cmd	*impl_new_cmd_tree(t_parser *parser,
 									t_list *var,
 									t_list *redir)
 {
-	e_token	type;
-	t_token	*cur_token;
+	t_token_type	type;
+	t_token			*cur_token;
 
 	type = get_token_type(parser);
 	while (parser->cur_token_pos && !parser->err
@@ -60,15 +60,15 @@ void	push_variable(t_list **var_lst, t_token *token)
 
 void	push_redirect(t_list **redir, t_parser *parser)
 {
-	t_cmd	*new_redirect;
-	char	*file_name;
-	t_token	*cur_token;
-	e_token	redir_type;
+	t_cmd			*new_redirect;
+	char			*file_name;
+	t_token			*cur_token;
+	t_token_type	redir_mode;
 
 	if (!parser || !parser->cur_token_pos)
 		return ;
 	cur_token = parser->cur_token_pos->data;
-	redir_type = cur_token->type;
+	redir_mode = cur_token->type;
 	parser->cur_token_pos = parser->cur_token_pos->next;
 	if (parser->cur_token_pos)
 		cur_token = parser->cur_token_pos->data;
@@ -81,9 +81,9 @@ void	push_redirect(t_list **redir, t_parser *parser)
 		return ;
 	file_name = cur_token->word;
 	cur_token->word = NULL;
-	if (redir_type == HERE_DOC)
+	if (redir_mode == HERE_DOC)
 		remove_duplicate(redir);
-	new_redirect = parse_redirect(redir_type, file_name, parser->env_lst);
+	new_redirect = parse_redirect(redir_mode, file_name, parser->env_lst);
 	ft_lstadd_front(redir, ft_lstnew(new_redirect));
 }
 

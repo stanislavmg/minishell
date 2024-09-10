@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:47:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:00:07 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 16:42:19 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,20 @@ extern int	g_exit_code;
 
 static void	redisplay_promt(int sig)
 {
+	(void)sig;
 	write(1, "\n", 1);
 	rl_on_new_line();
-	g_exit_code = 1;
+	g_exit_code = FT_SIGINT;
 }
 
 static void	interrupt_execution(int sig)
 {
+	(void)sig;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_exit_code = sig;
+	g_exit_code = FT_SIGINT;
 }
 
 void	set_redisplay_behavior(void)

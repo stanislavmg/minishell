@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 16:31:30 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:04:51 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:46:39 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	print_msh_err(char *token_name)
 	ft_putstr_fd("'\n", STDERR_FILENO);
 }
 
-e_token	get_token_type(t_parser *parser)
+t_token_type	get_token_type(t_parser *parser)
 {
 	if (!parser || !parser->cur_token_pos)
 		return (0);

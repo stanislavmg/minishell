@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 00:20:26 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 16:17:12 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:55:16 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	start_tokenization(t_lexer *lex)
 	if (lex->err == ERR_QUOTE)
 	{
 		print_msh_err("unclosed quote");
-		ft_lstclear(&lex->tokens, free_token);
+		ft_lstclear(&lex->tokens, fret_token);
 	}
 	free(lex->input);
 }
@@ -95,7 +95,7 @@ char	*metachar_handle(t_lexer *lex)
 	return (NULL);
 }
 
-int	default_handle(t_lexer *lex, const char *value, e_token type)
+int	default_handle(t_lexer *lex, const char *value, t_token_type type)
 {
 	int		len;
 	char	*new_word;
@@ -106,7 +106,7 @@ int	default_handle(t_lexer *lex, const char *value, e_token type)
 	lex->str_pos += len;
 	new_word = get_word(value, len);
 	if (type == HERE_DOC)
-	{	
+	{
 		while (ft_isspace(*lex->str_pos))
 			lex->str_pos++;
 		if (*lex->str_pos == '\'' || *lex->str_pos == '\"')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_slash.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:30:52 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 20:59:45 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 12:59:22 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,34 +17,53 @@ static int	is_screening_ch(int ch)
 	return (ch == '`' || ch == '\"' || ch == '$' || ch == '\\');
 }
 
-// cat << ''"\ #
-char	*get_hd_stop_word(t_lexer *lex, char *stop_word)
+static char	*get_str(t_lexer *lex)
+{
+	char	*res;
+	char	del;
+	int		i;
+	
+	i = 0;
+	res = NULL;
+	del = *lex->str_pos;
+	lex->str_pos++;
+	while(lex->str_pos[i] && lex->str_pos[i] != del)
+		i++;
+	if (lex->str_pos[i] != del)
+	{
+		lex->err = ERR_QUOTE;
+		return (NULL);
+	}
+	if (i)
+		res = get_word(lex->str_pos, i);
+	lex->str_pos += i;
+	lex->str_pos++;
+	return (res);
+}
+
+char	*get_hd_stop_word(t_lexer *lex, char *stop)
 {
 	int		i;
-	char	qoutes;
 
 	i = 0;
-	qoutes = 0;
 	while (ft_isspace(*lex->str_pos))
 		lex->str_pos++;
 	if (*lex->str_pos == '\'' || *lex->str_pos == '\"')
+		stop = get_str(lex);
+	else
 	{
-		qoutes = *lex->str_pos;
-		lex->str_pos++;
+		while (!is_token_delimeter(lex->str_pos[i]))
+			i++;
+		if (i)
+			stop = get_word(lex->str_pos, i);
+		lex->str_pos += i;
 	}
-	while (!is_token_delimeter(lex->str_pos[i]) && lex->str_pos[i] != qoutes)
-		i++;
-	if (qoutes && lex->str_pos[i] != qoutes)
-		lex->err = ERR_SYNTAX;
-	if (i)
-		stop_word = get_word(lex->str_pos, i);
-	lex->str_pos += i;
-	if (qoutes)
-		lex->str_pos++;
+	if (lex->err)
+		return (NULL);
 	if (*lex->str_pos && !ft_isspace(*lex->str_pos)
 		&& !is_metachar(*lex->str_pos))
-		stop_word = merge_str(stop_word, get_hd_stop_word(lex, NULL));
-	return (stop_word);
+		stop = merge_str(stop, get_hd_stop_word(lex, NULL));
+	return (stop);
 }
 
 char	*slash_handle(t_lexer *lex)

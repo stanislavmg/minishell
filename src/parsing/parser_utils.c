@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:39:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 20:57:46 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:47:27 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_cmd	*build_tree_fromlist(t_list *nodes, e_token type)
+t_cmd	*build_tree_fromlist(t_list *nodes, t_token_type type)
 {
 	t_cmd	*root;
 

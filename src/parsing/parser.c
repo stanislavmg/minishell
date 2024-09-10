@@ -6,13 +6,13 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:40:46 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/08/30 17:42:05 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:47:29 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_redir	*new_redir(e_token redirect_type, char *fname)
+t_redir	*new_redir(t_token_type redirect_type, char *fname)
 {
 	t_redir	*new_node;
 

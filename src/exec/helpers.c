@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:32 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:00:46 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:55:52 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	is_builtin(const char *cmd)
 		return (0);
 }
 
-int	is_logic_operator(e_token type)
+int	is_logic_operator(t_token_type type)
 {
 	return (type == OR || type == AND || type == SEMICOLON);
 }
@@ -78,7 +78,7 @@ char	**new_env_arr(t_list *list_env)
 			free(t);
 			i++;
 		}
-			list_env = list_env->next;
+		list_env = list_env->next;
 	}
 	envp[i] = NULL;
 	return (envp);

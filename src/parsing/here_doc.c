@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:38:45 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 20:59:33 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 18:24:24 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static char	*new_hidden_fname(char *stop_word, t_env *tmp_dir);
+static char	*new_hidden_fname(int count, char *stop, t_env *tmp_dir);
 char		*new_var_name(char *str);
 int			is_var_delimeter(int ch);
 
@@ -60,18 +60,20 @@ void	write_variable(char *input, t_list *env, int fd)
 	}
 }
 
-char	*here_doc_start(char *stop_word, t_list *env, e_token mode)
+char	*here_doc_start(char *stop, t_list *env, t_token_type mode)
 {
-	int		out_fd;
-	char	*new_fname;
-	char	*input;
+	static int	count = 0;
+	int			out_fd;
+	char		*new_fname;
+	char		*input;
 
-	if (!stop_word)
+	if (!stop)
 		return (NULL);
-	new_fname = new_hidden_fname(stop_word, get_env(env, "TMPDIR"));
+	count++;
+	new_fname = new_hidden_fname(count, stop, get_env(env, "TMPDIR"));
 	out_fd = ft_open(new_fname, O_RDWR | O_CREAT | O_TRUNC);
 	input = readline("> ");
-	while (input && ft_strcmp(stop_word, input))
+	while (input && ft_strcmp(stop, input))
 	{
 		if (mode == EXPAND_HERE_DOC)
 			write_variable(input, env, out_fd);
@@ -83,18 +85,23 @@ char	*here_doc_start(char *stop_word, t_list *env, e_token mode)
 	}
 	ft_close(out_fd);
 	free(input);
-	free(stop_word);
+	free(stop);
 	return (new_fname);
 }
 
-static char	*new_hidden_fname(char *stop_word, t_env *tmp_dir)
+static char	*new_hidden_fname(int count, char *stop, t_env *tmp_dir)
 {
 	char	*hidden_fname;
+	char	*t;
 
+	t = ft_strjoin(ft_itoa(count), stop);
 	hidden_fname = NULL;
 	if (tmp_dir && tmp_dir->value)
-		hidden_fname = ft_strjoin(tmp_dir->value, stop_word);
+	{
+		hidden_fname = ft_strjoin(tmp_dir->value, t);
+	}
 	else
-		hidden_fname = ft_strjoin("/tmp/.", stop_word);
+		hidden_fname = ft_strjoin("/tmp/", t);
+	free(t);
 	return (hidden_fname);
 }

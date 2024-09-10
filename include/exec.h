@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 12:30:19 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:13:24 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/10 10:40:51 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int		ft_execve(t_exec_cmd *cmd, char **env);
 
 /* helpers */
 int		is_builtin(const char *cmd);
-int		is_logic_operator(e_token type);
+int		is_logic_operator(t_token_type type);
 
 void	panic(t_data *msh);
 void	free_minishell_data(t_data *msh);
