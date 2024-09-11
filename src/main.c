@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/11 12:44:01 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/11 17:41:16 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "types.h"
 
 extern int	g_exit_code;
+
+void	ft_sigignore(void);
 
 t_data	*new_msh_data(void)
 {
@@ -114,6 +116,7 @@ int	main(int ac, char **av, char **env)
 		msh->root = (t_ast *)init_msh_data(msh->env, input);
 		if (msh->root)
 			travers_tree((t_ast *)msh->root, msh);
+		//ft_sigignore();
 		ft_waitpid(msh);
 		free_ast(msh->root);
 	}

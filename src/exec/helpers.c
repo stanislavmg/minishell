@@ -6,11 +6,22 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 16:55:32 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/10 10:55:52 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/11 17:13:11 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+void	ft_sigignore(void)
+{
+	struct sigaction	act;
+
+	memset(&act, 0, sizeof(act));
+	act.sa_handler = SIG_IGN;
+	sigemptyset(&act.sa_mask);
+	sigaction(SIGQUIT, &act, NULL);
+	sigaction(SIGINT, &act, NULL);
+}
 
 int	is_builtin(const char *cmd)
 {

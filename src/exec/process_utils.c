@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 21:01:00 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:01:04 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/11 17:25:14 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ void	ft_waitpid(t_data *msh)
 		t = msh->child_ps->next;
 		waitpid((*(pid_t *)msh->child_ps->data), &status, 0);
 		if (WIFSIGNALED(status))
+		{
+			printf("\n");
 			set_exit_code(msh->env, FT_SIGINT);
+		}
 		else
 			set_exit_code(msh->env, WEXITSTATUS(status));
 		ft_lstdelone(msh->child_ps, free);
