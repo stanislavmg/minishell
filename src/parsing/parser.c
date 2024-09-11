@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:40:46 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/10 10:47:29 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/11 11:40:20 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ t_redir	*new_redir(t_token_type redirect_type, char *fname)
 	new_node->type = redirect_type;
 	new_node->fname = fname;
 	if (OUTPUT_TRUNC == redirect_type)
-		new_node->mode = O_TRUNC | O_CREAT | O_RDWR;
+		new_node->mode = (O_TRUNC | O_CREAT | O_RDWR);
 	else if (OUTPUT_ADD == redirect_type)
-		new_node->mode = O_APPEND | O_CREAT | O_RDWR;
+		new_node->mode = (O_APPEND | O_CREAT | O_RDWR);
 	else if (INPUT_TRUNC == redirect_type)
 		new_node->mode = O_RDONLY;
 	else

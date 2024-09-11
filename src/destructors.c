@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   destructors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:06:08 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:01:25 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/11 12:43:09 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	free_ast(t_ast *root)
 	}
 	else if (is_redirect(root->type))
 	{
-		if (root->type == HERE_DOC)
+		if (root->type == HERE_DOC || root->type == EXPAND_HERE_DOC)
 			unlink(((t_redir *)root)->fname);
 		free(((t_redir *)root)->fname);
 	}

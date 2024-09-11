@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   travers_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:03:07 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/10 20:49:26 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/11 11:03:08 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,10 @@ int	travers_tree(t_ast *root, t_data *msh)
 		set_env(msh->env, (t_var *)root, HIDDEN);
 	else if (root->type == PIPE)
 		initialize_pipeline(root, msh);
+	else if (root->type == REDIRECT)
+		open_redirect(root, (t_redir *)root->right, msh);
 	else if (is_redirect(root->type))
-	{
-		if (root->type == REDIRECT)
-			open_redirect(root, (t_redir *)root->right, msh);
-		else
-			open_redirect(NULL, (t_redir *)root, msh);
-	}
+		open_redirect(NULL, (t_redir *)root, msh);
 	else if (root->type == ASSIGNMENT)
 	{
 		travers_tree((t_ast *)root->left, msh);

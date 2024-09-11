@@ -22,11 +22,11 @@ SRC     =	$(addprefix src/builtins/, $(BUILTINS))\
 			$(addprefix src/lexer/, $(LEXER))\
 			$(addprefix src/parsing/, $(PARSING))\
 			$(addprefix src/env_list/, $(ENV_LST))\
-			$(addprefix src/, main.c destructors.c)
+			$(addprefix src/, main.c destructors.c debug.c)
 
 OBJ = 		$(SRC:%.c=%.o)
 
-CFLAGS =	-Wall -Wextra -Werror -I$(INCLUDE) 
+CFLAGS = -g	-Wall -Wextra -Werror -I$(INCLUDE) 
 
 all: $(NAME)
 

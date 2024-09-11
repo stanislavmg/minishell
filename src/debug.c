@@ -78,6 +78,8 @@ static void printTreeHelper(t_ast* root, int space, int level) {
 		printf(" = key=%s value=%s", ((t_var *)root)->key, ((t_var *)root)->value);
     else if (is_redirect(root->type))
         printf(" = fname=%s", ((t_redir *)root)->fname);
+	else
+		printf(" ");
 	printf("\n");    
 	if (root->type != COMMAND && root->type != VARIABLE && !is_redirect(root->type))
     	printTreeHelper((t_ast *)root->left, space, level + 1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoremyk <sgoremyk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 21:00:25 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/09 21:00:27 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/09/11 11:01:42 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	initialize_pipeline(t_ast *root, t_data *msh)
 	ps = fork();
 	if (!ps)
 	{
-		msh->child_ps = NULL;
+		ft_waitpid(msh);
 		setup_pipeline(root, msh);
 		output_to_stdout();
 		ft_waitpid(msh);
@@ -54,7 +54,7 @@ void	setup_pipeline(t_ast *root, t_data *msh)
 
 void	run_child_ps(int *pdes, t_exec_cmd *cmd, t_data *msh)
 {
-	msh->child_ps = NULL;
+	ft_waitpid(msh);
 	if (dup2(pdes[1], STDOUT_FILENO) == -1)
 		panic(msh);
 	close(pdes[0]);
