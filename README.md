@@ -1,5 +1,3 @@
-# task-tracker
-
 # Minishell
 
 Simple implementation of a bash-like command interpreter 
