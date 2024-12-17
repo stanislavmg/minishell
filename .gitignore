@@ -10,6 +10,6 @@ lib
 share
 t
 perf
-.o
-.so
+*.o
+*.so
 readline-8.2

@@ -6,7 +6,7 @@
 /*   By: sgoremyk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 11:45:34 by sgoremyk          #+#    #+#             */
-/*   Updated: 2024/09/11 17:41:16 by sgoremyk         ###   ########.fr       */
+/*   Updated: 2024/12/17 18:01:12 by sgoremyk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ int	main(int ac, char **av, char **env)
 		msh->root = (t_ast *)init_msh_data(msh->env, input);
 		if (msh->root)
 			travers_tree((t_ast *)msh->root, msh);
-		//ft_sigignore();
 		ft_waitpid(msh);
 		free_ast(msh->root);
 	}
